@@ -1,0 +1,25 @@
+ion-content, ion-item {
+  --background: white;
+  --color: black;
+}
+
+ion-item {
+  --padding-start: 0;
+}
+
+ion-content {
+  --padding-top: 20px;
+  --padding-end: 20px;
+  --padding-start: 20px;
+  --padding-bottom: 20px;
+}
+
+.create-article {
+  overflow-y: auto;
+  padding-top: 20px;
+}
+
+.create {
+  padding-right: 20px;
+}
+

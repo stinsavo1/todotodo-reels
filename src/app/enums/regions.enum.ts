@@ -1,0 +1,17 @@
+export enum RegionEnum {
+  Moscow = 0,
+  SaintPetersburg = 1,
+  Krasnodar = 2,
+  Rostov = 3,
+  Chernozemye = 4,
+  NizhnyNovgorod = 6,
+  Saratov = 7,
+  Samara = 8,
+  Tatarstan = 9,
+  Stavropol = 10,
+  Ural = 11,
+  Volgograd = 12,
+  VladimirObl = 13,
+  SmolenskObl = 14,
+  Other = 5,
+}

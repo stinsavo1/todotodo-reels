@@ -1,0 +1,15 @@
+@import "../../../../theme/todo-theme";
+
+ion-label {
+  font-family: $font-family-roboto !important;
+}
+
+.container-button {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.ion-color-primary {
+  --ion-color-base: var(--main) !important;
+}

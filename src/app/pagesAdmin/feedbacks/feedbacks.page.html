@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button> </ion-back-button>
+    </ion-buttons>
+    <ion-title>Отзывы</ion-title>
+  </ion-toolbar>
+</ion-header>
+<!-- Индикатор загрузки -->
+<div class="loader-container" *ngIf="loading">
+  <mat-spinner class="loader-container__loader"></mat-spinner>
+</div>
+<ng-container *ngIf="!loading && !this.dataSource.data.length">
+  <div class="no-data-message">
+    <p>Отзывы отсутствуют</p>
+  </div>
+</ng-container>
+<div class="table-wrapper" *ngIf="!loading && this.dataSource.data.length">
+  <!-- Контейнер с прокручиваемой таблицей -->
+  <div class="table-container">
+    <mat-table [dataSource]="dataSource">
+
+      <!-- ФИО -->
+      <ng-container matColumnDef="authorName">
+        <mat-header-cell *matHeaderCellDef>Автор отзыва</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.authorName ?? '-' }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="role">
+        <mat-header-cell *matHeaderCellDef>Тип пользователя</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.role ?? '-' }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <mat-header-cell *matHeaderCellDef>Тип заказа</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.type ?? '-' }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="address">
+        <mat-header-cell *matHeaderCellDef>Адрес заказа</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.address ?? '-' }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="dateOrder">
+        <mat-header-cell *matHeaderCellDef>Дата заказа</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.dateOrder ?? '-' }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <mat-header-cell *matHeaderCellDef>Дата отзыва</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.date ?? '-' }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="checks">
+        <mat-header-cell *matHeaderCellDef>Оценки</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <img class="icon" src="/assets/like.svg"
+               *ngIf="element?.checks === 'like'"/>
+          <img class="icon" src="/assets/dislike.svg"
+               *ngIf="element?.checks === 'dislike'"/>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;">
+      </mat-row>
+    </mat-table>
+
+  </div>
+</div>

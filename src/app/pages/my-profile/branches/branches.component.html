@@ -1,0 +1,115 @@
+<ion-header>
+  <ion-toolbar class="branches-toolbar">
+    <ion-buttons slot="start" class="branches-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left branches-toolbar-title">Филиалы</ion-title>
+    <button slot="end" class="branches-save" (click)="openModal()" mat-flat-button>Добавить</button>
+  </ion-toolbar>
+  <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="branches?.length > 0; else noNotifications">
+    <div class="branch-list">
+      <div *ngFor="let branch of branches">
+        <div class="branch-list__info-container">
+          <img src="./assets/profile/branch.svg"/>
+          <div class="branch-list__info">
+            <div>
+              <div class="branch-list__title">
+                {{ branch.name }}
+              </div>
+              <div class="branch-list__description">
+                {{ branch.address }}
+              </div>
+            </div>
+            <div class="branch-list__buttons">
+              <button class="branch-list__edit" (click)="openModalEdit(branch)">
+                <img class="branch-list__image" src="./assets/profile/edit-branch.svg"/>
+              </button>
+              <button class="branch-list__delete" (click)="delete(branch.id)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="#d4183d"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
+                  <path d="M10 11v6"></path>
+                  <path d="M14 11v6"></path>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                  <path d="M3 6h18"></path>
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </ng-container>
+
+  <ion-modal #newBranches trigger="open-modal">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="closeModal()">Отмена</ion-button>
+          </ion-buttons>
+          <ion-buttons slot="end">
+            <ion-button [strong]="true" (click)="addBranch()">Сохранить</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-item lines="none" style="margin-bottom: 20px">
+          <ion-input class="text-input"
+                     type="text"
+                     [ngClass]="{'error': hasError && !name}"
+                     [(ngModel)]="name"
+                     placeholder="Название филиала"
+          ></ion-input>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-textarea
+            [ngClass]="{'error': hasError && !address}"
+            class="text-textarea"
+            [autoGrow]="true"
+            rows="2"
+            [(ngModel)]="address"
+            placeholder="Адрес"
+            (ionInput)="onChangeAddress($event)"
+          ></ion-textarea>
+        </ion-item>
+        <ng-container *ngIf="searchAddressList$ | async as searchAddressList">
+          <ion-item lines="none" style="margin: 10px"
+                    *ngFor="let address of searchAddressList"
+                    (click)="selectAddress(address['formatted_address'])">
+            <ion-label class="address" [ngClass]="{'error': hasError && !isAddressSelected}"
+            >
+              <ion-text color="medium">
+                <p>{{ address['subtitle'] }}</p>
+              </ion-text>
+              <h2>
+                {{ address['title'] }}
+              </h2>
+            </ion-label>
+          </ion-item>
+        </ng-container>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
+<ion-toast
+  [isOpen]="showToast"
+  [message]="errorMessage"
+  duration="2000"
+  color="danger"
+  class="profile-toast"
+  position="top"
+  (didDismiss)="closeToast()"
+></ion-toast>
+<ng-template #noNotifications>
+  <div class="no-data-message">
+    <p>Филиалы отсутствуют</p>
+  </div>
+</ng-template>

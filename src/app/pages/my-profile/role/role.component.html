@@ -1,0 +1,375 @@
+<ng-container *ngIf="item$ | async as item; else loading">
+  <ion-header>
+    <ion-toolbar class="role-toolbar">
+      <ion-buttons slot="start" class="role-toolbar-button">
+        <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+      </ion-buttons>
+      <ion-title class="ion-text-left role-toolbar-title">Редактировать</ion-title>
+      <button class="role-save" [disabled]="!selectedRole" (click)="save()" mat-flat-button>Сохранить</button>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-segment class="sticky-segment" [value]="selectedMode" (ionChange)="onSegmentChanged($event)" [scrollable]="true">
+      <ion-segment-button [value]="usersMode.USERS">
+        <ion-label>Дилер / Монтажник</ion-label>
+      </ion-segment-button>
+      <ion-segment-button [value]="usersMode.FACTORY">
+        <ion-label>Производство</ion-label>
+      </ion-segment-button>
+      <ion-segment-button [value]="usersMode.SERVICES">
+        <ion-label>Услуги</ion-label>
+      </ion-segment-button>
+      <ion-segment-button [value]="usersMode.STORE">
+        <ion-label>Магазин</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+    <ion-list class="list-roles">
+      <ng-container *ngIf="selectedMode === usersMode.USERS">
+        <ion-card (click)="selectRole(userNewRoleEnum.CLIENT)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.CLIENT, 'error-role': hasError && !selectedRole}"
+                  class="card-roles">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col"><img class="card-img" src="../../../assets/profile/client.svg"/></ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.CLIENT }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.INSTALLER)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.INSTALLER, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col"><img class="card-img" src="../../../assets/profile/montaz.svg"/></ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.INSTALLER }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ng-container>
+      <ng-container *ngIf="selectedMode === usersMode.FACTORY">
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.PVC)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.PVC, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/pvc.png"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.PVC }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.ALUM)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.ALUM, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/alum.png"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.ALUM }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.TREE)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.TREE, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/tree.png"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.TREE }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.MOSQUITO)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.MOSQUITO, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/mos.png"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.MOSQUITO }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.GLASS_FIBER)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.GLASS_FIBER, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/glass-fiber.png"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.GLASS_FIBER }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.FRAMELESS_GLAZING)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.FRAMELESS_GLAZING, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/bezramnoe-osteklenie.png"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.FRAMELESS_GLAZING }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.BLINDS)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.BLINDS, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/blinds.png"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.BLINDS }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.ROLLER_SHUTTERS)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.ROLLER_SHUTTERS, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/roller_shutters.png"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.ROLLER_SHUTTERS }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.DOUBLE_GLAZED_WINDOW)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.DOUBLE_GLAZED_WINDOW, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/glass_pack.png"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.DOUBLE_GLAZED_WINDOW }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ng-container>
+      <ng-container *ngIf="selectedMode === usersMode.SERVICES">
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.DELIVERY)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.DELIVERY, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/delivery.svg"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.DELIVERY }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.PAINTING)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.PAINTING, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/painting.svg"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.PAINTING }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.CLIMBING)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.CLIMBING, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/climber.svg"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.CLIMBING }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.MOVERS)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.MOVERS, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/movers.svg"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.MOVERS }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.USED_FRAMES)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.USED_FRAMES, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/window.svg"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.USED_FRAMES }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.CLEANING)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.CLEANING, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/cleaning.svg"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.CLEANING }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.WELDING_WORKS)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.WELDING_WORKS, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/welding.svg"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.WELDING_WORKS }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.GARBAGE_REMOVAL)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.GARBAGE_REMOVAL, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/garbage.png"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.GARBAGE_REMOVAL }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.ADV)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.ADV, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/adv.png"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.ADV }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+        <ion-card class="card-roles" (click)="selectRole(userNewRoleEnum.WINDOW_FITTINGS)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.WINDOW_FITTINGS, 'error-role': hasError && !selectedRole}">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col">
+                  <img class="card-img" src="../../../assets/orders/window_fittings.png"/>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.WINDOW_FITTINGS }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ng-container>
+      <ng-container *ngIf="selectedMode === usersMode.STORE">
+        <ion-card (click)="selectRole(userNewRoleEnum.WHOLESALE_STORE)"
+                  [ngClass]="{'hover': selectedRole === userNewRoleEnum.WHOLESALE_STORE, 'error-role': hasError && !selectedRole}"
+                  class="card-roles">
+          <ion-card-content class="card-content">
+            <ion-grid>
+              <ion-row>
+                <ion-col class="card-col"><img class="card-img" src="../../../assets/profile/store.svg"/></ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="card-role-label card-col">{{ userNewRoleEnum.WHOLESALE_STORE }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ng-container>
+    </ion-list>
+  </ion-content>
+</ng-container>
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>

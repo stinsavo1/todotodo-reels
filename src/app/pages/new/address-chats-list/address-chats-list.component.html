@@ -1,0 +1,65 @@
+<ion-header class="header">
+  <ion-toolbar class="header__toolbar">
+    <ion-title class="header__title">Адреса заказов</ion-title>
+    @if (loader) {
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    }
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-segment [value]="segment" (ionChange)="changeSegment($event)">
+    <ion-segment-button value="active">
+      <ion-label class="label-container">Активные <div class="label-container__count">{{activeCount}}</div></ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="archive">
+      <ion-label class="label-container">
+        <span class="material-symbols-outlined label-container__icon">archive</span>
+        Архив
+        <div class="label-container__count">{{archiveCount}}</div>
+      </ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <ion-segment-view id="active">
+    @for (address of (dialogAddress$ | async) ?? []; track $index) {
+      <ion-card class="card" [ngClass]="{'card__new-message': address?.countNewMessages > 0 }" (click)="routerNavigate(address)">
+        <ion-card-content>
+          <div class="card__content">
+            <div class="card__location">
+              <span class="material-symbols-outlined card__location-icon">location_on</span>
+            </div>
+            <div class="card__information">
+              <div class="card__container-button">
+                <div class="card__street">
+                  {{ address?.street }}
+                </div>
+                <span class="material-symbols-outlined card__forward-icon">arrow_forward_ios</span>
+              </div>
+              <div class="card__city">
+                {{ address?.city }}
+              </div>
+              <div class="card__chat-statistics">
+                <div class="card__container-count">
+                  <span class="material-symbols-outlined card__chat-icon-count">chat_bubble</span>
+                  <span class="card__chat-count">
+               {{ address?.count | declination: ['чат', 'чата', 'чатов'] }}
+            </span>
+                </div>
+                @if (address?.countNewMessages > 0) {
+                  <ion-chip [disabled]="true" class="card__not-read">
+                    <span class="material-symbols-outlined card__not-read-icon">mark_chat_unread</span>
+                    <span class="card__not-read-text">{{ address?.countNewMessages }}</span>
+                  </ion-chip>
+                }
+                @if (address?.orderType) {
+                  <ion-chip [disabled]="true" class="card__type-order">
+                    <span class="card__not-read-text">{{address?.orderType}}</span>
+                  </ion-chip>
+                }
+              </div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+  </ion-segment-view>
+</ion-content>

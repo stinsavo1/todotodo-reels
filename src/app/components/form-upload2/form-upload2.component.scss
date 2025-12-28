@@ -1,0 +1,67 @@
+@import "../../../theme/todo-theme";
+
+.loading {
+  padding: 15px;
+}
+
+.uploadDiv {
+  width: 100vw;
+}
+
+.btn-file {
+  position: relative;
+  overflow: hidden;
+  display: none;
+}
+
+.btn-file input[type="file"] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  cursor: inherit;
+  display: block;
+}
+
+.image {
+  height: 60px;
+  min-width: 60px;
+}
+
+.pdf-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.pdf-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid var(--ion-border-pdf-color);
+  border-radius: 5px;
+  background-color: var(--ion-background-pdf-color);
+
+  &__text {
+    padding: 0 10px 0 5px;
+    font-size: 14px;
+    font-family: $font-family-roboto;
+    color: var(--ion-text-pdf-color);
+    word-break: break-all;
+  }
+}
+
+.pdf-col {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  font-size: 25px;
+}

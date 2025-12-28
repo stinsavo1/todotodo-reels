@@ -1,0 +1,31 @@
+<div class="uploadDiv">
+  <ion-row class="ion-align-items-center">
+    <!-- Отображение изображений -->
+    <ion-col size="auto" *ngFor="let file of photoFiles">
+      <img class="image" [src]="file" (click)="openFullImage(file)" />
+    </ion-col>
+  </ion-row>
+
+  <ion-row class="pdf-row" *ngIf="fileList.length > 0">
+    <!-- Отображение PDF файлов -->
+    <ion-col *ngFor="let pdf of fileList" size="auto" class="pdf-col">
+      <div class="pdf-container">
+        <ion-icon *ngIf="pdf.type === 'audio/mpeg'" class="icon" name="musical-notes-outline"></ion-icon>
+        <ion-icon  *ngIf="pdf.type !== 'audio/mpeg'" class="icon" name="document-text-outline"></ion-icon>
+        <a class="pdf-container__text" [href]="pdf.url" target="_blank" rel="noopener noreferrer">{{ pdf.name }}</a>
+
+        <ion-button color="danger" (click)="removePdf(pdf)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-col>
+  </ion-row>
+
+  <ion-col class="ion-align-items-center" size="auto" *ngIf="isLoadingImage">
+    <img class="loading" height="60px" width="60px" src="assets/loading.gif" />
+  </ion-col>
+</div>
+
+<span class="btn btn-primary btn-file">
+  <input type="file" [accept]="accept" #file_uploading (change)="addFiles($event)" style="display: none;" />
+</span>

@@ -1,0 +1,126 @@
+@import "../../../../theme/todo-theme";
+
+.photo-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+  align-items: center;
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.photo-save {
+  position: absolute;
+  top: 6px;
+  right: 15px;
+  width: 100px;
+  height: 33px;
+  border-radius: 12px;
+  background-color: var(--main) !important;
+  color: #FFFFFF !important;
+
+  &:disabled {
+    color: var(--mat-button-filled-disabled-label-text-color) !important;
+    background-color: var(--mat-button-filled-disabled-container-color) !important;
+  }
+
+  &__title {
+    font-size: 0.813rem;
+    font-family: $font-family-roboto;
+    font-weight: 500;
+  }
+}
+
+.photo-toolbar-button {
+  padding-left: $padding-start;
+}
+
+.photo-toolbar-title {
+  font-size: 21px;
+  padding-inline-start: 3.875rem;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+.container-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: 50px;
+  margin: 0 2.5rem;
+
+  &__empty {
+    width: 8.625rem;
+    padding-top: 3.125rem;
+  }
+
+  &__img {
+    width: 138px;
+    height: 138px;
+    object-fit: cover;
+    border-radius: 7px;
+  }
+
+  &__text {
+    font-family: $font-family-roboto;
+    font-weight: 500;
+    padding-left: 0.938rem;
+  }
+
+  &__button {
+    height: 2.813rem;
+    padding-left: 1.25rem;
+    border-radius: 0.75rem;
+    width: 100%;
+    background: #E2E8FF;
+    display: flex;
+    align-items: center;
+    margin-top: 0.938rem;
+
+    &:first-of-type {
+      margin-top: 1.25rem;
+    }
+  }
+}
+
+.container-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+
+  &__img {
+    width: 90px;
+    height: 90px;
+  }
+
+  &__text {
+    font-family: $font-family-roboto;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  &__button {
+    background: var(--main);
+    color: var(--white);
+    font-family: $font-family-roboto;
+    width: 224px;
+    font-weight: 600;
+    font-size: 16px;
+    height: 52px;
+    border-radius: 12px;
+  }
+}
+
+ion-content {
+  --background: var(--color-background-light);
+}
+
+ion-item {
+  --background: var(--color-background-light);
+}

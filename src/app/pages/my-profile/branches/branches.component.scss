@@ -1,0 +1,182 @@
+@import "../../../../theme/todo-theme";
+
+ion-content {
+  --background: var(--color-background-light);
+  padding-bottom: 21px;
+}
+
+ion-item {
+  --background: var(--color-background-light);
+}
+
+.branches-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+  align-items: center;
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.branches-save {
+  position: absolute;
+  top: 6px;
+  right: 15px;
+  width: 100px;
+  height: 33px;
+  border-radius: 12px;
+  background-color: var(--main) !important;
+  color: #FFFFFF !important;
+
+  &:disabled {
+    color: var(--mat-button-filled-disabled-label-text-color) !important;
+    background-color: var(--mat-button-filled-disabled-container-color) !important;
+  }
+
+  &__title {
+    font-size: 0.813rem;
+    font-family: $font-family-roboto;
+    font-weight: 500;
+  }
+}
+
+.branches-toolbar-button {
+  padding-left: $padding-start;
+}
+
+.branches-toolbar-title {
+  font-size: 21px;
+  padding-inline-start: 3.875rem;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+.error {
+  border: 1px solid var(--error);
+  box-sizing: border-box;
+}
+
+.error-text {
+  font-family: $font-family-roboto;
+  padding-left: 1rem;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.text-textarea {
+  font-family: $font-family-roboto;
+  font-size: 14px;
+  --padding-start: 15px !important;
+  --padding-end: 15px !important;
+  background: white;
+  border-radius: 6px;
+  min-height: 53px;
+}
+
+.text-input {
+  font-family: $font-family-roboto;
+  font-size: 14px;
+  --padding-start: 15px !important;
+  --padding-end: 15px !important;
+  background: white;
+  border-radius: 6px;
+  height: 53px;
+}
+
+.address {
+  font-family: $font-family-roboto;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 15px 15px;
+  margin-inline-end: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.branch-list {
+  padding: 21px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  font-family: $font-family-roboto;
+
+
+  &__title {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  &__description {
+    color: #717182;
+  }
+
+  &__info-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 14px;
+    border-radius: 20px;
+    border: 1px solid #d1d9f0;
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  &__info {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 15px;
+  }
+
+  &__edit {
+    width: 34px;
+    height: 28px;
+    border: 1px solid #283891;
+    background-color: transparent;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: #e8ebf7;
+    }
+  }
+
+  &__delete {
+    width: 34px;
+    height: 28px;
+    border: 1px solid #d4193e;
+    background-color: transparent;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      background: #d4183d;
+      transition: stroke 0.3s ease;
+
+      svg {
+        stroke: white;
+      }
+    }
+  }
+
+  &__image {
+    width: 14px;
+    height: 14px;
+  }
+}

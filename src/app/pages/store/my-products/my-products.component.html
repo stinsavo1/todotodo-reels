@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar class="my-toolbar">
+    <ion-buttons slot="start" class="my-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left my-toolbar-title">Мои товары</ion-title>
+    <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list *ngIf="products.length">
+    <ion-card *ngFor="let product of products">
+      <ion-item lines="none">
+        <ion-thumbnail slot="start">
+          <img *ngIf="product?.photo" [src]="product?.photo"/>
+          <img *ngIf="!product?.photo" src="/assets/no-image.svg"/>
+        </ion-thumbnail>
+        <ion-label>{{product?.name}}</ion-label>
+      </ion-item>
+      <div class="container-button">
+        <ion-button fill="clear" color="primary" [routerLink]="['/tabs/map/store/edit-product', product.id]">
+          <ion-icon slot="icon-only" color="red" name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" color="danger" (click)="delete(product.id)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-card>
+  </ion-list>
+  <ng-container *ngIf="!products.length && !loading">
+    <div class="no-data-message">
+      <p>Товары отсутствуют</p>
+    </div>
+  </ng-container>
+</ion-content>

@@ -1,0 +1,307 @@
+<ion-header class="header">
+  <ion-toolbar class="header__toolbar">
+    <ion-buttons class="header__arrow-back" slot="start" (click)="back()">
+      <span class="material-symbols-outlined header__arrow-back-icon">
+        arrow_back_ios
+      </span>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <div class="header__call" (click)="callCustomer()">
+      <span class="material-symbols-outlined header__call-icon">
+        call
+      </span>
+      </div>
+      @if (user?.photo?.length) {
+        <img
+          (click)="openProfile()"
+          [src]="user.photo[0]"
+          class="message-block__avatar-header"
+        >
+      } @else {
+        <div class="message-block__no-avatar-container-header" (click)="openProfile()">
+          <div class="message-block__no-avatar-title">{{ getName() | capitalize }}</div>
+        </div>
+      }
+    </ion-buttons>
+    <ion-title class="header__title">{{ getTitle() }}</ion-title>
+    @if (loader) {
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    }
+  </ion-toolbar>
+</ion-header>
+<ion-content #chatContent>
+  <div class="chat-container">
+    <div class="chat-container__content">
+      <ion-list lines="none" class="message-list">
+        <div class="rating-container">
+          <ion-card class="rating-container__card">
+            <div class="rating-container__title">
+              Внимание!
+            </div>
+            <div class="rating-container__description">
+              Вы находитесь в безопасном чате todotodo. Сообщения не удаляются и не изменяются.
+              Вся переписка хранится в этом чате. При переходе в другие мессенджеры, по просьбе дилера или монтажника,
+              может повлечь за собой случай, при котором Вы не сможете доказать наличие договоренностей сторон.
+              Администрация сайта не сможет
+              Вам помочь с изменением рейтинга или включения пользователя в черный список.
+            </div>
+            <ion-button (click)="openSupport()" class="rating-container__button rating-container__outline" fill="outline">
+              Написать администратору
+            </ion-button>
+          </ion-card>
+        </div>
+        @for (groups of (dialogWithGroups$ | async)?.groupMessages ?? []; track $index) {
+          <div class="message-list__chip-container">
+            <ion-chip class="message-list__chip" [outline]="true">{{ groups?.dateLabel }}</ion-chip>
+          </div>
+          @for (msg of groups?.messages ?? []; track $index) {
+            <div class="message-list__item"
+                 [class.message-list__item--right]="msg.author === author">
+              <div class="message-list__message-block message-block">
+                @if (msg.author !== author) {
+                  @if (user?.photo?.length) {
+                    <img
+                      (click)="openProfile()"
+                      [src]="user.photo[0]"
+                      class="message-block__avatar"
+                    >
+                  } @else {
+                    <div class="message-block__no-avatar-container" (click)="openProfile()">
+                      <div class="message-block__no-avatar-title">{{ getName() | capitalize }}</div>
+                    </div>
+                  }
+                }
+                <div class="message-block__text-block">
+                  <div class="message-block__text"
+                       [class.message-block__text--bg]="msg.author === author">
+                    @if (msg?.photos?.length) {
+                      @for (photo of msg.photos; track photo) {
+                        @if (photo.isDocument) {
+                          <div class="image-container__container-file-chat"
+                               (click)="downloadFile(photo.url, photo.name)"
+                               [ngClass]="{'mb-10': msg.photos.length > 1}">
+                              <span class="material-symbols-outlined image-container__docs">
+                                docs
+                              </span>
+                            <div class="image-container__truncate">
+                              <div class="image-container__truncate">{{ photo.name }}</div>
+                              <div class="image-container__size">{{ formatFileSizeRu(photo?.size) }}</div>
+                            </div>
+                            <span class="material-symbols-outlined image-container__docs">
+                                download
+                              </span>
+                          </div>
+                        }
+                      }
+                      <div class="message-block__images-group images-group">
+                        @for (photo of msg.photos; track photo) {
+                          @if (!photo.isDocument) {
+                            <ion-img-viewer
+                              class="img"
+                              [srcHighRes]="photo?.url"
+                              [src]="photo?.url"
+                              scheme="dark"
+                            ></ion-img-viewer>
+                          }
+                        }
+                      </div>
+                    }
+                    <div [innerHTML]="msg.text"></div>
+                  </div>
+                  <span class="message-block__time">{{ msg.createdAt | date: 'HH:mm' }}</span>
+                </div>
+              </div>
+            </div>
+          }
+
+        }
+      </ion-list>
+    </div>
+  </div>
+</ion-content>
+<ion-footer #myFooter>
+  @if (!dialog?.typeLead) {
+    <!--  Исполнитель => хочет взять заказ => или если случайно написал отказаться от него-->
+    @if (dialog?.author === author && (dialog?.status === orderStatus.NEW_ORDER || dialog?.status === orderStatus.SEND_OFFER)) {
+      <div class="footer-button">
+        <div class="footer-button__container">
+          <div class="footer-button__button-group">
+            <ion-button class="footer-button__button footer-button__filled" fill="solid" (click)="takeOrder()">
+              Взять заказ
+            </ion-button>
+            <ion-button class="footer-button__button footer-button__outline" fill="outline" (click)="rejectOrder()">
+              Отказ
+            </ion-button>
+          </div>
+        </div>
+      </div>
+    }
+    <!-- Заказчик => хочет отдать заказ => или отказать исполнителю-->
+    @if (dialog?.author !== author && (dialog?.status === orderStatus.NEW_ORDER || dialog?.status === orderStatus.SEND_OFFER)) {
+      <div class="footer-button">
+        <div class="footer-button__container">
+          <div class="footer-button__button-group">
+            <ion-button class="footer-button__button footer-button__filled" fill="solid"
+                        (click)="giveOrderContractor()">
+              Отдать заказ
+            </ion-button>
+            <ion-button class="footer-button__button footer-button__outline" fill="outline"
+                        (click)="rejectContractor()">
+              Отказ
+            </ion-button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Заказчик => выполнено => отказать => отзыв-->
+    @if (isCustomerDone) {
+      <div class="footer-button">
+        <div class="footer-button__container">
+          <div class="footer-button__button-group">
+            <ion-button class="footer-button__button footer-button__filled" fill="solid" (click)="doneOrderCustomer()">
+              Выполнено
+            </ion-button>
+            <ion-button class="footer-button__button footer-button__outline" fill="outline"
+                        (click)="rejectionCustomer()">
+              Отказать
+            </ion-button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Исполнитель => выполнено => отказать => отзыв-->
+    @if (isInstallerDone) {
+      <div class="footer-button">
+        <div class="footer-button__container">
+          <div class="footer-button__button-group">
+            <ion-button class="footer-button__button footer-button__filled" fill="solid" (click)="doneOrderExecutor()">
+              Выполнено
+            </ion-button>
+            <ion-button class="footer-button__button footer-button__outline" fill="outline"
+                        (click)="rejectionExecutor()">
+              Отказать
+            </ion-button>
+          </div>
+        </div>
+      </div>
+    }
+  } @else {
+    @if (dialog?.author !== author && dialog.status === orderStatus.NEW_ORDER && dialog.orderStatus !== orderStatus.BUY && dialog.typeLead) {
+    <div class="footer-button">
+      <div class="footer-button__container">
+        <div class="footer-button__button-group">
+          <ion-button class="footer-button__button footer-button__filled" fill="solid" (click)="sendLead()">
+            Отдать
+          </ion-button>
+        </div>
+      </div>
+    </div>
+    }
+  }
+
+  @if (isCustomerRate) {
+    <div class="rating-container">
+      <ion-card class="rating-container__card">
+        <div class="rating-container__title">
+          Внимание!
+        </div>
+        <div class="rating-container__description">
+          Расскажите, как всё прошло. После отправки отзыва чат автоматически перейдёт в архив.
+        </div>
+        <ion-button class="rating-container__button rating-container__outline" fill="outline" (click)="navigateFeedback(this.dialogParts.orderId, this.dialogParts.userId, 'Client')">
+          Оставить отзыв
+        </ion-button>
+      </ion-card>
+    </div>
+  }
+
+  @if (isExecutorRate) {
+    <div class="rating-container">
+      <ion-card class="rating-container__card">
+        <div class="rating-container__title">
+          Внимание!
+        </div>
+        <div class="rating-container__description">
+          Расскажите, как всё прошло. После отправки отзыва чат автоматически перейдёт в архив.
+        </div>
+        <ion-button (click)="navigateFeedback(this.dialogParts.orderId, this.dialogParts.authorId, 'Executor')" class="rating-container__button rating-container__outline" fill="outline">
+          Оставить отзыв
+        </ion-button>
+      </ion-card>
+    </div>
+  }
+
+
+  @if (!disabledFooter) {
+    @if (selectedFiles.length) {
+      @for (file of selectedFiles; track $index) {
+        <div class="image-container">
+          @if (file?.isImage && file?.preview) {
+            <img
+              class="image-container__img"
+              [src]="file.preview"
+              [alt]="file.name"
+              alt="Изображение"
+            />
+            <button class="image-container__remove-button" (click)="removeFile(file)" type="button"
+                    aria-label="Удалить изображение">
+              &times;
+            </button>
+          }
+          @if (!file?.isImage) {
+            <div class="image-container__container-file">
+            <span class="material-symbols-outlined image-container__docs">
+              docs
+            </span>
+              <div class="image-container__truncate">
+                <div class="image-container__truncate">{{ file.name }}</div>
+                <div class="image-container__size">{{ formatFileSizeRu(file.file.size) }}</div>
+                <button class="image-container__remove-button" (click)="removeFile(file)" type="button"
+                        aria-label="Удалить изображение">
+                  &times;
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+    <div class="send-block__content">
+      <ion-buttons slot="end">
+        <ion-button class="send-block__btn-attach" (click)="openFilePicker()">
+          <span class="material-symbols-outlined send-block__attach">attach_file_add</span>
+        </ion-button>
+
+        <input
+          type="file"
+          #fileInput
+          style="display: none"
+          (change)="onFileSelected($event)"
+          accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx"
+        />
+      </ion-buttons>
+      <div class="send-block__container-textarea">
+      <textarea
+        #autoResizeTextarea
+        class="send-block__textarea"
+        placeholder="Введите сообщение..."
+        (input)="autoResize()"
+        [(ngModel)]="text"
+        (keydown.enter)="onEnter($event)"
+        rows="1"
+      ></textarea>
+        <ion-buttons slot="end" class="send-block__buttons"
+                     [ngClass]="{'send-block__disabled': !text && !selectedFiles.length}">
+          <ion-button
+            (click)="sendMessage()"
+            class="send-block__btn">
+            <span class="material-symbols-outlined send-block__icon">near_me</span>
+          </ion-button>
+        </ion-buttons>
+      </div>
+    </div>
+  }
+</ion-footer>
+

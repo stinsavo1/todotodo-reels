@@ -1,0 +1,146 @@
+<ion-header>
+  <ion-toolbar class="subscription-toolbar">
+    <ion-buttons slot="start" class="subscription-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left subscription-toolbar-title">Подписка</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+  <ng-container *ngIf="authService.authState$ | async as authState">
+    <ng-container *ngIf="statusPay$ | async as statusPay">
+      <ion-item class="container-role" *ngIf="!statusPay['isActive']" lines="none">
+        <ng-container *ngIf="user?.mode === usersMode.USERS || allRoles">
+          <div
+            class="container-role__item"
+            [ngClass]="{'hover': selectedRole === 'Дилер'}"
+            (click)="selectRole('Дилер')"
+          >
+            <img src="../../../assets/profile/client.svg" class="container-role__img"/>
+            <span class="container-role__label">Дилер</span>
+          </div>
+          <div
+            class="container-role__item"
+            [ngClass]="{'hover': selectedRole === 'Монтажник'}"
+            (click)="selectRole('Монтажник')"
+          >
+            <img src="../../../assets/profile/montaz.svg" class="container-role__img"/>
+            <span class="container-role__label">Монтажник</span>
+          </div>
+        </ng-container>
+        <div
+          class="container-role__item" *ngIf="user?.mode === usersMode.SERVICES || allRoles"
+          [ngClass]="{'hover': selectedRole === 'Услуга'}"
+          (click)="selectRole('Услуга')"
+        >
+          <img src="../../../assets/profile/services.svg" class="container-role__img"/>
+          <span class="container-role__label">Услуга</span>
+        </div>
+        <div
+          class="container-role__item factory" *ngIf="user?.mode === usersMode.FACTORY || allRoles"
+          [ngClass]="{'hover': selectedRole === 'Производство'}"
+          (click)="selectRole('Производство')"
+        >
+          <img style="width: 50%" src="../../../assets/profile/factory.svg" class="container-role__img"/>
+          <span class="container-role__label">Производство</span>
+        </div>
+      </ion-item>
+      <ion-list lines="none" *ngIf="!statusPay['isActive']">
+        <div class="container">
+          <div class="header-title">Преимущества подписки</div>
+          <div class="list-item header">
+            <span style="text-align: center">Услуга</span>
+            <span>Бесплатно</span>
+            <span>Подписка</span>
+          </div>
+          <div class="list-item">
+            <span>1. Чат внутри приложения</span>
+            <span><img class="success" src="../../../assets/success.svg" alt="Да"/></span>
+            <span><img class="success" src="../../../assets/success.svg" alt="Да"/></span>
+          </div>
+          <div class="list-item">
+            <span>2. Звонки на мобильный</span>
+            <span><img class="danger" src="../../../assets/cancel.svg" alt="Нет"/></span>
+            <span><img class="success" src="../../../assets/success.svg" alt="Да"/></span>
+          </div>
+          <div class="list-item">
+            <span>3. Просмотр рейтингов других пользователей</span>
+            <span><img class="danger" src="../../../assets/cancel.svg" alt="Нет"/></span>
+            <span><img class="success" src="../../../assets/success.svg" alt="Да"/></span>
+          </div>
+          <ng-container
+            *ngIf="selectedRole === 'Дилер' || selectedRole === 'Монтажник' || selectedRole === 'Услуга'">
+            <div class="list-item">
+              <span>4. Расстояние до заказа</span>
+              <span><img class="danger" src="../../../assets/cancel.svg" alt="Нет"/></span>
+              <span><img class="success" src="../../../assets/success.svg" alt="Да"/></span>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="selectedRole === 'Производство'">
+<!--            <div class="list-item">-->
+<!--              <span>4. Рекламный кабинет</span>-->
+<!--              <span><img class="danger" src="../../../assets/cancel.svg" alt="Нет"/></span>-->
+<!--              <span><img class="success" src="../../../assets/success.svg" alt="Да"/></span>-->
+<!--            </div>-->
+            <div class="list-item">
+              <span>4. Ссылки на ваш web-сайт и соц.сети</span>
+              <span><img class="danger" src="../../../assets/cancel.svg" alt="Нет"/></span>
+              <span><img class="success" src="../../../assets/success.svg" alt="Да"/></span>
+            </div>
+          </ng-container>
+        </div>
+        <ion-item class="ion-item-radio">
+          <ng-container *ngFor="let tarif of tarifs">
+            <ion-radio-group [(ngModel)]="selectedTarif">
+              <ion-item *ngFor="let key of ['m1', 'm12', 'm6']">
+                <ion-radio class="radio" slot="start" [value]="tarif[key].id"></ion-radio>
+                <ion-label>
+                  <div>
+                    <span class="radio-label">{{ tarif[key].title }} / {{ tarif[key].price }} руб.</span>
+                    <span class="radio-label-percent" *ngIf="tarif[key].percent">-{{ tarif[key].percent }}</span>
+                  </div>
+                </ion-label>
+              </ion-item>
+            </ion-radio-group>
+          </ng-container>
+        </ion-item>
+      </ion-list>
+
+      <ion-list *ngIf="statusPay['isActive']" lines="none">
+        <ion-item lines="none" class="ion-item-logo">
+          <img class="ion-item-logo__img" src="assets/logo.svg"/>
+        </ion-item>
+        <ion-item class="ion-item-info">
+          <ion-text>
+            Вы оплатили подписку, она дает возможность дилеру увидеть ссылки
+            на Ваши работы, данные о Вашей репутации и отзывы дилеров о Вас.
+          </ion-text>
+        </ion-item>
+        <ion-item class="ion-item-info" style="font-weight: 800">
+          <ion-text>
+            Подписка действительна до
+            {{ statusPay['finishPeriod'] | date: 'dd MMMM yyyy': undefined:  'ru' }}
+          </ion-text>
+        </ion-item>
+      </ion-list>
+    </ng-container>
+  </ng-container>
+</ion-content>
+<ion-footer *ngIf="authService.authState$ | async as authState">
+  <ng-container *ngIf="statusPay$ | async as statusPay">
+    <ion-button
+      *ngIf="!statusPay['isActive']"
+      [disabled]="!authState.user || !selectedRole"
+      class="ion-padding subscription-button"
+      (click)="doPay()"
+    >Оплатить
+    </ion-button>
+    <ion-button
+      *ngIf="!authState.user"
+      class="auth-button"
+      routerLink="/tabs/menu/registration"
+    >Авторизация
+    </ion-button>
+  </ng-container>
+</ion-footer>

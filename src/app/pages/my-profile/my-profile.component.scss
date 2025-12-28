@@ -1,0 +1,189 @@
+@import "../../../theme/todo-theme";
+:host {
+  background: var(--color-background-light) !important;
+}
+
+ion-content {
+  --background: var(--color-background-light) !important;
+}
+
+ion-segment {
+  height: 50px;
+}
+
+.container-text {
+  font-family: $font-family-roboto;
+  font-size: 1.2rem;
+  --inner-padding-end: 1.25rem;
+  --padding-start: 1.25rem;
+  --min-height: 61px;
+
+  &__label {
+    font-family: $font-family-roboto;
+    font-size: 0.938rem;
+    font-weight: bold;
+    padding-right: 40px;
+  }
+
+  &__text {
+    margin-right: 1.25rem;
+    font-family: $font-family-roboto;
+    font-size: 15px;
+  }
+
+  ion-text {
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+}
+
+.container-photo {
+  --min-height: 6.25rem;
+  font-family: $font-family-roboto;
+  font-size: 1.2rem;
+  --inner-padding-end: 1.25rem;
+  --padding-start: 1.25rem;
+
+  &__label {
+    font-family: $font-family-roboto;
+    font-size: 0.938rem;
+    font-weight: bold;
+  }
+
+  &__photo {
+    height: 3.625rem;
+    width: 3.625rem;
+    border-radius: 3px;
+    margin-right: 1.25rem;
+    object-fit: cover;
+  }
+}
+
+ion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--color-background-light);
+  margin-top: 0.625rem;
+}
+
+.profile-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.profile-toolbar-button {
+  padding-left: $padding-start;
+}
+
+.profile-toolbar-title {
+  font-size: 21px;
+  padding-inline-start: 3.875rem;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+.container-role {
+  --background: var(--color-background-light);
+  overflow: auto;
+
+  &__item {
+    width: 100px;
+    min-width: 100px;
+    min-height: 100px;
+    height: 100px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    margin-right: 8px;
+
+    &:last-child {
+      margin-right: unset;
+    }
+  }
+
+  &__label {
+    font-size: 16px;
+    font-family: $font-family-roboto;
+    font-style: normal;
+    font-weight: bold;
+    color: #979797;
+  }
+
+  &__img {
+    width: 60%;
+    padding-bottom: 5px;
+  }
+
+  .container-role__item.hover {
+    border: 1px solid #283891;
+
+    .container-role__label {
+      color: #0F1B26;
+    }
+  }
+}
+
+.profile-button {
+  --background: var(--main);
+  font-family: $font-family-roboto;
+  font-weight: 500;
+  --color: var(--white);
+  width: 100%;
+}
+
+.disabled {
+  opacity: 0.38;
+}
+
+.error {
+  border-top: 2px solid var(--error);
+  border-bottom: 2px solid var(--error);
+  box-sizing: border-box;
+}
+
+.error-role {
+  border: 1px solid var(--error);
+  box-sizing: border-box;
+}
+
+.profile-toast {
+  font-family: $font-family-roboto;
+  font-size: 15px;
+}
+
+.category-title {
+  font-family: $font-family-roboto;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 20px 0 15px 20px;
+  background: var(--color-background-light);
+}
+
+.rating-stars {
+  display: flex;
+}
+
+.star-icon {
+  font-size: 16px;
+  margin: 0 2px;
+}
+
+.rating-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--ion-color-dark);
+}

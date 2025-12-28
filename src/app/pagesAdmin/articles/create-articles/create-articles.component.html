@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="back()">
+        <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Создание статьи</ion-title>
+    <ion-button class="create" slot="end" color="tertiary" (click)="preview()">
+      <ion-icon slot="start" name="eye-outline"></ion-icon>
+      Предпросмотр статьи
+    </ion-button>
+    <ion-button class="create" slot="end" color="tertiary" (click)="save()">
+      <ion-icon slot="start" name="save-outline"></ion-icon>
+      Сохранить
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-item>
+    <ion-input
+      label="Название статьи"
+      labelPlacement="stacked"
+      [(ngModel)]="title"
+      placeholder="Введите название статьи"
+    ></ion-input>
+  </ion-item>
+  <div class="create-article">
+    <jodit-editor #editor [config]="config"></jodit-editor>
+  </div>
+</ion-content>

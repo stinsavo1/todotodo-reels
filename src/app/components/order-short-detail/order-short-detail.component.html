@@ -1,0 +1,17 @@
+<ion-item>
+  <ng-container *ngIf="item$ | async as item">
+    <ion-button color="medium" fill="outline" *ngIf="item['confirm']"
+      >в работе</ion-button
+    >
+    <ion-button
+      fill="outline"
+      [routerLink]="['/order-detail', id]"
+      *ngIf="!item['confirm']"
+      >Подробнее</ion-button
+    >
+    <ion-text color="medium" slot="end">
+      <ion-icon name="navigate-outline"></ion-icon
+      >{{ item['distance'] | distance }}
+    </ion-text>
+  </ng-container>
+</ion-item>

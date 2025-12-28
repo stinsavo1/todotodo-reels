@@ -1,0 +1,14 @@
+.square-checkbox {
+  --border-radius: 0;
+  --background: transparent;
+  --border: 1px solid #000;
+}
+::ng-deep {
+  .subscribe {
+    .mdc-text-field--filled.mdc-text-field--disabled {
+      background-color: unset !important;
+    }
+  }
+}
+
+

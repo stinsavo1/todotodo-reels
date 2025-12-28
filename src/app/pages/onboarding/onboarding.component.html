@@ -1,0 +1,49 @@
+<ion-content>
+  <swiper-container slides-per-view="1" speed="500" loop="false" css-mode="true" #swiperRef>
+    <swiper-slide>
+      <img class="header-image" src="./assets/onboarding/1.png">
+      <div class="text-container">
+        <div class="text-container__header">Lorem ipsum dolor sit amet, consectetur</div>
+        <div class="text-container__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</div>
+      </div>
+    </swiper-slide>
+    <swiper-slide>
+      <img class="header-image" src="./assets/onboarding/2.png">
+      <div class="text-container">
+        <div class="text-container__header">Lorem ipsum dolor sit amet, consectetur</div>
+        <div class="text-container__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</div>
+      </div>
+    </swiper-slide>
+    <swiper-slide>
+      <img class="header-image" src="./assets/onboarding/3.png">
+      <div class="text-container">
+        <div class="text-container__header">Lorem ipsum dolor sit amet, consectetur</div>
+        <div class="text-container__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</div>
+      </div>
+    </swiper-slide>
+    <swiper-slide>
+      <img class="header-image" src="./assets/onboarding/4.png">
+      <div class="text-container">
+        <div class="text-container__header">Lorem ipsum dolor sit amet, consectetur</div>
+        <div class="text-container__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</div>
+      </div>
+    </swiper-slide>
+    <swiper-slide>
+      <img class="header-image" src="./assets/onboarding/5.png">
+      <div class="text-container">
+        <div class="text-container__header">Lorem ipsum dolor sit amet, consectetur</div>
+        <div class="text-container__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit</div>
+      </div>
+    </swiper-slide>
+  </swiper-container>
+  <img class="button" src="./assets/onboarding/button.png">
+  <div class="icon-right-arrow" (click)="goToNextSlide()"></div>
+  <div class="skip" (click)="skip()">Пропустить</div>
+  <div class="custom-pagination">
+  <span class="pagination-bullet"
+        [ngClass]="{'pagination-bullet__active': i === activeIndex}"
+        *ngFor="let slide of slides; let i = index"
+        [ngStyle]="{'--i': i}">
+  </span>
+  </div>
+</ion-content>

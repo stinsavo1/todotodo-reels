@@ -1,0 +1,246 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button> </ion-back-button>
+    </ion-buttons>
+    <ion-title>Детали пользователя</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>
+
+<ion-content>
+  <ion-modal
+    #modal
+    trigger="full-image"
+    [presentingElement]="presentingElement"
+  >
+    <ng-template>
+      <ion-content>
+        <ion-img class="photo" src="/assets/profile/empty-photo.jpg"></ion-img>
+      </ion-content>
+      <ion-footer>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="modal.dismiss()" color="danger"
+              ><ion-icon name="trash-outline"></ion-icon
+            ></ion-button>
+          </ion-buttons>
+
+          <ion-buttons slot="end">
+            <ion-button (click)="modal.dismiss()">Закрыть</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-footer>
+    </ng-template>
+  </ion-modal>
+
+  <ion-list>
+    <ng-container *ngIf="item$ | async as item; else loading">
+      <ion-item  [routerLink]="['/admin/tabs/feedbacks', uid]">
+        <ion-label class="container-text__label">
+          Отзывы
+        </ion-label>
+      </ion-item>
+      <ion-item
+        ><ion-input
+          label="Фамилия Имя Отчество"
+          labelPlacement="stacked"
+          placeholder="Фамилия Имя Отчество"
+          [(ngModel)]="item['fio']"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item
+        ><ion-input
+          label="Телефон"
+          labelPlacement="stacked"
+          placeholder="Тел"
+          type="tel"
+          [disabled]="isRegionModerators || isModerators"
+          [(ngModel)]="item['phone']"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item
+        ><ion-input
+          label="E-mail"
+          labelPlacement="stacked"
+          placeholder="E-mail"
+          [disabled]="isRegionModerators || isModerators"
+          [value]="item['email']"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-select
+          label="Роль"
+          label-placement="stacked"
+          placeholder="Выберите роль"
+          [(ngModel)]="item['role']"
+        >
+          <ion-select-option value="Дилер">Дилер</ion-select-option>
+          <ion-select-option value="Монтажник">Монтажник</ion-select-option>
+          <ion-select-option value="Доставка">Доставка</ion-select-option>
+          <ion-select-option value="Покраска">Покраска</ion-select-option>
+          <ion-select-option value="Альпинизм">Альпинизм</ion-select-option>
+          <ion-select-option value="Грузчики">Грузчики</ion-select-option>
+          <ion-select-option value="Покупка Б/У рам">Покупка Б/У рам</ion-select-option>
+          <ion-select-option value="Клининг">Клининг</ion-select-option>
+          <ion-select-option value="Сварочные работы">Сварочные работы</ion-select-option>
+          <ion-select-option value="Вывоз мусора">Вывоз мусора</ion-select-option>
+          <ion-select-option value="Реклама и маркетинг">Реклама и маркетинг</ion-select-option>
+          <ion-select-option value="Оконная комплектация">Оконная комплектация</ion-select-option>
+          <ion-select-option value="М/C">М/C</ion-select-option>
+          <ion-select-option value="ПВХ">ПВХ</ion-select-option>
+          <ion-select-option value="ALUM">ALUM</ion-select-option>
+          <ion-select-option value="Дерево">Дерево</ion-select-option>
+          <ion-select-option value="'Стеклокомпозит'">Стеклокомпозит</ion-select-option>
+          <ion-select-option value="'Безрамное остекление'">Безрамное остекление</ion-select-option>
+          <ion-select-option value="'Жалюзи'">Жалюзи</ion-select-option>
+          <ion-select-option value="'Рольставни'">Рольставни</ion-select-option>
+          <ion-select-option value="'Стеклопакеты'">Стеклопакеты</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ng-template #loadingRegions>
+        <ion-item>
+          <ion-select
+            [(ngModel)]="item['region']"
+            label="Регион работы *"
+            label-placement="stacked"
+            placeholder="Загрузка..."
+            disabled="true"
+          >
+          </ion-select>
+        </ion-item>
+      </ng-template>
+
+      <ion-item *ngIf="regions$ | async as regions; else loadingRegions">
+        <ion-select
+          [value]="item['region']"
+          label="Регион работы *"
+          (ionChange)="onRegionChange($event, item)"
+          label-placement="stacked"
+          placeholder="Выберите регион"
+        >
+          <ion-select-option *ngFor="let region of regions?.regions" [value]="region.id">
+            {{ region.value }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item
+        ><ion-input
+          label="Дата регистрации"
+          labelPlacement="stacked"
+          placeholder="Дата регистрации"
+          [value]="item['createDate']"
+          disabled="true"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item
+        ><ion-input
+          label="Последняя активность пользователя"
+          labelPlacement="stacked"
+          placeholder="Последняя активность пользователя"
+          [value]="item['lastInactiveTime']"
+          disabled="true"
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <mat-form-field class="subscribe">
+          <mat-label>Подписка</mat-label>
+          <input [(ngModel)]="item['finishPeriod']" matInput [matDatepicker]="dp3" disabled>
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="dp3"></mat-datepicker-toggle>
+          <mat-datepicker #dp3 disabled="false"></mat-datepicker>
+        </mat-form-field>
+      </ion-item>
+      <ion-item
+      >
+        <ion-input
+        label="Полож. отзывы (лайки)"
+        labelPlacement="stacked"
+        disabled
+        placeholder="Полож. отзывы (лайки)"
+        [ngModel]="like"
+      ></ion-input>
+        <ion-input
+          label="Полож. рейтинг (лайки)"
+          labelPlacement="stacked"
+          type="number"
+          placeholder="Полож. рейтинг (лайки)"
+          [(ngModel)]="item['like']"
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          label="Жалобы отзывы (дизлайки)"
+          labelPlacement="stacked"
+          disabled
+          placeholder="Жалобы отзывы (дизлайки)"
+          [ngModel]="dislike"
+        ></ion-input>
+        <ion-input
+          label="Жалобы отзывы (дизлайки)"
+          type="number"
+          labelPlacement="stacked"
+          placeholder="Жалобы отзывы (дизлайки)"
+          [(ngModel)]="item['dislike']"
+        ></ion-input>
+      </ion-item>
+
+      <ion-list>
+        <ion-item>
+          <ion-checkbox class="square-checkbox" labelPlacement="end" [(ngModel)]="item['callNotification']" [ngModelOptions]="{standalone: true}">Уведомления на мобильный</ion-checkbox>
+        </ion-item>
+        <ion-item>
+          <ion-checkbox class="square-checkbox" labelPlacement="end" [(ngModel)]="item['emailNotification']" [ngModelOptions]="{standalone: true}">Уведомления на почту</ion-checkbox>
+        </ion-item>
+        <ion-item>
+          <ion-checkbox class="square-checkbox" labelPlacement="end" [(ngModel)]="item['isManager']" [ngModelOptions]="{standalone: true}">Менеджер</ion-checkbox>
+        </ion-item>
+      </ion-list>
+
+      <ion-item>
+        <form-upload2 [count]="10" [(photoFiles)]="item['photo']"></form-upload2>
+      </ion-item>
+
+      <ion-item>
+        <ion-textarea
+          label="Описание"
+          labelPlacement="stacked"
+          rows="2"
+          placeholder="Описание"
+          [counter]="true"
+          maxlength="1000"
+          [autoGrow]="true"
+          [(ngModel)]="item['description']"
+        ></ion-textarea>
+      </ion-item>
+
+      <ion-button
+        *ngIf="!isRegionModerators && !isModerators"
+        class="ion-padding-horizontal ion-margin-top"
+        expand="block"
+        fill="outline"
+        color="danger"
+        (click)="authService.delete(uid)"
+        >Удалить</ion-button
+      >
+
+      <ion-button
+        class="ion-padding-horizontal ion-margin-top"
+        expand="block"
+        fill="outline"
+        color="success"
+        (click)="saveUser(uid, item['email'], item)"
+        >Сохранить</ion-button
+      >
+    </ng-container>
+  </ion-list>
+</ion-content>

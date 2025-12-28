@@ -1,0 +1,159 @@
+
+<ion-content>
+  <div class="button-container" *ngIf="title">
+    <ion-button *ngIf="userDetails?.mode !== usersMode.STORE && userDetails?.mode !== 'agency'"
+                (click)="setOpen(true, '/tabs/map/new-order')"
+                class="create-order-btn">{{ title }}
+    </ion-button>
+    <ion-button *ngIf="userDetails?.mode === usersMode.STORE || userDetails?.mode === usersMode.SERVICES || userDetails?.mode === usersMode.FACTORY"
+                (click)="setOpen(true, '/tabs/map/store/new-product')"
+                class="create-order-btn">Добавить
+    </ion-button>
+    <ion-button (click)="setOpen(true, '/tabs/map/store/my-products')" *ngIf="userDetails?.mode === usersMode.STORE || userDetails?.mode === usersMode.SERVICES || userDetails?.mode === usersMode.FACTORY"
+                class="create-order-btn">Мои товары
+    </ion-button>
+  </div>
+
+  <ng-template #loading>
+    <ion-img class="map" src="../../../assets/maps.png"></ion-img>
+  </ng-template>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="options">
+    <ion-fab-button color="primary" id="open-modal" [disabled]="isZoomInDisabled">
+      <ion-icon size="large" name="options-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="zoomIn">
+    <ion-fab-button color="primary" (click)="zoomIn()" [disabled]="isZoomInDisabled">
+      <ion-icon size="large" name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="zoomOut">
+    <ion-fab-button color="primary" (click)="zoomOut()" [disabled]="isZoomOutDisabled">
+      <ion-icon size="large" name="remove-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="location">
+    <ion-fab-button color="primary" (click)="goToCurrentLocation()">
+      <img src="/assets/map/geolocation.svg"/>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="support">
+    <ion-fab-button color="primary" (click)="openSupport()">
+      <div class="ic icon-info"></div>
+    </ion-fab-button>
+  </ion-fab>
+  <div class="map" *ngIf="readyMap | async; else loading">
+    <ya-map
+      [center]="center.geometry"
+      [zoom]="15"
+      (ready)="onMapReady($event)"
+      [options]="{ yandexMapDisablePoiInteractivity: true, autoFitToViewport: 'always' }"
+    >
+      <ng-container>
+        <ya-placemark *ngFor="let order of orders"
+                      [geometry]="order['geometry']"
+                      [options]="placemarkOptionsType[order['type']]"
+                      (yaclick)="setOpen(true, '/tabs/map/order-detail/' + order['id'])"
+        ></ya-placemark>
+        <ng-container *ngFor="let user of users">
+          <ya-placemark
+            [geometry]="user['geometry']"
+            [options]="placemarkOptionsType[getRole(user)]"
+            (yaclick)="openProfile(user)"
+          ></ya-placemark>
+            <ng-container *ngIf="user?.branches && user.mode === 'store'">
+              <ya-placemark *ngFor="let branch of user.branches"
+                            [geometry]="branch['geometry']"
+                            [options]="placemarkOptionsType[getRole(user)]"
+                            (yaclick)="openProfile(user)">
+              </ya-placemark>
+            </ng-container>
+          <ng-container *ngIf="user?.branchesFactory && user.mode === 'factory'">
+            <ya-placemark *ngFor="let branch of user.branchesFactory"
+                          [geometry]="branch['geometry']"
+                          [options]="placemarkOptionsType[getRole(user)]"
+                          (yaclick)="openProfile(user)">
+            </ya-placemark>
+          </ng-container>
+        </ng-container>
+
+      </ng-container>
+    </ya-map>
+  </div>
+  <div class="blockOrdersTop10" #scrollContainer *ngIf="orders.length">
+    <ng-container *ngFor="let order of orders">
+      <div [ngClass]="getClassBorder(order)" (click)="openOrder(order.id)">
+        <ion-label>
+          <ion-text style="color: black">
+            <div class="calendar">
+              <img class="calendar__calendar" src="../../../assets/map/calendar.svg"/>
+              &nbsp;{{ order['orderDate'] | date: 'dd.MM' }}
+            </div>
+            <div *ngIf="paymentStatus">
+              <img class="icon" src="../../../assets/map/navigate.svg"/>
+              &nbsp;{{ order['distance'] | distance }}
+            </div>
+            <div *ngIf="!paymentStatus" style="color: red; font-weight: bold; display: flex; gap: 5px">
+              <img class="icon" src="../../../assets/map/navigate.svg"/>
+              <span style="line-height: 12px">Подписка</span>
+            </div>
+            <div class="price">
+              <img class="icon" src="../../../assets/map/price.svg"/>
+              {{ order['type'] }} - {{ order['price'] | number: '1.0-0' }}₽
+            </div>
+          </ion-text>
+        </ion-label>
+      </div>
+    </ng-container>
+  </div>
+
+  <ion-alert
+    [isOpen]="isAlertOpen"
+    header="Детали заказа"
+    message="Для получении полной информации пройдите авторизацию."
+    [buttons]="alertButtons"
+    (didDismiss)="setOpen(false, '')"
+  ></ion-alert>
+  <ion-modal trigger="open-modal" (ionModalWillDismiss)="cancel()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar class="modal-toolbar">
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">Отмена</ion-button>
+          </ion-buttons>
+          <ion-title class="modal-toolbar-title">Фильтр</ion-title>
+          <ion-buttons slot="end">
+            <ion-button [strong]="true" (click)="updateUser()">Подтвердить</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-item lines="none" class="modal-item">
+          <ion-label>Замеры и монтажи</ion-label>
+          <ion-toggle slot="end" [(ngModel)]="tempFilters.mountOrders"></ion-toggle>
+        </ion-item>
+        <ion-item lines="none" class="modal-item">
+          <ion-label>Монтажники и дилеры</ion-label>
+          <ion-toggle slot="end" [(ngModel)]="tempFilters.installersDilersUsers"></ion-toggle>
+        </ion-item>
+        <ion-item lines="none" class="modal-item">
+          <ion-label>Производства и услуги</ion-label>
+          <ion-toggle slot="end" [(ngModel)]="tempFilters.factoryServiceUsers"></ion-toggle>
+        </ion-item>
+        <ion-item lines="none" class="modal-item">
+          <ion-label>Расчеты</ion-label>
+          <ion-toggle slot="end" [(ngModel)]="tempFilters.windowCalc"></ion-toggle>
+        </ion-item>
+        <ion-item lines="none" class="modal-item">
+          <ion-label>Лиды</ion-label>
+          <ion-toggle slot="end" [(ngModel)]="tempFilters.agencyLead"></ion-toggle>
+        </ion-item>
+        <ion-item lines="none" class="modal-item">
+          <ion-label>Магазины</ion-label>
+          <ion-toggle slot="end" [(ngModel)]="tempFilters.store"></ion-toggle>
+        </ion-item>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
+

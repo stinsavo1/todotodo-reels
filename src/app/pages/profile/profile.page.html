@@ -1,0 +1,104 @@
+<ion-header>
+  <ion-toolbar class="profile-toolbar">
+    <ion-buttons slot="start" class="profile-detail-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left profile-toolbar-title">{{isMyRating ? 'Мой рейтинг' : 'Профиль'}}</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ng-container *ngIf="item$ | async as item">
+    <ion-list lines="none">
+      <ion-item lines="none">
+        <div class="container">
+          <img *ngIf="!item?.photo" class="container__no-photo" src="assets/no-avatar.svg"/>
+          <img *ngIf="item?.photo" class="container__photo" [src]="item?.photo"/>
+          <div class="container__fio">{{item?.fio | shortName}}</div>
+          <div class="container__region">{{getRegionName(item?.region)}}</div>
+          <div class="container__role">{{role}}</div>
+          <div class="rating-stars">
+            <ng-container *ngFor="let star of stars; let i = index">
+              <ion-icon
+                *ngIf="star.full"
+                name="star"
+                color="warning"
+                class="star-icon">
+              </ion-icon>
+              <ion-icon
+                *ngIf="star.half"
+                name="star-half"
+                color="warning"
+                class="star-icon">
+              </ion-icon>
+              <ion-icon
+                *ngIf="!star.full && !star.half"
+                name="star-outline"
+                color="medium"
+                class="star-icon">
+              </ion-icon>
+            </ng-container>
+          </div>
+        </div>
+      </ion-item>
+      <ion-item lines="none" *ngIf="item.description">
+        <div class="container-details">
+          <div>{{ item?.description }}</div>
+        </div>
+      </ion-item>
+      <ion-item lines="none">
+        <div class="container-tab">
+          <div class="container-tab__tab" (click)="changeTab(tabs.FEEDBACK)"
+               [ngClass]="{'container-tab__tab-active': activeTab === tabs.FEEDBACK}">Отзывы
+          </div>
+          <div class="container-tab__tab" (click)="changeTab(tabs.CERTIFICATE)"
+               [ngClass]="{'container-tab__tab-active': activeTab === tabs.CERTIFICATE}">Сертификаты
+          </div>
+        </div>
+      </ion-item>
+    </ion-list>
+    <ion-list>
+      <ng-container *ngIf="activeTab === tabs.FEEDBACK">
+        <div class="container-feedbacks">
+          <ng-container *ngFor="let feedbackItem of feedback">
+            <!-- Отображать только если есть like или dislike -->
+            <div *ngIf="feedbackItem.checks === 'like' || feedbackItem.checks === 'dislike'"
+                 class="container-feedbacks__item">
+              <ion-card class="feedback-card">
+                <ion-card-header>
+                  <div class="feedback-header">
+                    <div class="feedback-author-info">
+                      <b>{{ feedbackItem.authorName }}</b>
+                      <p  *ngIf="feedbackItem?.role">Тип пользователя: {{ feedbackItem.role }}</p>
+                    </div>
+                    <div class="feedback-like-dislike">
+                      <img *ngIf="feedbackItem.checks === 'like'" src="assets/like.svg" alt="Like"/>
+                      <img *ngIf="feedbackItem.checks === 'dislike'" src="assets/dislike.svg" alt="Dislike"/>
+                    </div>
+                  </div>
+                </ion-card-header>
+
+                <ion-card-content>
+                  <p *ngIf="feedbackItem?.type"><strong>Тип заказа:</strong> {{ feedbackItem.type }}</p>
+                  <p><strong>Отзыв:</strong></p>
+                  <p class="feedback-comment">{{ feedbackItem.comment }}</p>
+                  <p class="feedback-date">
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    {{ feedbackItem.date | date:'mediumDate' }}
+                  </p>
+                </ion-card-content>
+              </ion-card>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+    </ion-list>
+
+    <div *ngIf="activeTab === tabs.CERTIFICATE" class="tab-content content-certificate">
+      <div class="error-container">
+        <img class="error-container__img" src="assets/erorr.svg"/>
+        <span class="error-container__text">Ведутся технические работы!</span>
+      </div>
+    </div>
+  </ng-container>
+</ion-content>

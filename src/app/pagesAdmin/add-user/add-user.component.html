@@ -1,0 +1,171 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Добавить пользователя</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="registration-page__content" [formGroup]="form">
+  <ion-item lines="none">
+    <div class="container">
+    <div class="container-photo">
+      <img *ngIf="!photo" class="container-photo__empty"
+           src="../../../../assets/profile/empty-photo.jpg">
+      <img *ngIf="photo" class="container-photo__img"
+           [src]="photo">
+      <div class="container-photo__button" (click)="pickFromGallery()">
+        <img src="../../../../assets/profile/image.svg">
+        <span class="container-photo__text">Выбрать фото для профиля</span>
+      </div>
+    </div>
+    </div>
+  </ion-item>
+
+
+
+  <div class="registration-page__form">
+    <div class="registration-page__input-container">
+      <div class="registration-page__input-container-label">Фамилия Имя Отчество</div>
+      <input class="registration-page__input"
+             placeholder="Фамилия Имя Отчество"
+             formControlName="fullName"
+             type="text"
+      />
+    </div>
+    <div class="registration-page__input-container">
+      <div class="registration-page__input-container-label">Телефон</div>
+      <input class="registration-page__input"
+             type="tel"
+             placeholder="Телефон"
+             appPhoneMask
+             formControlName="phone"
+      />
+    </div>
+    <div class="registration-page__input-container">
+      <div class="registration-page__input-container-label">Адрес</div>
+      <ion-item lines="none">
+        <ion-textarea
+          class="registration-page__input"
+          formControlName="address"
+          [autoGrow]="true"
+          labelPlacement="stacked"
+          (ionInput)="onChangeAddress($event)"
+          placeholder="Адрес">
+        </ion-textarea>
+      </ion-item>
+      <ng-container *ngIf="searchAddressList$ | async as searchAddressList">
+        <ion-item style="cursor: pointer"
+          *ngFor="let address of searchAddressList"
+          (click)="selectAddress(address['formatted_address'],
+                          address['uri'])">
+          <ion-label
+            class="family">
+            <ion-text color="medium">
+              <p>{{ address['subtitle'] }}</p>
+            </ion-text>
+            <h2>
+              {{ address['title'] }}
+            </h2>
+          </ion-label>
+        </ion-item>
+      </ng-container>
+    </div>
+
+    <div class="registration-page__input-container">
+      <div class="registration-page__input-container-label">Роль</div>
+      <ion-item lines="none" class="select">
+        <ion-select
+          formControlName="role"
+          placeholder="Роль"
+          interface="alert"
+          cancelText="Отмена"
+          okText="Подтвердить"
+          (ionChange)="getUserMode()"
+          [interfaceOptions]="{header: 'Выберите роль'}">
+          <ion-select-option [value]="'Дилер'">Дилер</ion-select-option>
+          <ion-select-option [value]="'Монтажник'">Монтажник</ion-select-option>
+
+          <ion-select-option [value]="'ПВХ'">ПВХ</ion-select-option>
+          <ion-select-option [value]="'ALUM'">ALUM</ion-select-option>
+          <ion-select-option [value]="'Дерево'">Дерево</ion-select-option>
+          <ion-select-option [value]="'М/С'">М/С</ion-select-option>
+          <ion-select-option [value]="'Стеклокомпозит'">Стеклокомпозит</ion-select-option>
+          <ion-select-option [value]="'Безрамное остекление'">Безрамное остекление</ion-select-option>
+          <ion-select-option [value]="'Жалюзи'">Жалюзи</ion-select-option>
+          <ion-select-option [value]="'Рольставни'">Рольставни</ion-select-option>
+          <ion-select-option [value]="'Стеклопакеты'">Стеклопакеты</ion-select-option>
+
+          <ion-select-option [value]="'Доставка'">Доставка</ion-select-option>
+          <ion-select-option [value]="'Покраска'">Покраска</ion-select-option>
+          <ion-select-option [value]="'Альпинизм'">Альпинизм</ion-select-option>
+          <ion-select-option [value]="'Грузчики'">Грузчики</ion-select-option>
+          <ion-select-option [value]="'Покупка Б/У рам'">Покупка Б/У рам</ion-select-option>
+          <ion-select-option [value]="'Клининг'">Клининг</ion-select-option>
+          <ion-select-option [value]="'Сварочные работы'">Сварочные работы</ion-select-option>
+          <ion-select-option [value]="'Вывоз мусора'">Вывоз мусора</ion-select-option>
+          <ion-select-option [value]="'Реклама и маркетинг'">Реклама и маркетинг</ion-select-option>
+          <ion-select-option [value]="'Оконная комплектация'">Оконная комплектация</ion-select-option>
+
+          <ion-select-option [value]="'Оптовый магазин'">Оптовый магазин</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <div class="registration-page__input-container">
+      <div class="registration-page__input-container-label">Регион</div>
+      <ion-item lines="none" class="select">
+        <ion-select
+          formControlName="region"
+          placeholder="Выберите регион"
+          interface="alert"
+          cancelText="Отмена"
+          okText="Подтвердить"
+          [interfaceOptions]="{header: 'Выберите ваш регион'}">
+          <ion-select-option [value]="0">Москва</ion-select-option>
+          <ion-select-option [value]="1">Санкт-Петербург</ion-select-option>
+          <ion-select-option [value]="2">Краснодарский край</ion-select-option>
+          <ion-select-option [value]="3">Ростовская область</ion-select-option>
+          <ion-select-option [value]="4">Черноземье</ion-select-option>
+          <ion-select-option [value]="6">Нижегородская область</ion-select-option>
+          <ion-select-option [value]="7">Саратовская область</ion-select-option>
+          <ion-select-option [value]="8">Самарская область</ion-select-option>
+          <ion-select-option [value]="9">Татарстан</ion-select-option>
+          <ion-select-option [value]="10">Ставропольский край</ion-select-option>
+          <ion-select-option [value]="11">Урал</ion-select-option>
+          <ion-select-option [value]="12">Волгоградская область</ion-select-option>
+          <ion-select-option [value]="13">Владимирская область</ion-select-option>
+          <ion-select-option [value]="14">Смоленска область</ion-select-option>
+          <ion-select-option [value]="5">Другое</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <div class="registration-page__input-container" *ngIf="userMode === usersModeEnum.FACTORY || userMode === usersModeEnum.AGENCY || userMode === usersModeEnum.STORE">
+      <div class="registration-page__input-container-label">{{nameFactoryText}}</div>
+      <input class="registration-page__input"
+             formControlName="nameFactory"
+      />
+    </div>
+
+    <div class="registration-page__input-container" *ngIf="userMode === usersModeEnum.FACTORY || userMode === usersModeEnum.AGENCY || userMode === usersModeEnum.STORE">
+      <div class="registration-page__input-container-label">Сайт</div>
+      <input class="registration-page__input"
+             formControlName="website"
+      />
+    </div>
+    <div class="registration-page__input-container">
+      <div class="registration-page__input-container-label">{{ descriptionText }}</div>
+      <textarea class="registration-page__input"
+             placeholder="Небольшое описание"
+             formControlName="description"
+      ></textarea>
+    </div>
+
+    <ion-button
+      class="ion-padding-horizontal ion-margin-top button-send"
+      expand="block"
+      (click)="register()"
+    >Добавить пользователя
+    </ion-button
+    >
+  </div>
+</ion-content>

@@ -1,0 +1,218 @@
+@import "../../../theme/todo-theme";
+
+$font-weight-bold: 600;
+$padding-start: 16px;
+
+:host {
+  background: var(--color-background-light) !important;
+}
+
+ion-content {
+  --background: var(--color-background-light) !important;
+}
+
+ion-item {
+  --background: var(--color-background-light)
+}
+
+.subscription-toolbar {
+  height: 65px;
+  display: flex;
+  --background: var(--white);
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.subscription-toolbar-button {
+  padding-left: $padding-start;
+}
+
+.subscription-toolbar-title {
+  font-size: 21px;
+  padding-inline-start: 62px;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+.ion-item-logo {
+  --background: var(--main);
+  padding: 23px $padding-start;
+  --border-radius: 12px;
+  --min-height: 8rem;
+
+  &__img {
+    height: 6rem;
+    margin: 0 auto;
+  }
+}
+
+.ion-item-info {
+  font-family: $font-family-roboto;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 22px;
+}
+
+ion-footer {
+  background: #F3F5FD;
+
+  .subscription-button {
+    --background: var(--main);
+    font-family: $font-family-roboto;
+    font-weight: 500;
+    --color: var(--white);
+    width: 100%;
+  }
+
+  .auth-button {
+    font-family: $font-family-roboto;
+    --background: var(--main);
+    font-weight: 500;
+    --color: var(--white);
+    padding: 0 16px;
+    width: 100%;
+  }
+}
+
+ion-radio-group {
+  width: 100%;
+}
+
+.radio-label, .radio-label-percent {
+  width: 100%;
+  padding-left: 18px;
+  font-family: $font-family-roboto;
+  font-weight: $font-weight-bold;
+}
+
+.radio-label {
+  font-size: 0.9rem;
+}
+
+.radio-label-percent {
+  color: var(--main);
+  font-size: 1.3rem;
+}
+
+.ion-item-radio {
+  --padding-start: 0;
+}
+
+.container-role {
+  padding-top: 10px;
+  --background: var(--color-background-light);
+  overflow: auto;
+
+  &__item {
+    width: 100px;
+    min-width: 100px;
+    min-height: 100px;
+    height: 100px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    margin-right: 8px;
+
+    &:last-child {
+      margin-right: unset;
+    }
+  }
+
+  &__label {
+    font-size: 16px;
+    font-family: $font-family-roboto;
+    font-style: normal;
+    font-weight: bold;
+    color: #979797;
+  }
+
+  &__img {
+    width: 60%;
+    padding-bottom: 5px;
+  }
+
+  .container-role__item.hover {
+    border: 1px solid #283891;
+
+    .container-role__label {
+      color: #0F1B26;
+    }
+  }
+}
+
+.factory {
+  min-width: 150px;
+}
+
+.container {
+  width: 100%;
+  padding: 15px 35px;
+  background: #f3f5fc;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between; /* Равномерное распределение между колонками */
+}
+
+.list-item span {
+  flex: 1; /* Каждая колонка занимает равное пространство */
+  text-align: center; /* Выравнивание текста по центру */
+  padding: 4px 0; /* Добавляем внутренний отступ для лучшего визуального восприятия */
+}
+
+.list-item span:first-child {
+  text-align: left; /* Первая колонка выравнивается по левому краю */
+  font-size: 14px;
+  color: #828282;
+  border-right: 2px solid #000000; /* Граница справа для второй колонки */
+}
+
+.list-item span:nth-child(2) {
+  border-right: 2px solid #000000; /* Граница справа для второй колонки */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.list-item span:nth-child(3) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.list-item.header {
+  font-size: 14px;
+  color: #828282;
+}
+
+.list-item span {
+  flex: 1; /* Каждая колонка занимает равное пространство */
+  text-align: center; /* Выравнивание текста по центру */
+}
+
+.list-item span:first-child {
+  text-align: left; /* Первая колонка выравнивается по левому краю */
+  font-size: 14px;
+  color: #828282;
+}
+
+.success,
+.danger {
+  width: 25px; /* Размер иконок */
+  height: 25px;
+}
+
+.header-title {
+  font-size: 14px;
+  border-bottom: 2px solid;
+  text-align: center;
+  padding-bottom: 10px;
+}

@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button> </ion-back-button>
+    </ion-buttons>
+    <ion-title>Реклама</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid *ngIf="items?.length">
+    <ion-row>
+      <ion-col><b>Дата</b></ion-col>
+      <ion-col><b>Кол-во переходов</b></ion-col>
+    </ion-row>
+    <ion-row *ngFor="let ad of items">
+      <ion-col> {{ ad['name'] ? (ad['name'] | date: 'dd.MM.yy') : '-' }}</ion-col>
+      <ion-col> {{ ad?.value }}</ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

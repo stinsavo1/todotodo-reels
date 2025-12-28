@@ -1,0 +1,175 @@
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>
+
+<!-- поиск исполнителя / заказчик -->
+<ng-container *ngIf="!order['executor'] && isOrderDate">
+  <ng-container *ngIf="responses$ | async as responses;">
+    <ng-container *ngIf="order['author'] === authService.uid">
+      <div class="sub-title">Отклики</div>
+      <div class="container-details">
+        <ion-item lines="none" text-wrap *ngIf="responses.length === 0">
+          <div class="container-details__text">Откликов пока нет</div>
+        </ion-item>
+        <ion-item lines="none" *ngFor="let item of responses | orderBy: 'updateAt':'desc';">
+          <div style="width: 100%; padding: 15px">
+            <div class="photo-container">
+              <img *ngIf="!item?.user?.photo" class="photo-container__no-photo" src="assets/no-avatar.svg"/>
+              <img *ngIf="item?.user?.photo" class="photo-container__photo" [src]="item?.user?.photo"/>
+              <div class="photo-container__details">
+                <div class="date">Отклик: {{ item['updateAt'] | date: 'dd.MM в HH:mm' }}
+                  <span *ngIf="item?.price"> | </span><span style="font-weight: bold;" *ngIf="item?.price">{{item?.price}} ₽</span></div>
+                <div class="photo-container__fio">{{item?.user?.fio | shortName}}</div>
+                <div class="photo-container__type">{{item?.user?.role}}</div>
+
+                <div class="photo-container__rating">
+                  <div class="rating-stars">
+                    <ng-container *ngFor="let star of stars; let i = index">
+                      <ion-icon
+                        *ngIf="star.full"
+                        name="star"
+                        color="warning"
+                        class="star-icon">
+                      </ion-icon>
+                      <ion-icon
+                        *ngIf="star.half"
+                        name="star-half"
+                        color="warning"
+                        class="star-icon">
+                      </ion-icon>
+                      <ion-icon
+                        *ngIf="!star.full && !star.half"
+                        name="star-outline"
+                        color="medium"
+                        class="star-icon">
+                      </ion-icon>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="button-container">
+              <ion-button
+                class="default-button default-button__response"
+                (click)="profileNavigate(item)"
+              >Профиль
+              </ion-button>
+              <ion-button
+                class="default-button default-button__response"
+                color="success"
+                (click)="selectExecutor(item['id']);"
+              >Отдать заказ
+              </ion-button>
+            </div>
+          </div>
+        </ion-item>
+      </div>
+    </ng-container>
+
+  </ng-container>
+</ng-container>
+
+<!-- выбран исполнитель / заказчик -->
+<ng-container *ngIf="order['executor'] && isOrderDate">
+  <!-- в работе / заказчик -->
+  <ion-button
+    *ngIf="!(order['status'] === orderStatusEnum.COMPLETED || order['status'] === orderStatusEnum.REJECTION)"
+    class="default-button ion-margin-top"
+    expand="block"
+    (click)="navigate()"
+  >Написать
+  </ion-button>
+  <ion-button
+    *ngIf="order['status'] === orderStatusEnum.CONFIRM &&
+    !(order['status'] === orderStatusEnum.COMPLETED || order['status'] === orderStatusEnum.REJECTION || order['doneCustomer'])"
+    class="default-button ion-margin-top"
+    expand="block"
+    color="success"
+    (click)="doneOrderCustomer(true, order['doneExecutor'])"
+  >Выполнено
+  </ion-button>
+
+  <!-- завершен / заказчик -->
+  <ion-button
+    *ngIf="order['status'] === orderStatusEnum.CONFIRM &&
+    !(order['status'] === orderStatusEnum.COMPLETED || order['status'] === orderStatusEnum.REJECTION || order['doneCustomer'])"
+    class="default-button ion-margin-top"
+    expand="block"
+    color="danger"
+    (click)="refuseOrder(id)"
+  >Отказаться
+  </ion-button>
+
+  <ng-container>
+    <ion-button *ngIf="!order['isRateClient'] && (order['doneCustomer'] || order['status'] === orderStatusEnum.REJECTION) && isOverCustomerDate"
+      class="default-button ion-margin-top"
+      expand="block"
+      (click)="navigateFeedback(id, order['executor'], 'Client')"
+      color="success">
+      Оставить отзыв
+    </ion-button>
+  </ng-container>
+</ng-container>
+    <!-- выбран исполнитель / заказчик -->
+    <!--  <ion-button-->
+    <!--    *ngIf="!order['confirm'] && !(order['success'] || order['rejection'])"-->
+    <!--    class="default-button ion-margin-top"-->
+    <!--    expand="block"-->
+    <!--    color="success"-->
+    <!--    (click)="orderService.orderConfirm(id)"-->
+    <!--  >Заказ согласован-->
+    <!--  </ion-button-->
+    <!--  >-->
+<!--    <ion-button-->
+<!--      *ngIf="order['success'] && !order['rejection']"-->
+<!--      class="default-button ion-margin-top"-->
+<!--      expand="block"-->
+<!--      color="success"-->
+<!--      (click)="-->
+<!--        orderService.finishOrder(-->
+<!--          order['executor'],-->
+<!--          id,-->
+<!--          ['ratingRecommendationsExecutor', 'ratingOrders'],-->
+<!--          'Client'-->
+<!--        )-->
+<!--      "-->
+<!--      [routerLink]="['/tabs/map']"-->
+<!--    >Все хорошо-->
+<!--    </ion-button-->
+<!--    >-->
+<!--    <ion-button-->
+<!--      *ngIf="!order['success'] && order['rejection']"-->
+<!--      class="default-button ion-margin-top"-->
+<!--      expand="block"-->
+<!--      color="success"-->
+<!--      (click)="-->
+<!--        orderService.finishOrder(-->
+<!--          order['executor'],-->
+<!--          id,-->
+<!--          ['ratingRecommendationsExecutor'],-->
+<!--          'Client'-->
+<!--        )-->
+<!--      "-->
+<!--      [routerLink]="['/tabs/map']"-->
+<!--    >Все хорошо-->
+<!--    </ion-button-->
+<!--    >-->
+<!--    <ion-button-->
+<!--      *ngIf="order['success'] || order['rejection']"-->
+<!--      class="default-button ion-margin-top"-->
+<!--      expand="block"-->
+<!--      color="danger"-->
+<!--      (click)="-->
+<!--        orderService.finishOrder(-->
+<!--          order['executor'],-->
+<!--          id,-->
+<!--          ['ratingClaimExecutor'],-->
+<!--          'Client',-->
+<!--          order-->
+<!--        )-->
+<!--      "-->
+<!--      [routerLink]="['/tabs/map']"-->
+<!--    >Плохо-->
+<!--    </ion-button-->
+<!--    >-->
+

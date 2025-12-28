@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar class="subscription-toolbar">
+    <ion-buttons slot="start" class="subscription-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left subscription-toolbar-title">Контакты</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="page-contact">
+  <ion-grid class="page-contact__grid">
+    <ion-row class="page-contact__row">
+      <ion-col size="12" class="page-contact__col page-contact__col--center">
+        <ion-text class="page-contact__title">
+          Свяжитесь с нами
+        </ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row class="page-contact__row">
+      <ion-col size="12" class="page-contact__col page-contact__col--center">
+        <ion-text class="page-contact__info">
+          Если у вас остались вопросы, мы<br> готовы вам помочь!
+        </ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row class="page-contact__row">
+      <ion-col size="12" class="page-contact__col page-contact__col--center page-contact__col--with-button">
+        <ion-button size="large" class="page-contact__button" (click)="openSupport()">
+          <ion-icon slot="icon-only" name="logo-whatsapp"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+
+

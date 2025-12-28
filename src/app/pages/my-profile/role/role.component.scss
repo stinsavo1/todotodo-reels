@@ -1,0 +1,113 @@
+@import "../../../../theme/todo-theme";
+
+ion-segment {
+  height: 50px;
+}
+
+ion-card {
+  margin-inline-end: unset;
+  margin-top: unset;
+  margin-bottom: unset;
+  margin-inline: unset;
+}
+
+.role-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+  align-items: center;
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+
+  .role-save {
+    position: absolute;
+    top: 6px;
+    right: 15px;
+    width: 100px;
+    height: 33px;
+    border-radius: 12px;
+    background-color: var(--main) !important;
+    color: #FFFFFF !important;
+
+    &:disabled {
+      color: var(--mat-button-filled-disabled-label-text-color) !important;
+      background-color: var(--mat-button-filled-disabled-container-color) !important;
+    }
+
+    &__title {
+      font-size: 0.813rem;
+      font-family: $font-family-roboto;
+      font-weight: 500;
+    }
+  }
+
+  .role-toolbar-button {
+    padding-left: $padding-start;
+  }
+
+  .role-toolbar-title {
+    font-size: 21px;
+    padding-inline-start: 3.875rem;
+    font-family: $font-family-roboto;
+    font-weight: bold;
+  }
+}
+
+.list-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+
+  .card-roles {
+    width: calc(50% - 5px);
+    box-sizing: border-box;
+  }
+
+  .card-col {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .card-content {
+    padding-inline-start: unset;
+    padding-inline-end: unset;
+    padding-top: unset;
+    padding-bottom: unset;
+    font-size: unset;
+    line-height: unset;
+  }
+
+  .card-img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .card-role-label {
+    font-size: 16px;
+    font-family: $font-family-roboto;
+    font-style: normal;
+    font-weight: bold;
+    color: #979797;
+    display: flex;
+    align-items: center;
+  }
+
+  .card-roles.hover {
+    outline: 2px solid #283891;
+
+    .container-role__label {
+      color: #0F1B26;
+    }
+  }
+}
+
+.sticky-segment {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #eeeeee;
+}

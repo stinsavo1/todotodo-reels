@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button> </ion-back-button>
+    </ion-buttons>
+    <ion-title>Заказы</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-template #loading>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </ng-template>
+
+  <ion-grid *ngIf="orders$ | async as items; else loading">
+    <ion-item button detail="false" *ngIf="items.length === 0">
+      <ion-label
+        ><ion-text color="medium"><p>Заказы отсутствуют...</p></ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-row *ngIf="items.length > 0">
+      <ion-col><b>Дата создания заказа</b></ion-col>
+      <ion-col><b>Желаемая дата</b></ion-col>
+      <ion-col><b>Автор заказа</b></ion-col>
+      <ion-col><b>Адрес</b></ion-col>
+      <ion-col><b>Монтажник</b></ion-col>
+    </ion-row>
+    <ion-row *ngFor="let order of items" [routerLink]="['order', order['id']]">
+      <ion-col> {{ order['orderCreate'] ? (order['orderCreate'] | date: 'dd.MM.yy') : '-' }}</ion-col>
+      <ion-col> {{ order['createAt'] | date: 'dd.MM.yy' }}</ion-col>
+      <ion-col>{{ order['author'] | fio | async }}</ion-col>
+      <ion-col>{{ order['address'] }}</ion-col>
+      <ion-col>{{ order['executor'] ? (order['executor'] | fio | async) : '-' }}</ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

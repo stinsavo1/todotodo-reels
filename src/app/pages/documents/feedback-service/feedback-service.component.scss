@@ -1,0 +1,40 @@
+@import "../../../../theme/todo-theme";
+
+:host {
+  background: var(--color-background-light) !important;
+}
+
+ion-content {
+  --background: var(--color-background-light) !important;
+}
+
+.feedback-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.feedback-toolbar-button {
+  padding-left: $padding-start;
+}
+
+.feedback-toolbar-title {
+  font-size: 21px;
+  padding-inline-start: 3.875rem;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+.default-button {
+  --background: var(--main);
+  margin-top: 20px;
+  --border-color: unset;
+  font-family: $font-family-roboto;
+  font-weight: 500;
+  --color: var(--white);
+  width: 100%;
+}

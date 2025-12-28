@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar class="subscription-toolbar">
+    <ion-title class="subscription-toolbar-title">Меню</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item class="container" lines="none" *ngIf="(authService.authState$ | async)?.user;" routerLink="my-profile">
+      <div class="ic icon-user"></div>
+      <ion-label class="container__label">
+        Мой профиль
+      </ion-label>
+    </ion-item>
+    <ion-item class="container" lines="none" *ngIf="!(authService.authState$ | async)?.user;" routerLink="registration/auth">
+      <div class="ic icon-user"></div>
+      <ion-label class="container__label">
+        Авторизация
+      </ion-label>
+    </ion-item>
+<!--    <ion-item class="container" lines="none" *ngIf="(authService.authState$ | async)?.user && !(authService.authState$ | async)?.user?.emailVerified;" routerLink="finish-registration">-->
+<!--      <div class="ic icon-user"></div>-->
+<!--      <ion-label class="container__label">-->
+<!--        Завершить регистрацию-->
+<!--      </ion-label>-->
+<!--    </ion-item>-->
+    <ion-item class="container" lines="none" routerLink="contacts">
+      <div class="ic icon-contacts"></div>
+      <ion-label class="container__label">
+        Контакты
+      </ion-label>
+    </ion-item>
+    <ion-item class="container" lines="none" routerLink="subscription">
+      <div class="ic icon-subscribe"></div>
+      <ion-label class="container__label">
+        Подписка
+      </ion-label>
+    </ion-item>
+    <ion-item class="container" lines="none" routerLink="faq">
+      <div class="ic icon-quiz"></div>
+      <ion-label class="container__label">
+        FAQ
+      </ion-label>
+    </ion-item>
+    <ion-item class="container" lines="none" routerLink="partnership"  *ngIf="(authService.authState$ | async)?.user;">
+      <div class="ic icon-handshake"></div>
+      <ion-label class="container__label">
+        Партнерство
+      </ion-label>
+    </ion-item>
+    <ion-item class="container" lines="none" routerLink="documents">
+      <div class="ic icon-icon-list" style="font-size: 30px"></div>
+      <ion-label class="container__label">
+        Прочее
+      </ion-label>
+    </ion-item>
+    <ion-item class="container" lines="none" *ngIf="(authService.authState$ | async)?.user;" (click)="authService.signOut()">
+      <div class="ic icon-log-out"></div>
+      <ion-label class="container__label">
+        Выйти
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

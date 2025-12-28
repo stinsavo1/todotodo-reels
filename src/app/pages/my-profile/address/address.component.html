@@ -1,0 +1,50 @@
+<ng-container *ngIf="item$ | async as item; else loading">
+  <ion-header>
+    <ion-toolbar class="address-toolbar">
+      <ion-buttons slot="start" class="address-toolbar-button">
+        <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+      </ion-buttons>
+      <ion-title class="ion-text-left address-toolbar-title">Редактировать</ion-title>
+      <button class="address-save" [disabled]="!item['address']" (click)="save()" mat-flat-button>Сохранить</button>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-item lines="none" [ngClass]="{'label-error': !item['address'] && addressTouched}">
+      <ion-textarea
+        class="text-input"
+        [(ngModel)]="item['address']"
+        (ngModelChange)="addressTouched = true"
+        [autoGrow]="true"
+        labelPlacement="stacked"
+        (ionInput)="onChangeAddress($event)"
+        placeholder="Адрес региона Вашей работы">
+      </ion-textarea>
+    </ion-item>
+    <ion-text class="error-text" color="danger" *ngIf="!item['address'] && addressTouched">
+      Это поле обязательно для заполнения!
+    </ion-text>
+    <ng-container *ngIf="searchAddressList$ | async as searchAddressList">
+      <ion-item
+        *ngFor="let address of searchAddressList"
+        (click)="selectAddress(
+                          item,
+                          address['formatted_address'],
+                          address['uri'])">
+        <ion-label
+          class="family">
+          <ion-text color="medium">
+            <p>{{ address['subtitle'] }}</p>
+          </ion-text>
+          <h2>
+            {{ address['title'] }}
+          </h2>
+        </ion-label>
+      </ion-item>
+    </ng-container>
+
+  </ion-content>
+</ng-container>
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>

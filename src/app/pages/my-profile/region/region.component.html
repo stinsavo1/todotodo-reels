@@ -1,0 +1,51 @@
+<ng-container *ngIf="item$ | async as item; else loading">
+  <ion-header>
+    <ion-toolbar class="region-toolbar">
+      <ion-buttons slot="start" class="region-toolbar-button">
+        <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+      </ion-buttons>
+      <ion-title class="ion-text-left region-toolbar-title">Изменить регион</ion-title>
+
+      <button class="region-save" [disabled]="item['region'] === undefined" (click)="save()" mat-flat-button>Сохранить
+      </button>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+
+    <ion-item *ngIf="regions$ | async as regions" lines="none"
+              [ngClass]="{'label-error': item['region'] === undefined && regionTouched}">
+      <ion-select
+        [(ngModel)]="item['region']"
+        (ngModelChange)="change()"
+        label-placement="stacked"
+        class="text-input"
+        label="Регион работы"
+        okText="Подтвердить"
+        cancelText="Отмена">
+        placeholder="Выберите регион">
+        <ion-select-option [value]="0">Москва</ion-select-option>
+        <ion-select-option [value]="1">Санкт-Петербург</ion-select-option>
+        <ion-select-option [value]="2">Краснодарский край</ion-select-option>
+        <ion-select-option [value]="3">Ростовская область</ion-select-option>
+        <ion-select-option [value]="4">Черноземье</ion-select-option>
+        <ion-select-option [value]="6">Нижегородская область</ion-select-option>
+        <ion-select-option [value]="7">Саратовская область</ion-select-option>
+        <ion-select-option [value]="8">Самарская область</ion-select-option>
+        <ion-select-option [value]="9">Татарстан</ion-select-option>
+        <ion-select-option [value]="10">Ставропольский край</ion-select-option>
+        <ion-select-option [value]="11">Урал</ion-select-option>
+        <ion-select-option [value]="12">Волгоградская область</ion-select-option>
+        <ion-select-option [value]="13">Владимирская область</ion-select-option>
+        <ion-select-option [value]="14">Смоленска область</ion-select-option>
+        <ion-select-option [value]="5">Другое</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-text class="error-text" color="danger" *ngIf="item['region'] === undefined && regionTouched">
+      Это поле обязательно для заполнения!
+    </ion-text>
+  </ion-content>
+</ng-container>
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>

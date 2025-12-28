@@ -1,0 +1,16 @@
+<ion-content>
+  <ion-img class="photo" [src]="image"></ion-img>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="start" *ngIf="!isReadOnly">
+      <ion-button (click)="removeFile()" color="danger"
+        ><ion-icon name="trash-outline"></ion-icon
+      ></ion-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="modalController.dismiss()">Закрыть</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

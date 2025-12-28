@@ -1,0 +1,33 @@
+<ion-toolbar class="auth-page__toolbar">
+  <ion-buttons slot="start" class="auth-page__back-btn">
+    <ion-icon class="auth-page__icon icon-left-arrow" (click)="back()"></ion-icon>
+  </ion-buttons>
+</ion-toolbar>
+<ion-content class="auth-page__content">
+  <div class="auth-page__header">
+    <img class="logo" src="../../../assets/logo_without_title.svg"/>
+  </div>
+  <div class="auth-page__form">
+    <div class="auth-page__title">Авторизация</div>
+    <div class="auth-page__input-container">
+      <div class="auth-page__input-container-label">Телефон</div>
+      <input class="auth-page__input"
+             type="tel"
+             placeholder="Телефон"
+             appPhoneMask
+             required
+             [(ngModel)]="phoneNumber"
+      />
+    </div>
+    <ion-button
+      class="ion-padding-horizontal ion-margin-top button"
+      expand="block"
+      (click)="login()"
+    >Войти
+    </ion-button
+    >
+    <div class="registration-text">У вас еще нет аккаунта? <span (click)="register()">Зарегистрироваться</span></div>
+  </div>
+
+</ion-content>
+

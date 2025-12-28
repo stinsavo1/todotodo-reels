@@ -1,0 +1,86 @@
+@import "../../../theme/todo-theme";
+
+swiper-container {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: var(--white);
+  color: var(--text-color);
+  font-family: "Montserrat", sans-serif;
+  overflow: auto; // Добавлено для обеспечения прокрутки
+
+  .text-container {
+    padding: 1rem 2rem 0 2rem;
+
+    &__header {
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 32px;
+      margin-bottom: 12px;
+    }
+
+    &__description {
+      font-weight: 500;
+      font-size: 0.875rem;
+      color: var(--light-gray-blue);
+      line-height: 24px;
+    }
+  }
+
+  .header-image {
+    width: 100%;
+  }
+}
+
+.button {
+  position: absolute;
+  height: 10rem;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.icon-right-arrow {
+  position: absolute;
+  right: 2rem;
+  bottom: 4rem;
+  z-index: 1;
+  color: var(--white);
+}
+
+.skip {
+  position: absolute;
+  left: 2rem;
+  bottom: 4rem;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-color);
+  z-index: 1;
+}
+
+.custom-pagination {
+  position: absolute;
+  left: 2rem;
+  bottom: 115px;
+  z-index: 1;
+  margin: 0 5px;
+
+  .pagination-bullet {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--main);
+    cursor: pointer;
+    opacity: 0.3;
+    position: absolute;
+
+    left: calc(1rem * var(--i));
+
+    &__active {
+    opacity: 1;
+    }
+  }
+}
+

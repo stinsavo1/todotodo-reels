@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar class="documents-toolbar">
+    <ion-buttons slot="start" class="documents-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="documents-toolbar-title">Прочее</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item class="container" lines="none" routerLink="about-project">
+      <div class="ic icon-info"></div>
+      <ion-label class="container__label">
+        О проекте
+      </ion-label>
+    </ion-item>
+    <ion-item class="container" lines="none" routerLink="" (click)="openSupport()">
+      <div class="ic icon-manage"></div>
+      <ion-label class="container__label">
+        Обратиться в поддержку
+      </ion-label>
+    </ion-item>
+    <ion-item class="container" lines="none" routerLink="feedback-service">
+      <div class="ic icon-reviews"></div>
+      <ion-label class="container__label">
+        Предложения по улучшению TodoTodo
+      </ion-label>
+    </ion-item>
+    <ion-item class="container" lines="none" routerLink="personal-data-policy">
+      <div class="ic icon-description"></div>
+      <ion-label class="container__label">
+        Политика обработки персональных данных
+      </ion-label>
+    </ion-item>
+    <ion-item class="container" lines="none" routerLink="personal-policy">
+      <div class="ic icon-description"></div>
+      <ion-label class="container__label">
+        Политика конфиденциальности
+      </ion-label>
+    </ion-item>
+    <ion-item class="container" lines="none" routerLink="cookies">
+      <div class="ic icon-description"></div>
+      <ion-label class="container__label">
+        Политика использования файлов cookie
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

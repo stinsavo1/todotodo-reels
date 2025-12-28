@@ -1,0 +1,155 @@
+@import "../../../theme/todo-theme";
+
+:host {
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+}
+
+.registration-page {
+
+  &__toolbar {
+    --border-width: 0 !important;
+    --background: var(--main);
+    padding: 16px 0 0 16px;
+  }
+
+  &__icon {
+    color: var(--white);
+    font-size: 1.5rem;
+  }
+
+  &__content {
+    --background: var(--main);
+    --padding-start: 16px;
+    --padding-end: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  &__form {
+    padding-top: 33px;
+    flex-grow: 1;
+  }
+
+  &__title {
+    color: var(--white);
+    letter-spacing: -0.03em;
+    padding-bottom: 10px;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 41px;
+  }
+
+  &__info {
+    color: #D1D3D4;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
+    letter-spacing: -0.01em;
+  }
+
+  &__inputs {
+    display: flex;
+    gap: 30px;
+    padding: 25px 0;
+    justify-content: center;
+  }
+
+  &__input {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 12px;
+    gap: 10px;
+    width: 56px;
+    background: var(--main);
+    height: 64px;
+    border: 1px solid var(--white);
+    border-radius: 12px;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    font-size: 22px;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    caret-color: #6759FF;
+
+    &:focus {
+      border: 2px solid var(--white);
+    }
+
+    &::placeholder {
+      font-size: 30px;
+    }
+  }
+
+  &__time-main {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 138%;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+
+  &__text-main {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 138%;
+    letter-spacing: -0.02em;
+    color: #D1D3D4;
+  }
+
+  &__time {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 138%;
+    display: flex;
+    justify-content: center;
+    color: var(--white);
+    text-decoration: underline;
+    letter-spacing: -0.02em;
+  }
+
+  &__text {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 138%;
+    letter-spacing: -0.02em;
+    color: #D1D3D4;
+    text-align: center;
+  }
+}
+
+.button {
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  --background: transparent;
+  color: var(--white);
+  padding-inline-start: 0;
+  padding-inline-end: 0;
+  --border-color: unset;
+  border: 2px solid var(--white);
+  border-radius: 12px;
+  margin-bottom: 25px;
+}
+
+.error {
+  font-family: "Inter", sans-serif;
+  color: var(--error);
+  font-weight: bold;
+  text-align: center;
+}
+
+.error-input {
+  border: 1px solid var(--error);
+}

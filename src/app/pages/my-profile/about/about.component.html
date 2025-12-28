@@ -1,0 +1,31 @@
+<ng-container *ngIf="item$ | async as item; else loading">
+  <ion-header>
+    <ion-toolbar class="about-toolbar">
+      <ion-buttons slot="start" class="about-toolbar-button">
+        <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+      </ion-buttons>
+      <ion-title class="ion-text-left about-toolbar-title">Редактировать</ion-title>
+      <button class="about-save" (click)="save()" mat-flat-button>Сохранить</button>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+
+    <ion-item lines="none">
+      <ion-textarea
+        class="text-input"
+        [(ngModel)]="item['description']"
+        (ngModelChange)="aboutTouched = true"
+        labelPlacement="stacked"
+        rows="2"
+        placeholder="Небольшое описание о себе"
+        [counter]="true"
+        maxlength="1000"
+        [autoGrow]="true">
+      </ion-textarea>
+    </ion-item>
+  </ion-content>
+</ng-container>
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>

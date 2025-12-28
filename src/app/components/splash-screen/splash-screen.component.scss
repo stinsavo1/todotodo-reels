@@ -1,0 +1,9 @@
+@import "../../../theme/todo-theme";
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background: var(--main);
+  z-index: 10000;
+}

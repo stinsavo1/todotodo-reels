@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar class="new-order-toolbar">
+    <ion-buttons slot="start" class="new-order-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left new-order-toolbar-title">Отзыв</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="category-title">Тип</div>
+  <ion-item class="container-orderType" lines="none">
+    <ng-container>
+      <div
+        class="container-orderType__item"
+        [ngClass]="{'hover': selectedFeedbackType === orderFeedbackModeEnum.RECOMMENDATION}"
+        (click)="selectFeedbackType(orderFeedbackModeEnum.RECOMMENDATION)"
+      >
+        <img src="../../../assets/like.svg" class="container-orderType__img"/>
+        <span class="container-orderType__label">{{getNameType(orderFeedbackModeEnum.RECOMMENDATION)}}</span>
+      </div>
+      <div
+        class="container-orderType__item"
+        [ngClass]="{'hover': selectedFeedbackType === orderFeedbackModeEnum.COMPLAINT}"
+        (click)="selectFeedbackType(orderFeedbackModeEnum.COMPLAINT)"
+      >
+        <img src="../../../assets/dislike.svg" class="container-orderType__img"/>
+        <span class="container-orderType__label">{{getNameType(orderFeedbackModeEnum.COMPLAINT)}}</span>
+      </div>
+    </ng-container>
+  </ion-item>
+  <div class="category-title">Детали</div>
+  <div class="details-container">
+    <ion-item lines="none">
+      <img class="icon" src="/assets/orders/solar_calendar-outline.svg"/>
+      <input
+        matInput
+        type="text"
+        [ngModel]="order?.orderDate | date: 'dd.MM.yy'"
+        class="text-mat-input"
+        placeholder="Дата заказа"
+      />
+    </ion-item>
+    <ion-item lines="none" *ngIf="order?.address">
+      <ion-textarea
+        matInput
+        type="text"
+        [ngModel]="order?.address"
+        class="text-mat-input padding-15"
+        placeholder="Адрес"
+      />
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-textarea
+        class="text-textarea"
+        rows="2"
+        [(ngModel)]="comment"
+        [counter]="true"
+        maxlength="1000"
+        [autoGrow]="true"
+        placeholder="Комментарии"
+      ></ion-textarea>
+    </ion-item>
+    <ion-item lines="none" class="info" *ngIf="selectedFeedbackType === orderFeedbackModeEnum.COMPLAINT">
+      <div>
+        *при оформлении претензии на пользователя, данные о жалобе будут переданы администрации сайта для
+        разбирательства
+        об понижении рейтинга или блокировке в сервисе.
+      </div>
+    </ion-item>
+  </div>
+</ion-content>
+<ion-footer>
+  <ion-button
+    class="send-button ion-padding"
+    expand="block"
+    fill="outline"
+    (click)="sentFeedback()"
+  >Отправить
+  </ion-button>
+</ion-footer>

@@ -1,0 +1,51 @@
+<ion-header class="header">
+  <ion-toolbar class="header__toolbar">
+    <ion-buttons class="header__arrow-back" slot="start" (click)="back()">
+      <span class="material-symbols-outlined header__arrow-back-icon">
+        arrow_back_ios
+      </span>
+    </ion-buttons>
+    @if (isManager) {
+      <ion-buttons slot="end">
+        <div class="header__call" (click)="openBitrixDeals()">
+      <span class="material-symbols-outlined header__call-icon">
+        contract
+      </span>
+        </div>
+      </ion-buttons>
+    }
+    <ion-title class="header__title">{{this.orderAddress}}</ion-title>
+    @if (loader) {
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    }
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  @for (chat of (orderChats$ | async) ?? []; track $index) {
+    <ion-card class="card" [ngClass]="{'card__new-message': chat?.hasMissedMessage }">
+      <ion-card-content>
+        <div class="card__content" (click)="routerNavigate(chat.id)">
+          <div class="card__information">
+            <div class="card__container-button">
+              <div class="card__name">
+                {{ getName(chat) }}
+              </div>
+              <span class="card__time">{{ getRelativeTime(chat?.updatedAt) }}</span>
+            </div>
+            <div class="card__container-button-text">
+              <div class="card__text">
+                {{ chat?.text }}
+              </div>
+              <div class="card__actions">
+                @if (chat?.hasMissedMessage) {
+                  <span class="card__not-read"></span>
+                }
+                <span class="material-symbols-outlined card__forward-icon">arrow_forward_ios</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  }
+</ion-content>

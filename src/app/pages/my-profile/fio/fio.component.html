@@ -1,0 +1,29 @@
+<ng-container *ngIf="item$ | async as item; else loading">
+  <ion-header>
+    <ion-toolbar class="fio-toolbar">
+      <ion-buttons slot="start" class="fio-toolbar-button">
+        <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+      </ion-buttons>
+      <ion-title class="ion-text-left fio-toolbar-title">Редактировать</ion-title>
+      <button class="fio-save" [disabled]="!item['fio']" (click)="save()" mat-flat-button>Сохранить</button>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-item lines="none" [ngClass]="{'label-error': !item['fio'] && fioTouched}">
+      <ion-input
+        class="text-input"
+        [(ngModel)]="item['fio']"
+        (ngModelChange)="fioTouched = true"
+        labelPlacement="stacked"
+        placeholder="Укажите ваше полное ФИО">
+      </ion-input>
+    </ion-item>
+    <ion-text class="error-text" color="danger" *ngIf="!item['fio'] && fioTouched">
+      Это поле обязательно для заполнения!
+    </ion-text>
+  </ion-content>
+</ng-container>
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>

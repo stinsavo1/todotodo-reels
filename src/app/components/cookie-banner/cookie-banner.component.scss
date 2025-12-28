@@ -1,0 +1,62 @@
+@import "../../../theme/todo-theme";
+
+.cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-family: $font-family-roboto;
+  background-color: white;
+  padding: 1rem 1.5rem;
+  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  border-top: 1px solid #eaeaea;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.cookie-banner-text {
+  font-size: 14px;
+  color: var(--ion-color-dark, #333);
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+
+  @media (max-width: 600px) {
+    text-align: left;
+  }
+}
+
+.cookie-banner-buttons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  @media (max-width: 600px) {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+}
+
+.accept-btn {
+    --background: var(--main);
+    --border-color: unset;
+    font-family: $font-family-roboto;
+    font-weight: 500;
+    --color: var(--white);
+    font-size: 12px;
+    width: 100%;
+}
+
+.policy-link {
+  font-size: 13px;
+  color: var(--ion-color-primary, #387ef5);
+  text-decoration: underline;
+}

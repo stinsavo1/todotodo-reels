@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar class="my-toolbar">
+    <ion-buttons slot="start" class="my-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left my-toolbar-title">Детали товара</ion-title>
+    <ion-buttons slot="end">
+    </ion-buttons>
+    <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+    <div class="img-container">
+      <img class="img-container__img" *ngIf="product?.photo" [src]="product?.photo"/>
+      <img class="img-container__img" *ngIf="!product?.photo" src="../../../../assets/no-image.svg"/>
+    </div>
+  <div class="title">
+    {{ product?.name }}
+  </div>
+  <div class="category-title" *ngIf="product?.description">Цена</div>
+  <ion-card>
+    <ion-card-header>
+      <div class="price" *ngIf="!product?.discount">{{ product?.price }}
+        <span class="rubles">₽</span>
+      </div>
+      <div class="container-price" *ngIf="product?.discount">
+        <div class="price">{{ getPriceWithDiscount(product.price, product.discount) }}<span
+          class="rubles">₽</span></div>
+        <div>
+          <div style="text-decoration: line-through" class="original-price">{{ product.price }}<span
+            class="original-price__ruble">₽</span></div>
+        </div>
+        <div>
+          <div class="original-price">-{{ product.discount }}<span
+            class="original-price__ruble">%</span></div>
+        </div>
+      </div>
+    </ion-card-header>
+  </ion-card>
+  <div class="category-title" *ngIf="product?.description">О товаре</div>
+  <ion-card *ngIf="product?.description">
+    <ion-card-content>
+      <div class="description">
+        {{ product.description }}
+      </div>
+    </ion-card-content>
+  </ion-card>
+    <ng-container *ngIf="!product && !loading">
+      <div class="no-data-message">
+        <p>Детали товара отсутствуют</p>
+      </div>
+    </ng-container>
+</ion-content>
+<!--<ion-footer *ngIf="hideButton">-->
+<!--  <ion-button-->
+<!--    class="button-connect"-->
+<!--    (click)="openChat()"-->
+<!--  >Написать-->
+<!--  </ion-button>-->
+<!--</ion-footer>-->

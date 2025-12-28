@@ -1,0 +1,29 @@
+<ng-container *ngIf="item$ | async as item; else loading">
+  <ion-header>
+    <ion-toolbar class="nameFactory-toolbar">
+      <ion-buttons slot="start" class="nameFactory-toolbar-button">
+        <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+      </ion-buttons>
+      <ion-title class="ion-text-left nameFactory-toolbar-title">Редактировать</ion-title>
+      <button class="nameFactory-save" [disabled]="!item['nameFactory']" (click)="save()" mat-flat-button>Сохранить</button>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-item lines="none" [ngClass]="{'label-error': !item['nameFactory'] && nameFactoryTouched}">
+      <ion-input
+        class="text-input"
+        [(ngModel)]="item['nameFactory']"
+        (ngModelChange)="nameFactoryTouched = true"
+        labelPlacement="stacked"
+        placeholder="Укажите название компании">
+      </ion-input>
+    </ion-item>
+    <ion-text class="error-text" color="danger" *ngIf="!item['nameFactory'] && nameFactoryTouched">
+      Это поле обязательно для заполнения!
+    </ion-text>
+  </ion-content>
+</ng-container>
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>

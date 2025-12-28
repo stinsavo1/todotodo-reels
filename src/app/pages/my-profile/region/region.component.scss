@@ -1,0 +1,77 @@
+@import "../../../../theme/todo-theme";
+
+.text-input {
+  border-bottom: 1px solid rgba(0, 0, 0, .10);
+  font-family: $font-family-roboto;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.label-error {
+  color: #eb445a;
+  padding-bottom: 0.3125rem;
+}
+
+.error-text {
+  font-family: $font-family-roboto;
+  padding-left: 1rem;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.label-error-notification {
+  color: #eb445a;
+}
+
+.region-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+  align-items: center;
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.region-save {
+  position: absolute;
+  top: 6px;
+  right: 15px;
+  width: 100px;
+  height: 33px;
+  border-radius: 12px;
+  background-color: var(--main) !important;
+  color: #FFFFFF !important;
+
+  &:disabled {
+    color: var(--mat-button-filled-disabled-label-text-color) !important;
+    background-color: var(--mat-button-filled-disabled-container-color) !important;
+  }
+
+  &__title {
+    font-size: 0.813rem;
+    font-family: $font-family-roboto;
+    font-weight: 500;
+  }
+}
+
+.region-toolbar-button {
+  padding-left: $padding-start;
+}
+
+.region-toolbar-title {
+  font-size: 21px;
+  padding-inline-start: 3.875rem;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+ion-content {
+  --background: var(--color-background-light);
+}
+
+ion-item {
+  --background: var(--color-background-light);
+}

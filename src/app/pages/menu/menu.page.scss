@@ -1,0 +1,55 @@
+@import "../../../theme/todo-theme";
+
+:host {
+  background: var(--color-background-light) !important;
+}
+
+.subscription-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.subscription-toolbar-title {
+  font-size: 21px;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+ion-content {
+  --background: var(--color-background-light);
+}
+
+.container {
+  --min-height: 3.75rem;
+  font-family: $font-family-roboto;
+  font-size: 1.2rem;
+  --inner-padding-end: 1.25rem;
+  --padding-start: 1.25rem;
+
+  &__label {
+    font-family: $font-family-roboto;
+    font-size: 0.938rem;
+  }
+}
+
+ion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  background: var(--color-background-light);
+
+  & > :first-child {
+    margin-top: 0.625rem;
+  }
+}
+
+.ic {
+  font-size: 1.5rem;
+  opacity: 30%;
+  padding-right: 1.25rem;
+}

@@ -1,0 +1,239 @@
+<ion-header>
+  <ion-toolbar class="new-order-toolbar">
+    <ion-buttons slot="start" class="new-order-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left new-order-toolbar-title">{{title}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="category-title">Категория</div>
+  <ion-item class="container-orderType" lines="none">
+    <ng-container *ngIf="item.mode !== usersMode.AGENCY">
+      <div
+        class="container-orderType__item"
+        [ngClass]="{'hover': selectedOrderType === orderTypeEnum.MOUNTING, 'error-role': hasError && !selectedOrderType}"
+        (click)="selectOrderType(orderTypeEnum.MOUNTING)"
+      >
+        <img src="../../../assets/orders/mounting.svg" class="container-orderType__img"/>
+        <span class="container-orderType__label">{{orderTypeEnum.MOUNTING}}</span>
+      </div>
+      <div
+        class="container-orderType__item"
+        [ngClass]="{'hover': selectedOrderType === orderTypeEnum.MEASURE, 'error-role': hasError && !selectedOrderType}"
+        (click)="selectOrderType(orderTypeEnum.MEASURE)"
+      >
+        <img src="../../../assets/orders/window_ruler.svg" class="container-orderType__img"/>
+        <span class="container-orderType__label">{{orderTypeEnum.MEASURE}}</span>
+      </div>
+      <div
+        class="container-orderType__item"
+        [ngClass]="{'hover': selectedOrderType === orderTypeEnum.REPAIR, 'error-role': hasError && !selectedOrderType}"
+        (click)="selectOrderType(orderTypeEnum.REPAIR)"
+      >
+        <img src="../../../assets/orders/repair.svg" class="container-orderType__img"/>
+        <span class="container-orderType__label">{{orderTypeEnum.REPAIR}}</span>
+      </div>
+      <div
+        class="container-orderType__item"
+        [ngClass]="{'hover': selectedOrderType === orderTypeEnum.WINDOW_CALC, 'error-role': hasError && !selectedOrderType}"
+        (click)="selectOrderType(orderTypeEnum.WINDOW_CALC)"
+      >
+        <img src="../../../assets/orders/window_calc.svg" class="container-orderType__img"/>
+        <span class="container-orderType__label">{{orderTypeEnum.WINDOW_CALC}}</span>
+      </div>
+      <div
+        class="container-orderType__item" style="min-width: 130px;"
+        [ngClass]="{'hover': selectedOrderType === orderTypeEnum.EQUIPMENT, 'error-role': hasError && !selectedOrderType}"
+        (click)="selectOrderType(orderTypeEnum.EQUIPMENT)"
+      >
+        <img src="../../../assets/orders/equipment.svg" class="container-orderType__img"/>
+        <span class="container-orderType__label">{{orderTypeEnum.EQUIPMENT}}</span>
+      </div>
+      <div
+        class="container-orderType__item"
+        [ngClass]="{'hover': selectedOrderType === orderTypeEnum.DELIVERY, 'error-role': hasError && !selectedOrderType}"
+        (click)="selectOrderType(orderTypeEnum.DELIVERY)"
+      >
+        <img src="../../../assets/orders/delivery.svg" class="container-orderType__img"/>
+        <span class="container-orderType__label">{{orderTypeEnum.DELIVERY}}</span>
+      </div>
+      <div
+        class="container-orderType__item"
+        [ngClass]="{'hover': selectedOrderType === orderTypeEnum.PAINTING, 'error-role': hasError && !selectedOrderType}"
+        (click)="selectOrderType(orderTypeEnum.PAINTING)"
+      >
+        <img src="../../../assets/orders/painting.svg" class="container-orderType__img"/>
+        <span class="container-orderType__label">{{orderTypeEnum.PAINTING}}</span>
+      </div>
+      <div
+        class="container-orderType__item"
+        [ngClass]="{'hover': selectedOrderType === orderTypeEnum.CLIMBING, 'error-role': hasError && !selectedOrderType}"
+        (click)="selectOrderType(orderTypeEnum.CLIMBING)"
+      >
+        <img src="../../../assets/orders/climber.svg" class="container-orderType__img"/>
+        <span class="container-orderType__label">{{orderTypeEnum.CLIMBING}}</span>
+      </div>
+      <div
+        class="container-orderType__item"
+        [ngClass]="{'hover': selectedOrderType === orderTypeEnum.MOVERS, 'error-role': hasError && !selectedOrderType}"
+        (click)="selectOrderType(orderTypeEnum.MOVERS)"
+      >
+        <img src="../../../assets/orders/movers.svg" class="container-orderType__img"/>
+        <span class="container-orderType__label">{{orderTypeEnum.MOVERS}}</span>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="item.mode === usersMode.AGENCY">
+      <div
+        class="container-orderType__item"
+        [ngClass]="{'hover': selectedOrderType === orderTypeEnum.AGENCY_LEAD, 'error-role': hasError && !selectedOrderType}"
+        (click)="selectOrderType(orderTypeEnum.AGENCY_LEAD)"
+      >
+        <img src="../../../assets/orders/rupor.png" class="container-orderType__img" style="padding-bottom: unset"/>
+        <span class="container-orderType__label">{{orderTypeEnum.AGENCY_LEAD}}</span>
+      </div>
+    </ng-container>
+  </ion-item>
+
+  <div class="category-title">Детали</div>
+  <div class="details-container">
+    <ion-item lines="none" (click)="picker.open()">
+      <span class="material-icons-outlined icon cursor">calendar_month</span>
+      <input
+        [ngClass]="{'error': hasError && !item.orderDate}"
+        matInput
+        class="text-mat-input"
+        [matDatepicker]="picker"
+        [(ngModel)]="item.orderDate"
+        [matDatepickerFilter]="dateFilter"
+        placeholder="Желаемая дата"
+        (focus)="onFocus($event)"
+      />
+      <mat-datepicker touchUi #picker></mat-datepicker>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-textarea
+        [ngClass]="{'error': hasError && !item.address}"
+        class="text-textarea"
+        [autoGrow]="true"
+        rows="2"
+        [(ngModel)]="item.address"
+        placeholder="Адрес"
+        (ionInput)="onChangeAddress($event)"
+      ></ion-textarea>
+    </ion-item>
+    <ng-container *ngIf="searchAddressList$ | async as searchAddressList">
+      <ion-item lines="none"
+                *ngFor="let address of searchAddressList"
+                (click)="selectAddress(item, address.formatted_address, address.uri)">
+        <ion-label class="address"  [ngClass]="{'error': hasError && !isAddressSelected}"
+        >
+          <ion-text color="medium">
+            <p>{{ address.subtitle }}</p>
+          </ion-text>
+          <h2>
+            {{ address.title }}
+          </h2>
+        </ion-label>
+      </ion-item>
+    </ng-container>
+
+    <ion-item lines="none" *ngIf="item.mode === usersMode.AGENCY">
+      <span class="material-icons-outlined icon">local_phone</span>
+      <ion-input
+        [ngClass]="{'error': hasError && !item.phone}"
+        class="text-input-icon"
+        [counter]="true"
+        appPhoneMask
+        [(ngModel)]="item.phone"
+        placeholder="Телефон"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-textarea
+        [ngClass]="{'error': hasError && !item.description && item.mode === usersMode.AGENCY}"
+        class="text-textarea"
+        rows="2"
+        [counter]="true"
+        maxlength="1000"
+        [autoGrow]="true"
+        [(ngModel)]="item.description"
+        placeholder="Комментарии"
+      ></ion-textarea>
+    </ion-item>
+
+    <ion-item lines="none">
+      <span class="material-icons-outlined icon cursor" (click)="openUploadPhoto($event)">attach_file</span>
+      <ion-input
+        (click)="openUploadPhoto($event)"
+        class="text-input-icon"
+        [placeholder]="item.mode === usersMode.AGENCY ? 'Добавить аудиозапись  разговора с клиентом' : 'Добавить фото или файлы'"
+        type="number"
+        [readonly]="true"
+        (focus)="onFocus($event)"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item lines="none">
+      <div class="form-upload">
+        <form-upload2 [count]="10" *ngIf="selectedOrderType !== orderTypeEnum.AGENCY_LEAD" #uploadComponent (photoFilesChange)="photoFilesChange($event)" (fileListChange)="fileListChange($event)"></form-upload2>
+        <form-upload2 [count]="10" *ngIf="selectedOrderType === orderTypeEnum.AGENCY_LEAD" accept=".mp3,audio/mp3" #uploadComponent (fileListChange)="fileListChange($event)"></form-upload2>
+
+      </div>
+    </ion-item>
+  </div>
+
+  <div class="category-title">Оплата</div>
+  <div class="details-price">
+    <ion-item lines="none">
+      <span class="material-icons-outlined icon">currency_ruble</span>
+      <ion-input
+        [ngClass]="{'error': hasError && (item.price === undefined || item.price === null)}"
+        class="text-input-icon"
+        placeholder="Желаемая стоимость"
+        type="number"
+        inputmode="numeric"
+        [(ngModel)]="item.price"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item lines="none" *ngIf="item.mode !== usersMode.AGENCY">
+      <span class="material-icons-outlined icon cursor">payments</span>
+      <ion-select
+        [ngClass]="{'error': hasError && (item.payType === undefined || item.payType === '')}"
+        class="text-input-icon"
+        label-placement="stacked"
+        placeholder="Форма оплаты"
+        okText="Выбрать"
+        cancelText="Отмена"
+        [(ngModel)]="item.payType"
+        [interfaceOptions]="customInterfaceOptions"
+      >
+        <ion-select-option *ngFor="let item of orderService.payTypes">{{
+          item
+          }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-button
+      class="send-button ion-padding"
+      expand="block"
+      fill="outline"
+      [disabled]="isLoading"
+      (click)="onSubmit()"
+    >Отправить
+    </ion-button
+    >
+  </div>
+
+</ion-content>
+<ion-toast
+  [isOpen]="showToast"
+  [message]="errorMessage"
+  duration="2000"
+  color="danger"
+  class="profile-toast"
+  position="top"
+  (didDismiss)="closeToast()"
+></ion-toast>

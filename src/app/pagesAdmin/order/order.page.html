@@ -1,0 +1,127 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button> </ion-back-button>
+    </ion-buttons>
+    <ion-title>Детали заказа</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-template #loading>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </ng-template>
+  <ng-template #loadingUsers>
+    <ion-select label="Монтажник" label-placement="stacked" [disabled]="true">
+      <ion-select-option>Загрузка...</ion-select-option>
+    </ion-select>
+  </ng-template>
+
+  <ion-list *ngIf="item$ | async as item; else loading">
+    <ion-item
+      ><ion-input
+        label="Дата"
+        labelPlacement="stacked"
+        placeholder="Дата"
+        type="date"
+        [(ngModel)]="item['createAt']"
+      ></ion-input
+    ></ion-item>
+
+    <ion-item *ngIf="users$ | async as users; else loadingUsers">
+      <ion-select
+        label="Дилер"
+        label-placement="stacked"
+        placeholder="Дилер"
+        [(ngModel)]="item['author']"
+        [disabled]="false"
+      >
+        <ion-select-option *ngFor="let user of users" [value]="user['id']">{{
+          user['fio']
+        }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item
+      ><ion-input
+        label="Адрес"
+        labelPlacement="stacked"
+        placeholder="Адрес"
+        [(ngModel)]="item['address']"
+      ></ion-input
+    ></ion-item>
+
+    <ion-item *ngIf="users$ | async as users; else loadingUsers">
+      <ion-select
+        label="Монтажник"
+        label-placement="stacked"
+        placeholder="Выберите"
+        [(ngModel)]="item['executor']"
+        [disabled]="false"
+      >
+        <ion-select-option *ngFor="let user of users" [value]="user['id']">{{
+          user['fio']
+        }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item
+      ><ion-input
+        label="Цена за работу"
+        labelPlacement="stacked"
+        placeholder="Цена за работу"
+        [(ngModel)]="item['price']"
+      ></ion-input
+    ></ion-item>
+    <ion-item>
+      <ion-select
+        label="Форма оплаты"
+        label-placement="stacked"
+        placeholder="Выберите"
+        [(ngModel)]="item['payType']"
+      >
+        <ion-select-option *ngFor="let item of orderService.payTypes">{{
+          item
+        }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <form-upload2 [count]="10" [(photoFiles)]="item['photo']"></form-upload2>
+    </ion-item>
+
+    <ion-item>
+      <ion-textarea
+        label="Комментарий"
+        labelPlacement="stacked"
+        rows="2"
+        placeholder="Комментарий"
+        [counter]="true"
+        maxlength="1000"
+        [autoGrow]="true"
+        [(ngModel)]="item['description']"
+      ></ion-textarea>
+    </ion-item>
+
+    <ion-item *ngIf="item['executor']" [routerLink]="['chat', chatId, id, 'admin']">Диалог</ion-item>
+
+    <ion-button
+      class="ion-padding-horizontal ion-margin-top"
+      expand="block"
+      fill="outline"
+      color="danger"
+      (click)="orderService.delete(id)"
+      >Удалить</ion-button
+    >
+
+    <ion-button
+      class="ion-padding-horizontal ion-margin-top"
+      expand="block"
+      fill="outline"
+      color="success"
+      routerLink="/admin/tabs/orders"
+      router-direction="back"
+      (click)="orderService.save(item, id)"
+      >Сохранить</ion-button
+    >
+  </ion-list>
+</ion-content>

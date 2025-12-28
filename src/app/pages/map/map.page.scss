@@ -1,0 +1,244 @@
+@import "../../../theme/todo-theme";
+
+:host {
+  background: var(--color-background-light) !important;
+}
+
+ion-content {
+  font-family: $font-family-roboto;
+  --background: var(--color-background-light) !important;
+}
+
+.map {
+  height: 100%;
+  object-fit: cover;
+}
+
+.order1 {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  height: 40px;
+  width: 40px;
+}
+
+.order2 {
+  position: absolute;
+  top: 40%;
+  left: 40%;
+  height: 40px;
+  width: 40px;
+}
+
+.order3 {
+  position: absolute;
+  top: 60%;
+  left: 25%;
+  height: 40px;
+  width: 40px;
+}
+
+.blockOrdersTop10 {
+  font-family: $font-family-roboto;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: auto;
+  width: 100%;
+  background-color: clean;
+  overflow: auto;
+  overflow-y: hidden;
+  margin: 0 auto;
+  margin-bottom: 75px;
+  white-space: nowrap;
+}
+
+.services {
+  margin-bottom: 20px;
+}
+
+.blockOrdersTop10Item {
+  display: inline-block;
+  width: fit-content;
+  background-color: beige;
+  margin: 0px 8px 0px 8px;
+  padding: 8px;
+  opacity: 75%;
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px 0px rgba(0, 0, 0, 0.27)
+}
+
+.blockOrdersTop10ItemWritten {
+  display: inline-block;
+  width: fit-content;
+  background-color: darkseagreen;
+  margin: 0px 8px 0px 8px;
+  padding: 8px;
+  opacity: 100%;
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px 0px rgba(0, 0, 0, 0.27)
+}
+
+.blockOrdersTop10ItemSeen {
+  display: inline-block;
+  width: fit-content;
+  background-color: white;
+  margin: 0px 8px 0px 8px;
+  padding: 8px;
+  opacity: 100%;
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px 0px rgba(0, 0, 0, 0.27)
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Центрирует кнопку по горизонтали */
+  align-items: flex-end; /* Прижимает кнопку к низу */
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+  z-index: 100;
+}
+
+.create-order-btn {
+  width: 100%;
+  --background: var(--main);
+  font-family: $font-family-roboto;
+  font-weight: 500;
+  --color: var(--white);
+  padding: 0 10px;
+  height: 58px;
+}
+
+.location {
+  position: absolute;
+  bottom: 235px;
+  right: 10px;
+}
+
+.support {
+  position: absolute;
+  bottom: 150px;
+  right: 10px;
+}
+
+.zoomIn {
+  position: absolute;
+  bottom: 300px;
+  right: 10px;
+}
+
+.options {
+  position: absolute;
+  right: 10px;
+  top: 130px;
+}
+
+.zoomOut {
+  position: absolute;
+  bottom: 365px;
+  right: 10px;
+}
+
+.location ion-fab-button,
+.support ion-fab-button,
+.zoomIn ion-fab-button,
+.options ion-fab-button,
+.zoomOut ion-fab-button {
+  height: 50px;
+  width: 50px;
+  --ion-color-base: var(--main) !important;
+  opacity: 80%;
+  --ion-color-shade: var(--hover) !important;
+}
+
+.zoomIn .fab-button-disabled,
+.zoomOut .fab-button-disabled {
+  opacity: 80%;
+  cursor: not-allowed;
+  --ion-color-base: darkgray !important;
+  --ion-color-shade: darkgray !important;
+}
+
+.calendar {
+  display: flex;
+  align-items: center;
+
+  &__calendar {
+    height: 20px;
+  }
+}
+
+.icon {
+  height: 16px;
+  width: 16px;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+}
+
+.icon-info {
+  font-size: 25px;
+}
+
+.ad {
+  object-fit: cover;
+  max-width: 350px;
+  position: absolute;
+  top: 0;
+  z-index: 9999;
+}
+
+@media (max-width: 500px) {
+  .ad {
+    max-width: 100%;
+  }
+}
+
+.modal-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.modal-toolbar-button {
+  padding-left: $padding-start;
+}
+
+.modal-toolbar-title {
+  font-size: 21px;
+  padding-inline-start: 3.875rem;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+.modal-item {
+  --background: transparent;
+}
+
+.rustore-banner {
+  position: absolute;
+  top: 0;
+  z-index: 9999;
+  background: #22307e;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  gap: 10px;
+
+  &__text {
+    font-family: $font-family-roboto;
+    font-weight: bold;
+    color: white;
+  }
+}

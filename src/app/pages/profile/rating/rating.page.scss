@@ -1,0 +1,111 @@
+@import "../../../../theme/todo-theme";
+
+:host {
+  background: var(--color-background-light) !important;
+}
+
+ion-content {
+  --background: var(--color-background-light) !important;
+}
+
+ion-item {
+  --background: var(--color-background-light) !important;
+}
+
+ion-list {
+  background: transparent;
+}
+
+.container-feedbacks {
+  padding: 10px;
+  height: calc(100vh - 195px);
+  overflow: auto;
+  font-family: $font-family-roboto;
+}
+
+.profile-detail-toolbar-button {
+  padding-left: $padding-start;
+}
+
+.profile-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.profile-toolbar-title {
+  font-size: 21px;
+  padding-inline-start: 3.875rem;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+.feedback-card {
+  font-family: $font-family-roboto;
+  margin: 10px;
+}
+
+.feedback-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.feedback-author-info {
+  flex: 1;
+}
+
+.feedback-like-dislike img {
+  width: 24px;
+  height: 24px;
+}
+
+.feedback-comment {
+  font-style: italic;
+  margin-top: 8px;
+}
+
+.feedback-date {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 10px;
+}
+
+.rating-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  background: white;
+  margin: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.rating-stars {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.star-icon {
+  font-size: 32px;
+  margin: 0 2px;
+}
+
+.rating-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--ion-color-dark);
+}
+
+.height100 {
+  height: 100%;
+}
+
+.height83 {
+  height: 83%;
+}

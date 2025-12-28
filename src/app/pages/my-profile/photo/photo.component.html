@@ -1,0 +1,43 @@
+<ng-container *ngIf="item$ | async as item; else loading">
+  <ion-header>
+    <ion-toolbar class="photo-toolbar">
+      <ion-buttons slot="start" class="photo-toolbar-button">
+        <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+      </ion-buttons>
+      <ion-title class="ion-text-left photo-toolbar-title">Фото профиля</ion-title>
+      <button class="photo-save" [disabled]="!blob" (click)="save()" mat-flat-button>Сохранить</button>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-item lines="none">
+      <div class="container-photo">
+        <img *ngIf="!item['photo']?.length || !item['photo']" class="container-photo__empty"
+             src="../../../../assets/profile/empty-photo.jpg">
+        <img #profileImage *ngIf="item['photo']?.length || item['photo']" class="container-photo__img"
+             [src]="item['photo']">
+        <div class="container-photo__button" (click)="pickFromGallery()">
+          <img src="../../../../assets/profile/image.svg">
+          <span class="container-photo__text">Выбрать из галереи</span>
+        </div>
+        <div class="container-photo__button" (click)="takePicture()">
+          <img src="../../../../assets/profile/photo.svg">
+          <span class="container-photo__text">Сделать фото</span>
+        </div>
+      </div>
+    </ion-item>
+
+  </ion-content>
+  <ng-template #dialogTemplate>
+    <mat-dialog-content align="center">
+      <div class="container-modal">
+        <img class="container-modal__img" src="../../../../assets/profile/photo-modal.jpg"/>
+        <span class="container-modal__text">Фото профиля загружено!</span>
+        <button class="container-modal__button" mat-flat-button (click)="closeDialogAndRedirect()">ОК</button>
+      </div>
+    </mat-dialog-content>
+  </ng-template>
+</ng-container>
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>

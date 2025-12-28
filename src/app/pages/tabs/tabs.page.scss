@@ -1,0 +1,14 @@
+.tab-icon {
+  height: 30px;
+  width: 30px;
+}
+
+.active-tab {
+  filter: brightness(0) saturate(100%) invert(11%) sepia(82%) saturate(3346%) hue-rotate(228deg) brightness(82%) contrast(118%);
+}
+
+ion-tab-bar {
+  --background: white;
+  box-shadow: -30px 0px 100px rgba(30, 28, 28, 0.2);
+  border-top: unset;
+}

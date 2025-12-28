@@ -1,0 +1,86 @@
+@import "../../../../theme/todo-theme";
+
+:host {
+  background: var(--color-background-light) !important;
+}
+
+ion-content {
+  --background: var(--color-background-light) !important;
+}
+
+ion-item {
+  --background: var(--color-background-light) !important;
+}
+
+ion-list {
+  background: transparent;
+}
+
+.profile-detail-toolbar-button {
+  padding-left: $padding-start;
+}
+
+.container-product {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+
+  img {
+    width: 152px;
+    height: 152px;
+    object-fit: contain;
+  }
+}
+
+ion-card {
+  font-family: $font-family-roboto;
+  box-sizing: border-box;
+  margin-inline-start: 10px;
+  margin-inline-end: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.toolbar-no-photo {
+  width: 50px;
+  height: 50px;
+}
+
+.price {
+  letter-spacing: -.0025em;
+  font-size: 22px;
+  font-weight: 700;
+  color: #006933;
+}
+
+.rubles {
+  letter-spacing: -.0025em;
+  font-size: 16px;
+  font-weight: 700;
+  color: #006933;
+}
+
+.red {
+  color: #b92828;
+}
+
+.text {
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.button-connect {
+  --background: var(--main);
+  --border-color: unset;
+  font-family: $font-family-roboto;
+  font-weight: 500;
+  --color: var(--white);
+  width: 100%;
+}
+
+.footer {
+  padding: 16px;
+}

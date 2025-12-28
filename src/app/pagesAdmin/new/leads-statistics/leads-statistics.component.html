@@ -1,0 +1,87 @@
+<section class="example-container mat-elevation-z8" tabindex="0">
+  <table mat-table [dataSource]="items">
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>Дата заказа</th>
+      <td mat-cell *matCellDef="let element"> {{element.date | date:'dd.MM.yyyy':'':'ru'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="customerFeedbackDate">
+      <th mat-header-cell *matHeaderCellDef>Дата покупки</th>
+      <td mat-cell *matCellDef="let element"> {{ element?.buy ? (element.customerFeedbackDate | date:'dd.MM.yyyy':'':'ru') : '-'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="source">
+      <th mat-header-cell *matHeaderCellDef>Автор заказов</th>
+      <td mat-cell *matCellDef="let element"> {{ element?.source ?? '-' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="contact">
+      <th mat-header-cell *matHeaderCellDef>Контакт</th>
+      <td mat-cell *matCellDef="let element">{{element.phoneLead ?? '-'}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Имя</th>
+      <td mat-cell *matCellDef="let element">{{element?.name ?? '-'}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef>Цена</th>
+      <td mat-cell *matCellDef="let element">{{element.price}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="managerRead">
+      <th mat-header-cell *matHeaderCellDef>Менеджеры - прочитали</th>
+      <td mat-cell *matCellDef="let element">{{element?.managerReadInfo}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="managerDone">
+      <th mat-header-cell *matHeaderCellDef>Менеджер - отдал</th>
+      <td mat-cell *matCellDef="let element">{{element?.doneGaveLeadInfo}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="buy">
+      <th mat-header-cell *matHeaderCellDef>Покупатель</th>
+      <td mat-cell *matCellDef="let element">{{ element?.buyInfo }}</td>
+    </ng-container>
+
+<!--    <ng-container matColumnDef="arbitration">-->
+<!--      <th mat-header-cell *matHeaderCellDef>Арбитраж</th>-->
+<!--      <td mat-cell *matCellDef="let element">TODO</td>-->
+<!--    </ng-container>-->
+
+<!--    <ng-container matColumnDef="feedback">-->
+<!--      <th mat-header-cell *matHeaderCellDef>Отзыв</th>-->
+<!--      <td mat-cell *matCellDef="let element">TODO</td>-->
+<!--    </ng-container>-->
+
+<!--    <ng-container matColumnDef="feedbackFile">-->
+<!--      <th mat-header-cell *matHeaderCellDef>Файл арбитража</th>-->
+<!--      <td mat-cell *matCellDef="let element">TODO</td>-->
+<!--    </ng-container>-->
+
+    <ng-container matColumnDef="commentAdmin">
+      <th mat-header-cell *matHeaderCellDef>Комментарий</th>
+      <td mat-cell *matCellDef="let item">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <b style="max-width: 100px;">{{ item['commentAdmin'] }}</b>
+          <div style="display: flex; flex-direction: row; gap: 5px">
+            <button *ngIf="item['commentAdmin']" mat-mini-fab color="primary" (click)="openModal(item, 'Редактировать'); $event.stopPropagation();">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button *ngIf="item['commentAdmin']" (click)="deleteComment(item);" mat-mini-fab color="warn">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+        <button *ngIf="!item['commentAdmin']" mat-mini-fab color="success" (click)="openModal(item, 'Добавить'); $event.stopPropagation();">
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</section>

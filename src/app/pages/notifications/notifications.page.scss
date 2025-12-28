@@ -1,0 +1,81 @@
+@import "../../../theme/todo-theme";
+
+:host {
+  background: var(--color-background-light) !important;
+}
+
+ion-content {
+  --background: var(--color-background-light) !important;
+}
+
+ion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--color-background-light);
+  margin-top: 0.625rem;
+}
+
+.notification-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.notification-toolbar-title {
+  font-size: 21px;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+.container-info {
+  font-family: $font-family-roboto;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  padding: 10px 0 10px 45px;
+
+  &__category {
+    font-size: 16px;
+    font-weight: 700;
+    align-items: center;
+    word-break: break-all;
+    width: 60%;
+  }
+
+  &__description {
+    font-weight: 500;
+    font-size: 14px;
+    color: black;
+  }
+
+  &__title {
+    font-size: 14px;
+    color: black;
+    opacity: 50%;
+  }
+}
+
+.image {
+  position: absolute;
+  top: 10px;
+}
+
+.time-container {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  &__text {
+    color: #0F0F0F;
+    opacity: 30%;
+    font-size: 15px;
+  }
+}

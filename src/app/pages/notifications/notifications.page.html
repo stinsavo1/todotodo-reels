@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar class="notification-toolbar">
+    <ion-title class="notification-toolbar-title">Уведомления</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <ng-template #loading>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </ng-template>
+  <ng-container *ngIf="items$ | async as items; else loading">
+    <ng-container *ngIf="items?.length > 0; else noNotifications">
+      <ion-list>
+        <ion-item *ngFor="let item of items" lines="none"
+                  (click)="notificationService.changeRead(item['uid'], item['id'])"
+                  [routerLink]="item['orderId'] ? ('/tabs/notifications/order-detail/' + item['orderId']) : item['link']">
+          <img class="image" *ngIf="item['category'] === 'Отклик'" src="../../../assets/notification/assign.svg"/>
+          <img class="image" *ngIf="item['category'] === 'Вас выбрали'" src="../../../assets/notification/accept.svg"/>
+          <img class="image" *ngIf="item['category'] === 'Заказ отменён'"
+               src="../../../assets/notification/cancel.svg"/>
+          <img class="image" *ngIf="item['category'] === 'Заказ подтверждён'"
+               src="../../../assets/notification/done.svg"/>
+          <img class="image" *ngIf="item['category'] === 'Лид передан'"
+               src="../../../assets/notification/done.svg"/>
+          <img class="image" *ngIf="item['category'] === 'Заказ передан'"
+               src="../../../assets/notification/cancel.svg"/>
+          <div class="time-container">
+            <img src="../../../assets/notification/time.svg"/>
+            <span class="time-container__text">{{ item['orderDate'] | date: 'dd.MM.yy HH:mm' }}</span>
+          </div>
+          <div class="container-info">
+            <ion-text class="container-info__category">{{ item['category'] }}</ion-text>
+            <ion-text class="container-info__description"
+                      *ngIf="item['description'] || item['description'] !== ''">{{ item['description'] }}
+            </ion-text>
+            <ion-text class="container-info__title">{{ item['title'] }}</ion-text>
+          </div>
+          <ion-icon
+            *ngIf="!item['isRead']"
+            name="mail-unread"
+            size="small"
+            slot="end"
+            color="danger"
+          ></ion-icon>
+        </ion-item>
+      </ion-list>
+    </ng-container>
+    <ng-template #noNotifications>
+      <div class="no-data-message">
+        <p>Уведомления отсутствуют</p>
+      </div>
+    </ng-template>
+  </ng-container>
+</ion-content>

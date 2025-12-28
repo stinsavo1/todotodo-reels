@@ -1,0 +1,115 @@
+<ion-toolbar class="registration-page__toolbar">
+  <ion-buttons slot="start" class="registration-page__back-btn">
+    <ion-icon class="registration-page__icon icon-left-arrow" (click)="back()"></ion-icon>
+  </ion-buttons>
+</ion-toolbar>
+<ion-content class="registration-page__content" [formGroup]="form">
+  <div class="registration-page__header">
+    <img class="logo" src="../../../assets/logo_without_title.svg"/>
+  </div>
+  <div class="registration-page__form">
+    <div class="registration-page__title">Регистрация</div>
+    <div class="registration-page__input-container">
+      <div class="registration-page__input-container-label">Фамилия Имя Отчество</div>
+      <input class="registration-page__input"
+             placeholder="Фамилия Имя Отчество"
+             formControlName="fullName"
+             type="text"
+      />
+    </div>
+    <div class="registration-page__input-container">
+      <div class="registration-page__input-container-label">Телефон</div>
+      <input class="registration-page__input"
+             type="tel"
+             placeholder="Телефон"
+             appPhoneMask
+             formControlName="phone"
+      />
+    </div>
+    <div class="registration-page__input-container">
+      <div class="registration-page__input-container-label">Регион</div>
+      <ion-item lines="none" class="select">
+        <ion-select
+          formControlName="region"
+          placeholder="Выберите регион"
+          interface="alert"
+          cancelText="Отмена"
+          okText="Подтвердить"
+          [interfaceOptions]="{header: 'Выберите ваш регион'}">
+          <ion-select-option [value]="0">Москва</ion-select-option>
+          <ion-select-option [value]="1">Санкт-Петербург</ion-select-option>
+          <ion-select-option [value]="2">Краснодарский край</ion-select-option>
+          <ion-select-option [value]="3">Ростовская область</ion-select-option>
+          <ion-select-option [value]="4">Черноземье</ion-select-option>
+          <ion-select-option [value]="6">Нижегородская область</ion-select-option>
+          <ion-select-option [value]="7">Саратовская область</ion-select-option>
+          <ion-select-option [value]="8">Самарская область</ion-select-option>
+          <ion-select-option [value]="9">Татарстан</ion-select-option>
+          <ion-select-option [value]="10">Ставропольский край</ion-select-option>
+          <ion-select-option [value]="11">Урал</ion-select-option>
+          <ion-select-option [value]="12">Волгоградская область</ion-select-option>
+          <ion-select-option [value]="13">Владимирская область</ion-select-option>
+          <ion-select-option [value]="14">Смоленска область</ion-select-option>
+          <ion-select-option [value]="5">Другое</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
+    <div class="registration-page__input-container">
+      <div class="registration-page__input-container-label">Email</div>
+      <input class="registration-page__input"
+             autocomplete="email"
+             placeholder="E-mail"
+             required
+             formControlName="email"
+             inputmode="email"
+      />
+    </div>
+    <button (click)="modal.present()" class="promo-button" expand="block">
+      <div class="promo-button__content">
+        <ion-icon name="pricetag-outline" slot="start"></ion-icon>
+        <span class="promo-button__text">Промокод</span>
+      </div>
+      <div class="promo-button__right" (click)="removePromocode(); $event.stopPropagation();" slot="end">
+        <span class="promo-button__code">{{currentPromocode}}</span>
+        <ion-icon *ngIf="!currentPromocode" name="chevron-forward"></ion-icon>
+        <ion-icon *ngIf="currentPromocode" name="close-circle"></ion-icon>
+      </div>
+    </button>
+
+    <ion-modal #modal [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+      <ng-template>
+        <div class="promo">
+        <div class="promo__title">Введите промокод</div>
+          <input placeholder="Промокод"  [(ngModel)]="promoCode" [ngModelOptions]="{ standalone: true }"
+                 [class.promo__input-error]="errorPromocode"
+                 (ngModelChange)="onPromoInput()"
+          />
+          <div class="promo__error-title" *ngIf="errorTitle">{{errorTitle}}</div>
+          <ion-button
+            [class.promo__disabled]="!promoCode || promoCode.trim() === ''"
+            class="ion-padding-horizontal button promo__button"
+            expand="block"
+            (click)="applyPromocode()"
+          >
+            <span *ngIf="!loader">Применить</span>
+            <ion-spinner *ngIf="loader"></ion-spinner>
+          </ion-button>
+        </div>
+      </ng-template>
+    </ion-modal>
+    <ion-button
+      class="ion-padding-horizontal ion-margin-top button"
+      expand="block"
+      (click)="register()"
+    >Зарегистрироваться
+    </ion-button>
+    <ion-button
+      class="ion-padding-horizontal ion-margin-top button"
+      expand="block"
+      (click)="openSupport()"
+    >Нужна помощь
+    </ion-button>
+    <div class="registration-text">Нажимая кнопку, даю согласие на <span (click)="agreementPersonalDataPolicy()">обработку персональных данных</span> в соответствии с <span (click)="agreementPersonalPolicy()">политикой обработки персональных данных</span></div>
+  </div>
+</ion-content>

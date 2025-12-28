@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar class="agreement-toolbar">
+    <ion-buttons slot="start" class="agreement-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left agreement-toolbar-title">Подписка</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>
+
+<ion-content>
+  <ion-item text-wrap *ngIf="item$ | async as item; else loading">
+    <ion-note>
+      <pre [outerHTML]="item.value"></pre>
+    </ion-note>
+  </ion-item>
+</ion-content>

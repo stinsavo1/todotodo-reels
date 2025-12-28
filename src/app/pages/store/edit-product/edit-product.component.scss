@@ -1,0 +1,122 @@
+@import "../../../../theme/todo-theme";
+:host {
+  background: var(--color-background-light) !important;
+}
+
+ion-content {
+  --background: var(--color-background-light) !important;
+}
+
+ion-item {
+  --background: var(--color-background-light) !important;
+}
+
+.category-title {
+  font-family: $font-family-roboto;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 20px 0 15px 20px;
+  background: var(--color-background-light);
+}
+
+.text-input-icon {
+  font-family: $font-family-roboto;
+  font-size: 14px;
+  --padding-start: 50px !important;
+  --padding-end: 15px !important;
+  background: white;
+  border-radius: 6px;
+  height: 53px;
+}
+
+.text-textarea {
+  font-family: $font-family-roboto;
+  font-size: 14px;
+  --padding-start: 15px !important;
+  --padding-end: 15px !important;
+  background: white;
+  border-radius: 6px;
+  min-height: 53px;
+}
+
+.details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--color-background-light);
+}
+
+.details-price {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--color-background-light);
+  padding-bottom: 15px;
+}
+
+.send-button {
+  --background: var(--main);
+  --border-color: unset;
+  font-family: $font-family-roboto;
+  font-weight: 500;
+  --color: var(--white);
+  width: 100%;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  pointer-events: auto;
+  left: 15px;
+  color: #979797;
+}
+
+.error {
+  border: 1px solid var(--error);
+  box-sizing: border-box;
+}
+
+.container-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  &__empty {
+    width: 8.625rem;
+  }
+
+  &__img {
+    width: 138px;
+    height: 138px;
+    object-fit: cover;
+    border-radius: 7px;
+  }
+
+  &__text {
+    font-family: $font-family-roboto;
+    font-weight: 500;
+    padding-left: 0.938rem;
+  }
+
+  &__button {
+    padding: 0 20px;
+    height: 2.813rem;
+    border-radius: 0.75rem;
+    width: 100%;
+    background: #E2E8FF;
+    display: flex;
+    align-items: center;
+    margin-top: 0.938rem;
+  }
+}
+
+.info {
+  font-family: $font-family-roboto;
+  font-weight: bold;
+  padding-left: 18px;
+}

@@ -1,0 +1,16 @@
+$font-family-roboto: "Roboto Flex";
+$padding-start: 16px;
+
+:host {
+  --text-color: #172936;
+  --white: #fff;
+  --main: #22307e;
+  --light-gray-blue: #A4A4AA;
+  --color-background-light: #F3F5FD;
+  --hover: #112279FF;
+  --text: #282828;
+  --caret-color: #6759FF;
+  --error: #eb445a;
+
+  --spacing: .25rem;
+}

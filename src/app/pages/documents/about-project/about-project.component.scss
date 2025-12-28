@@ -1,0 +1,49 @@
+@import "../../../../theme/todo-theme";
+
+:host {
+  background: var(--color-background-light) !important;
+}
+
+ion-content {
+  --background: var(--color-background-light) !important;
+}
+
+.about-project-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.about-project-toolbar-button {
+  padding-left: $padding-start;
+}
+
+.about-project-toolbar-title {
+  font-size: 21px;
+  padding-inline-start: 3.875rem;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+ion-content.about-project-content {
+  --background: var(--color-background-light) !important;
+
+  .about-project-container {
+    padding: 1.5rem;
+    max-width: 600px;
+    margin: auto;
+    font-family: $font-family-roboto;
+  }
+
+  .about-project-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-color-dark);
+    margin-bottom: 1.25rem;
+    text-align: left;
+  }
+}

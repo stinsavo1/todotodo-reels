@@ -1,0 +1,75 @@
+@import "../../../theme/todo-theme";
+
+:host {
+  background: var(--color-background-light) !important;
+}
+
+$font-weight-bold: 600;
+$padding-start: 16px;
+
+ion-content {
+  --background: var(--color-background-light) !important;
+}
+
+ion-item {
+  --background: var(--color-background-light)
+}
+
+.subscription-toolbar {
+  height: 65px;
+  display: flex;
+  --background: var(--white);
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.subscription-toolbar-button {
+  padding-left: $padding-start;
+}
+
+.subscription-toolbar-title {
+  font-size: 21px;
+  padding-inline-start: 62px;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+.page-contact__title {
+  font-size: 22px;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+  text-align: center;
+}
+
+.page-contact__info {
+  font-size: 16px;
+  font-family: $font-family-roboto;
+  color: #282828;
+  opacity: 50%;
+  width: 253px;
+}
+
+.page-contact__grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  flex-direction: column;
+}
+
+.page-contact__col--center {
+  text-align: center;
+}
+
+.page-contact__col--with-button {
+  padding-top: 50px;
+}
+
+.page-contact__button {
+  --background: var(--main);
+  --background-activated: var(--ion-color-primary-shade, #1f2b6f);
+  --background-focused: var(--ion-color-primary-shade, #1f2b6f);
+  --background-hover: var(--ion-color-primary-tint, #1f2b6f);
+}

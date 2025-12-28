@@ -1,0 +1,55 @@
+<ion-toolbar class="registration-page__toolbar">
+  <ion-buttons slot="start" class="registration-page__back-btn">
+    <ion-icon class="registration-page__icon icon-left-arrow" (click)="back()"></ion-icon>
+  </ion-buttons>
+</ion-toolbar>
+<ion-content class="registration-page__content">
+  <div class="registration-page__form">
+    <div class="registration-page__title">Введите код из EMAIL</div>
+    <div class="registration-page__info">Отравили на почту {{email}}</div>
+    <div class="registration-page__inputs">
+      <input
+        #input
+        [ngClass]="{'error-input' : isError}"
+        class="registration-page__input"
+        [(ngModel)]="code[0]"
+        type="tel"
+        (input)="handleInput(0, $event)"
+      />
+      <input
+        #input
+        [ngClass]="{'error-input' : isError}"
+        class="registration-page__input"
+        [(ngModel)]="code[1]"
+        type="tel"
+        (input)="handleInput(1, $event)"
+      />
+      <input
+        #input
+        [ngClass]="{'error-input' : isError}"
+        class="registration-page__input"
+        [(ngModel)]="code[2]"
+        type="tel"
+        (input)="handleInput(2, $event)"
+      />
+      <input
+        #input
+        [ngClass]="{'error-input' : isError}"
+        class="registration-page__input"
+        [(ngModel)]="code[3]"
+        type="tel"
+        (input)="handleInput(3, $event)"
+      />
+    </div>
+    <div class="error" *ngIf="isError">{{errorText}}</div>
+    <ion-button
+      (click)="verifyAndLogin()"
+      class="ion-padding-horizontal ion-margin-top button"
+      expand="block"
+    >Продолжить
+    </ion-button
+    >
+    <div class="registration-page__text-main" *ngIf="isSending">Если сообщение не пришло, повторный код можно запросить через <span class="registration-page__time-main">{{formattedTime}}</span></div>
+    <div class="registration-page__text" *ngIf="!isSending" (click)="resendCode()">Если сообщение не пришло вы можете <span class="registration-page__time">запросить код повторно</span></div>
+  </div>
+</ion-content>

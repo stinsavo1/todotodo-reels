@@ -1,0 +1,42 @@
+<ng-container
+  *ngIf="authService.authState$ | async as authState; else loading"
+>
+  <ng-container *ngIf="authState.user && !authState.user.emailVerified">
+    <ion-header>
+      <ion-toolbar class="finish-toolbar">
+        <ion-buttons slot="start" class="finish-toolbar-button">
+          <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title class="ion-text-left finish-toolbar-title">Подтверждение email</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-item lines="none">
+        <ion-input
+          [disabled]="true"
+          [value]="authState.user.email"
+          class="text-input"
+          labelPlacement="stacked"
+          placeholder="Укажите ваше полное ФИО">
+        </ion-input>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-text class="text"
+        >Вам на E-mail была отправлена ссылка, после перехода по которой
+          будет подтверждена регистрация.
+        </ion-text
+        >
+      </ion-item>
+    </ion-content>
+    <ion-footer>
+      <ion-button
+        (click)="authService.signOut()"
+        class="signOut-button ion-padding"
+      >Выйти
+      </ion-button>
+    </ion-footer>
+  </ng-container>
+</ng-container>
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>

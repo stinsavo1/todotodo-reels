@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar class="faq-toolbar">
+    <ion-buttons slot="start" class="faq-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left faq-toolbar-title">FAQ</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ng-template #loading>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </ng-template>
+
+  <ng-container *ngIf="articles$ | async as articles; else loading">
+    <ion-list *ngFor="let article of articles" lines="none">
+      <ion-item [routerLink]="['faq-watch', article.id]">{{article.title}}</ion-item>
+    </ion-list>
+  </ng-container>
+</ion-content>

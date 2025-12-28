@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button> </ion-back-button>
+    </ion-buttons>
+    <ion-title>Авторизация администратора</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list style="width: 40%;" class="container-mobile">
+    <ion-item>
+      <ion-input
+        label="E-mail"
+        autocomplete="email"
+        autofocus="true"
+        inputmode="email"
+        pattern="email"
+        required
+        labelPlacement="stacked"
+        placeholder="email"
+        type="email"
+        [(ngModel)]="login"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input
+        label="Пароль"
+        autocomplete="current-password"
+        required
+        labelPlacement="stacked"
+        placeholder="Пароль"
+        type="password"
+        [(ngModel)]="pass"
+      ></ion-input>
+    </ion-item>
+
+    <ion-button
+      routerLink="/admin/tabs/articles"
+      class="ion-padding-horizontal ion-margin-top"
+      expand="block"
+      fill="outline"
+      (click)="authService.authorization(login, pass, '/admin/tabs')"
+      >Войти</ion-button
+    >
+  </ion-list>
+</ion-content>

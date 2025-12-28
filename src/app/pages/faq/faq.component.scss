@@ -1,0 +1,39 @@
+@import "../../../theme/todo-theme";
+
+:host {
+  background: var(--color-background-light) !important;
+}
+
+ion-content {
+  --background: var(--color-background-light) !important;
+}
+
+.faq-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.faq-toolbar-button {
+  padding-left: $padding-start;
+}
+
+.faq-toolbar-title {
+  font-size: 21px;
+  padding-inline-start: 3.875rem;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+ion-list {
+  font-family: $font-family-roboto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--color-background-light);
+  margin-top: 0.625rem;
+}

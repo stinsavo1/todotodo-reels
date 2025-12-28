@@ -1,0 +1,25 @@
+<ng-container *ngIf="item$ | async as item; else loading">
+  <ion-header>
+    <ion-toolbar class="website-toolbar">
+      <ion-buttons slot="start" class="website-toolbar-button">
+        <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+      </ion-buttons>
+      <ion-title class="ion-text-left website-toolbar-title">Редактировать</ion-title>
+      <button class="website-save" (click)="save()" mat-flat-button>Сохранить</button>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-item lines="none">
+      <ion-input
+        class="text-input"
+        [(ngModel)]="item['website']"
+        labelPlacement="stacked"
+        placeholder="Укажите сайт">
+      </ion-input>
+    </ion-item>
+  </ion-content>
+</ng-container>
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>

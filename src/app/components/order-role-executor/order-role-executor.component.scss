@@ -1,0 +1,54 @@
+@import "../../../theme/todo-theme";
+
+.default-button {
+  --background: var(--main);
+  --border-color: unset;
+  font-family: $font-family-roboto;
+  font-weight: 500;
+  --color: var(--white);
+  width: 100%;
+
+  &__send {
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 110px;
+  }
+
+  &--error {
+    --background: var(--error);
+  }
+}
+
+.sub-title {
+  padding: 10px 0;
+  font-family: $font-family-roboto;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1C1F34;
+  background: var(--color-background-light);
+}
+
+.container-details {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 0 0 0 15px;
+  color: #1C1F34;
+  font-family: $font-family-roboto;
+  font-weight: 500;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  &__price {
+    height: 50px;
+  }
+}
+
+.icon {
+  color: #979797;
+  width: 24px;
+  height: 24px;
+}

@@ -1,0 +1,308 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+@import "assets/icomoon/style.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+@import "./theme/todo-theme.scss";
+@import 'material-symbols';
+
+body {
+  font-family: $font-family-roboto;
+}
+
+.file {
+  position: relative;
+  z-index: 1;
+  left: -500px;
+  top: 0px;
+  width: 2px;
+  height: 2px;
+  opacity: 0;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+}
+
+.container-mobile {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ymaps-2-1-79-map-copyrights-promo {
+  display: none !important;
+}
+
+.ymaps-2-1-79-copyright__wrap {
+  display: none !important;
+}
+
+.small-modal {
+  --width: calc(100% - 50px);
+  --height: 230px;
+  --border-radius: 10px;
+  --background: white;
+  --box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+.textarea-bottom.sc-ion-textarea-md {
+  border-top: unset;
+}
+
+.textarea-bottom.sc-ion-textarea-ios {
+  border-top: unset;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.mdc-line-ripple {
+  display: none;
+}
+
+// Checkbox style
+.checkbox {
+  &::part(container) {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid #6F7485;
+    position: relative;
+  }
+
+  &::part(mark) {
+    display: none;
+  }
+
+  &.checkbox-checked {
+    &::part(container) {
+      background: var(--main);
+      border-color: transparent;
+    }
+
+    &::after {
+      content: '';
+      width: 13px;
+      height: 13px;
+      background-image: url('assets/check.svg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      position: absolute;
+      top: 25px;
+      left: 15px;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
+// RadioButton style
+.radio {
+  &::part(container) {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid #6F7485;
+    position: relative;
+  }
+
+  &::part(mark) {
+    display: none;
+  }
+
+  &.radio-checked {
+    &::part(container) {
+      background: var(--main);
+      border-color: transparent;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 16px;
+      width: 13px;
+      height: 13px;
+      background-image: url('assets/check.svg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
+.has-focus.sc-ion-textarea-ios-h textarea.sc-ion-textarea-ios {
+  caret-color: var(--caret-color);
+}
+
+.has-focus.sc-ion-input-ios-h input.sc-ion-input-ios {
+  caret-color: var(--caret-color);
+}
+
+.jodit {
+  color: black;
+}
+
+iframe {
+  width: 100%;
+}
+
+.mat-calendar-body-selected {
+  background-color: #22307e !important;
+}
+
+.mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+  border-color: #22307e !important;
+}
+
+.text-mat-input {
+  :focus-visible {
+    all: unset;
+  }
+}
+
+// Сообщение что данных нет
+.no-data-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+  font-size: 18px;
+  color: #6c757d;
+  font-family: 'Roboto Flex';
+}
+
+.no-data-message p {
+  margin: 0;
+}
+
+//table style
+
+//table {
+//  width: 100%;
+//  border-collapse: collapse;
+//  overflow: auto;
+//  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+//}
+//
+//th,
+//td {
+//  padding: 15px;
+//  background-color: rgba(255, 255, 255, 0.2);
+//  color: #fff;
+//}
+//
+//th {
+//  text-align: left;
+//}
+//
+//thead {
+//  th {
+//    background-color: #283891;
+//  }
+//}
+//
+//tbody {
+//  tr {
+//    &:hover {
+//      cursor: pointer;
+//      background-color: rgba(255, 255, 255, 0.3);
+//    }
+//  }
+//}
+
+.my-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+}
+
+.header-ios ion-toolbar:last-of-type {
+  --border-width: 0;
+}
+
+.my-toolbar-button {
+  padding-left: $padding-start;
+}
+
+.my-toolbar-title {
+  font-size: 21px;
+  padding-inline-start: 3.875rem;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+// хидер
+.header {
+  font-family: $font-family-roboto;
+
+  &__arrow-back {
+    padding-left: 10px;
+    cursor: pointer;
+  }
+
+  &__arrow-back-icon {
+    font-size: 20px;
+  }
+
+  &__icon {
+    font-size: 13px;
+  }
+
+  &__title {
+    font-size: 14px;
+    padding-inline-start: 0;
+  }
+
+  &__toolbar {
+    --min-height: 60px;
+    --background: #22307e;
+    --color: white;
+  }
+
+  &__call {
+    width: 38px;
+    height: 39px;
+    margin-right: 10px;
+    margin-left: 10px;
+    background: rgb(244, 244, 244);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  &__call-icon {
+    color: #22307e;
+    font-size: 23px;
+  }
+}

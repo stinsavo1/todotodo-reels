@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar class="feedback-toolbar">
+    <ion-buttons slot="start" class="feedback-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left feedback-toolbar-title">Предложить улучшение</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <p>
+    Мы всегда стремимся сделать наш сервис лучше. Если у вас есть идеи, предложения или вы столкнулись с проблемой — расскажите нам об этом.
+    Ваши отзывы помогают нам развивать платформу и улучшать взаимодействие между дилерами и монтажниками.
+  </p>
+
+  <form (ngSubmit)="onSubmit()" #feedbackForm="ngForm">
+
+    <ion-item lines="full">
+      <ion-label position="floating">Ваше имя</ion-label>
+      <ion-input
+        name="name"
+        type="text"
+        [(ngModel)]="formData.name"
+        required
+        #name="ngModel"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item lines="full">
+      <ion-label position="floating">Ваше предложение</ion-label>
+      <ion-textarea
+        name="message"
+        rows="6"
+        [(ngModel)]="formData.message"
+        required
+        #message="ngModel"
+      ></ion-textarea>
+    </ion-item>
+    <ion-button  type="submit" [disabled]="!feedbackForm.form.valid" class="default-button" slot="end"
+    >Отправить предложение
+    </ion-button
+    >
+
+  </form>
+
+</ion-content>

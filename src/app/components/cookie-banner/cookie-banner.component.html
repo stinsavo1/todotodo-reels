@@ -1,0 +1,9 @@
+<div class="cookie-banner" *ngIf="isVisible">
+  <p class="cookie-banner-text">
+    Мы используем файлы cookie, чтобы сделать сайт удобнее. Продолжая пользоваться нашим сайтом, вы даете согласие на использование файлов cookie.
+  </p>
+  <div class="cookie-banner-buttons">
+    <ion-button class="accept-btn" (click)="acceptCookies()">Принять</ion-button>
+    <a routerLink="/tabs/documents/cookies" class="policy-link">Политика cookie</a>
+  </div>
+</div>

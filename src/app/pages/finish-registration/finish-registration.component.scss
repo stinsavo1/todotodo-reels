@@ -1,0 +1,57 @@
+@import "../../../theme/todo-theme";
+
+.finish-toolbar {
+  height: 4.0625rem;
+  display: flex;
+  --background: var(--white);
+  align-items: center;
+
+  &:last-of-type {
+    --border-width: 0;
+  }
+}
+
+.finish-toolbar-title {
+  font-size: 21px;
+  padding-inline-start: 3.875rem;
+  font-family: $font-family-roboto;
+  font-weight: bold;
+}
+
+.text-input {
+  border-bottom: 1px solid rgba(0, 0, 0, .10);
+  font-family: $font-family-roboto;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+ion-content {
+  --background: var(--color-background-light);
+}
+
+ion-item {
+  --background: var(--color-background-light);
+}
+
+.text {
+  font-family: $font-family-roboto;
+  padding-top: 30px;
+}
+
+ion-footer {
+  background: #F3F5FD;
+
+  .signOut-button {
+    --background: var(--error);
+    font-family: $font-family-roboto;
+    font-weight: 500;
+    --color: var(--white);
+    width: 100%;
+  }
+
+  .disabled {
+    opacity: 0.38;
+  }
+}
+

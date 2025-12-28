@@ -1,0 +1,218 @@
+<ion-header>
+  <ion-toolbar class="profile-toolbar">
+    <ion-buttons slot="start" class="profile-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left profile-toolbar-title">Мой профиль</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-template #loading>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </ng-template>
+
+  <ion-list>
+    <ng-container *ngIf="item$ | async as item; else loading">
+
+      <ion-item class="container-text" lines="none" routerLink="role" [ngClass]="{'error': hasError && !item['role']}">
+        <ion-label class="container-text__label">
+          Роль
+        </ion-label>
+        <div class="container-text__text">{{item['role']}}</div>
+      </ion-item>
+      <ng-container *ngIf="item['mode'] === usersMode.USERS || item['mode'] === usersMode.SERVICES">
+      <ion-item class="container-photo" lines="none" routerLink="photo">
+        <ion-label class="container-photo__label">
+          Фото профиля
+        </ion-label>
+        <img *ngIf="item['photo']?.length" [src]="item['photo'][0]" class="container-photo__photo"/>
+        <img *ngIf="!item['photo']?.length" src="../../../assets/profile/empty-photo.jpg"
+             class="container-photo__photo"/>
+      </ion-item>
+
+      <ion-item class="container-text" lines="none" routerLink="fio" [ngClass]="{'error': hasError && !item['fio']}">
+        <ion-label class="container-text__label">
+          ФИО
+        </ion-label>
+        <div class="container-text__text">{{item['fio']}}</div>
+      </ion-item>
+      <ion-item class="container-text" lines="none" [routerLink]="['/profile/', uid, 'ratings']">
+        <ion-label class="container-text__label">
+          Общая оценка
+        </ion-label>
+        <div class="container-text__text">
+          <div class="rating-stars">
+            <ng-container *ngFor="let star of stars; let i = index">
+              <ion-icon
+                *ngIf="star.full"
+                name="star"
+                color="warning"
+                class="star-icon">
+              </ion-icon>
+              <ion-icon
+                *ngIf="star.half"
+                name="star-half"
+                color="warning"
+                class="star-icon">
+              </ion-icon>
+              <ion-icon
+                *ngIf="!star.full && !star.half"
+                name="star-outline"
+                color="medium"
+                class="star-icon">
+              </ion-icon>
+            </ng-container>
+          </div>
+        </div>
+      </ion-item>
+      <ion-item class="container-text" lines="none">
+        <ion-label class="container-text__label disabled">
+          Телефон для связи
+        </ion-label>
+        <div class="container-text__text disabled">{{item['phone']}}</div>
+      </ion-item>
+      <ion-item class="container-text" lines="none">
+        <ion-label class="container-text__label disabled">
+          Email
+        </ion-label>
+        <div class="container-text__text disabled">{{item['email']}}</div>
+      </ion-item>
+      <ion-item *ngIf="regions$ | async as regions" class="container-text" lines="none" routerLink="region" [ngClass]="{'error': hasError && item['region'] === undefined}">
+        <ion-label class="container-text__label">
+          Регион работы
+        </ion-label>
+        <div class="container-text__text">{{item['region'] | regionPipe:regions}}</div>
+      </ion-item>
+      <ion-item class="container-text" lines="none" routerLink="address" [ngClass]="{'error': hasError && !item['address']}">
+        <ion-label class="container-text__label">
+          Адрес
+        </ion-label>
+        <div class="container-text__text">{{item['address']}}</div>
+      </ion-item>
+      <ion-item class="container-text" lines="none" routerLink="about">
+        <ion-label class="container-text__label">
+          О себе
+        </ion-label>
+        <div class="container-text__text">{{item['description']}}</div>
+      </ion-item>
+      <ion-item class="container-text" lines="none" routerLink="notification-push">
+        <ion-label class="container-text__label">
+          Оповещения
+        </ion-label>
+        <div>
+          <div class="container-text__text">{{item.notifications?.callNotificationNewOrder ? 'Уведомления новые заказа' : null}}</div>
+          <div class="container-text__text">{{item.notifications?.callNotificationNewLead ? 'Уведомления новые лиды' : null}}</div>
+          <div class="container-text__text">{{item.notifications?.callNotificationMessage ? 'Уведомления новые сообщения' : null}}</div>
+        </div>
+      </ion-item>
+      </ng-container>
+      <ng-container *ngIf="item['mode'] === usersMode.FACTORY || item['mode'] === usersMode.AGENCY || item['mode'] === usersMode.STORE">
+        <div class="category-title">Информация о {{ infoName() }}</div>
+        <ion-item class="container-photo" lines="none" routerLink="photo">
+          <ion-label class="container-photo__label">
+            Логотип
+          </ion-label>
+          <img *ngIf="item['photo']?.length" [src]="item['photo'][0]" class="container-photo__photo"/>
+          <img *ngIf="!item['photo']?.length" src="../../../assets/profile/empty-photo.jpg"
+               class="container-photo__photo"/>
+        </ion-item>
+        <ion-item class="container-text" lines="none" routerLink="name-factory" [ngClass]="{'error': hasError && !item['nameFactory']}">
+          <ion-label class="container-text__label">
+            Название {{ infoName(true) }}
+          </ion-label>
+          <div class="container-text__text">{{item['nameFactory']}}</div>
+        </ion-item>
+        <ion-item class="container-text" lines="none" [routerLink]="['/profile/', uid, 'ratings']">
+          <ion-label class="container-text__label">
+            Общая оценка
+          </ion-label>
+          <div class="container-text__text">
+            <div class="rating-stars">
+              <ng-container *ngFor="let star of stars; let i = index">
+                <ion-icon
+                  *ngIf="star.full"
+                  name="star"
+                  color="warning"
+                  class="star-icon">
+                </ion-icon>
+                <ion-icon
+                  *ngIf="star.half"
+                  name="star-half"
+                  color="warning"
+                  class="star-icon">
+                </ion-icon>
+                <ion-icon
+                  *ngIf="!star.full && !star.half"
+                  name="star-outline"
+                  color="medium"
+                  class="star-icon">
+                </ion-icon>
+              </ng-container>
+            </div>
+          </div>
+        </ion-item>
+        <ion-item class="container-text" lines="none" routerLink="website">
+          <ion-label class="container-text__label">
+           Сайт
+          </ion-label>
+          <div class="container-text__text">{{item['website']}}</div>
+        </ion-item>
+        <ion-item *ngIf="regions$ | async as regions" class="container-text" lines="none" routerLink="region" [ngClass]="{'error': hasError && item['region'] === undefined}">
+          <ion-label class="container-text__label">
+            Регион работы
+          </ion-label>
+          <div class="container-text__text">{{item['region'] | regionPipe:regions}}</div>
+        </ion-item>
+        <ion-item class="container-text" lines="none" routerLink="address" [ngClass]="{'error': hasError && !item['address']}">
+          <ion-label class="container-text__label">
+            Адрес
+          </ion-label>
+          <div class="container-text__text">{{item['address']}}</div>
+        </ion-item>
+        <ion-item class="container-text" lines="none" routerLink="about">
+          <ion-label class="container-text__label">
+            О {{ infoName() }}
+          </ion-label>
+          <div class="container-text__text">{{item['description']}}</div>
+        </ion-item>
+        <ion-item class="container-text" lines="none" routerLink="branches" *ngIf="item['mode'] === usersMode.STORE || item['mode'] === usersMode.FACTORY">
+          <ion-label class="container-text__label">
+            Филиалы
+          </ion-label>
+          <div class="container-text__text">{{item['description']}}</div>
+        </ion-item>
+        <div class="category-title">Ваши контакты</div>
+        <ion-item class="container-text" lines="none" routerLink="fio" [ngClass]="{'error': hasError && !item['fio']}">
+          <ion-label class="container-text__label">
+            ФИО
+          </ion-label>
+          <div class="container-text__text">{{item['fio']}}</div>
+        </ion-item>
+        <ion-item class="container-text" lines="none">
+          <ion-label class="container-text__label disabled">
+            Телефон для связи
+          </ion-label>
+          <div class="container-text__text disabled">{{item['phone']}}</div>
+        </ion-item>
+        <ion-item class="container-text" lines="none">
+          <ion-label class="container-text__label disabled">
+            Email
+          </ion-label>
+          <div class="container-text__text disabled">{{item['email']}}</div>
+        </ion-item>
+        <ion-item class="container-text" lines="none" routerLink="notification-push">
+          <ion-label class="container-text__label">
+            Оповещения
+          </ion-label>
+          <div>
+            <div class="container-text__text">{{item.notifications?.callNotificationNewOrder ? 'Уведомления новые заказа' : null}}</div>
+            <div class="container-text__text">{{item.notifications?.callNotificationNewLead ? 'Уведомления новые лиды' : null}}</div>
+            <div class="container-text__text">{{item.notifications?.callNotificationMessage ? 'Уведомления новые сообщения' : null}}</div>
+          </div>
+        </ion-item>
+      </ng-container>
+    </ng-container>
+
+  </ion-list>
+</ion-content>

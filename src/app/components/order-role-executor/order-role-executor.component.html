@@ -1,0 +1,71 @@
+<!-- поиск исполнителя / исполнитель -->
+<ng-container *ngIf="myResponse$ | async as myResponse">
+  <ng-container *ngIf="myResponse?.price">
+  <div class="sub-title">Ваше предложение</div>
+  <div class="container-details container-details__price">
+    <img class="icon" src="/assets/orders/wallet.svg"/>
+    <div>
+      {{ myResponse['price'] }} ₽
+    </div>
+  </div>
+  </ng-container>
+</ng-container>
+<!-- выбран исполнитель / исполнитель -->
+<ng-container *ngIf="order['executor'] === authService.uid && order['executor'] && isOrderDate">
+  <ng-container>
+    <ion-button
+      *ngIf="!(order['status'] === orderStatusEnum.COMPLETED || order['status'] === orderStatusEnum.REJECTION)"
+      class="default-button ion-margin-top"
+      expand="block"
+      (click)="navigate()"
+    >Написать
+    </ion-button>
+    <ion-button
+      *ngIf="order['status'] === orderStatusEnum.CONFIRM &&
+    !(order['status'] === orderStatusEnum.COMPLETED || order['status'] === orderStatusEnum.REJECTION || order['doneExecutor'])"
+      class="default-button ion-margin-top"
+      expand="block"
+      (click)="doneOrderExecutor(order['doneCustomer'], true)"
+      color="success"
+    >Выполнено
+    </ion-button>
+    <ion-button
+      *ngIf="order['status'] === orderStatusEnum.CONFIRM &&
+    !(order['status'] === orderStatusEnum.COMPLETED || order['status'] === orderStatusEnum.REJECTION || order['doneExecutor'])"
+      class="default-button ion-margin-top"
+      expand="block"
+      color="danger" (click)="refuseOrder(id)"
+    >Отказаться
+    </ion-button>
+  </ng-container>
+
+
+  <!-- завершен / исполнитель -->
+  <ng-container *ngIf="!order['isRateExecutor'] && (order['doneExecutor'] || order['status'] === orderStatusEnum.REJECTION) && isOverExecutorDate">
+    <ion-button
+      class="default-button ion-margin-top"
+      expand="block"
+      (click)="navigateFeedback(id, order['author'], 'Executor')"
+      color="success">
+      Оставить отзыв
+    </ion-button>
+<!--    <ion-button-->
+<!--      *ngIf="order['success'] || order['rejection']"-->
+<!--      class="default-button ion-margin-top"-->
+<!--      expand="block"-->
+<!--      color="danger"-->
+<!--      (click)="orderService.finishOrder(order['author'], id, ['ratingClaim', 'ratingOrders'], 'Executor')"-->
+<!--      [routerLink]="['/tabs/map']"-->
+<!--    >Жалоба-->
+<!--    </ion-button>-->
+<!--    <ion-button-->
+<!--      *ngIf="order['success'] || order['rejection']"-->
+<!--      class="default-button ion-margin-top"-->
+<!--      expand="block"-->
+<!--      color="danger"-->
+<!--      (click)="orderService.finishOrder(order['author'], id, ['ratingOrders'], 'Executor')"-->
+<!--      [routerLink]="['/tabs/map']"-->
+<!--    >Закрыть-->
+<!--    </ion-button>-->
+  </ng-container>
+</ng-container>

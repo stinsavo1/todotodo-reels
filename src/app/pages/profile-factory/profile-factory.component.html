@@ -1,0 +1,98 @@
+<ion-header>
+  <ion-toolbar class="profile-toolbar">
+    <ion-buttons slot="start" class="profile-detail-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text="" defaultHref="/tabs/map"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left profile-toolbar-title">Профиль</ion-title>
+    <div class="count-container" slot="end">
+      <ion-icon class="count-container__icon" name="eye-outline"></ion-icon>
+      <div class="count-container__count">{{user?.count  || 0}}</div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ng-container *ngIf="item$ | async as item">
+    <ion-list lines="none">
+      <ion-item lines="none">
+        <div class="container">
+          <img *ngIf="!item?.photo" class="container__no-photo" src="assets/no-avatar.svg"/>
+          <img *ngIf="item?.photo" class="container__photo" [src]="item?.photo"/>
+          <div class="container__fio">{{item?.nameFactory}}</div>
+          <div class="container__region">{{getRegionName(item?.region)}}</div>
+          <div class="container__role">{{item.role}}</div>
+          <div class="rating-stars">
+            <ng-container *ngFor="let star of stars; let i = index">
+              <ion-icon
+                *ngIf="star.full"
+                name="star"
+                color="warning"
+                class="star-icon">
+              </ion-icon>
+              <ion-icon
+                *ngIf="star.half"
+                name="star-half"
+                color="warning"
+                class="star-icon">
+              </ion-icon>
+              <ion-icon
+                *ngIf="!star.full && !star.half"
+                name="star-outline"
+                color="medium"
+                class="star-icon">
+              </ion-icon>
+            </ng-container>
+          </div>
+        </div>
+      </ion-item>
+      <ion-item lines="none" *ngIf="item.fio">
+        <div class="container-details">
+          <img class="container-details__img" src="assets/profile-factory/person.svg"/>
+          <div>{{ item?.fio }}</div>
+        </div>
+      </ion-item>
+      <ion-item lines="none" *ngIf="item.description">
+        <div class="container-details">
+          <img class="container-details__img" src="assets/profile-factory/info.svg"/>
+          <div>{{ item?.description }}</div>
+        </div>
+      </ion-item>
+      <ion-item lines="none" *ngIf="(statusPay$ | async) && item.website">
+        <div class="container-details">
+          <img class="container-details__img" src="assets/profile-factory/website.svg"/>
+          <a (click)="openUrl(item.website)">{{ item?.website }}</a>
+        </div>
+      </ion-item>
+      <ion-item lines="none" *ngIf="item.address">
+        <div class="container-details">
+          <img class="container-details__img" src="assets/profile-factory/point.svg"/>
+          <div>{{ item?.address }}</div>
+        </div>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+</ion-content>
+
+<ion-footer class="footer">
+  @if (profileType === 'store') {
+    <ion-button
+      (click)="openItems()"
+      class="button-factory">
+      Товары
+    </ion-button>
+  }
+  <ion-button
+    [routerLink]="['/profile/', id, 'ratings', 'watch']"
+    class="button-factory">
+    Отзовы
+  </ion-button>
+<!--  <ion-button *ngIf="hideButton && profileType !== userMode.STORE"-->
+<!--    (click)="openChat()"-->
+<!--    class="button-factory"-->
+<!--  >{{title}}-->
+<!--  </ion-button>-->
+  <ion-button
+    (click)="shareContent()"
+    class="button-factory">
+    Поделиться
+  </ion-button>
+</ion-footer>

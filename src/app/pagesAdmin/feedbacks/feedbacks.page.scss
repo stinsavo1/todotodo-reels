@@ -1,0 +1,90 @@
+@import "../../../theme/todo-theme.scss";
+
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Высота экрана */
+    background: white;
+}
+
+.table-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Растягиваем по высоте родителя */
+}
+
+.table-container {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    max-height: calc(100vh - 176px - 32px); /* Учитываем высоту ion-header (120px) и футера (50px) */
+}
+
+mat-table {
+    width: 100%;
+    position: relative;
+}
+
+mat-header-row {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: #fff;
+}
+
+mat-header-cell {
+    font-weight: bold;
+}
+
+mat-cell {
+    padding: 16px;
+}
+
+mat-paginator {
+    flex-shrink: 0;
+    border-top: 1px solid #e0e0e0;
+    margin-bottom: 50px; /* Делаем отступ под футер */
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+ion-footer {
+    height: 50px; /* Задаём высоту футера */
+}
+
+.footer-content {
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.highlighted {
+  background-color: #f1f5f9;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.mat-mdc-table {
+  background: white;
+  font-family: $font-family-roboto;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+  &__loader {
+    background: transparent;
+  }
+}
+
+.icon {
+  height: 30px;
+}

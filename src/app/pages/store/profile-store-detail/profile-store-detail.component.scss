@@ -1,0 +1,91 @@
+@import "../../../../theme/todo-theme";
+
+.img-container {
+  width: 100vw;
+  min-height: 252px;
+  max-height: 400px;
+
+  &__img {
+    object-fit: contain;
+    height: 100%;
+    width: 100vw;
+    min-height: 252px;
+    max-height: 400px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+}
+
+.title {
+  font-family: $font-family-roboto;
+  letter-spacing: -.0025em;
+  font-size: 17px;
+  padding:  15px 16px 24px 16px;
+  line-height: 19px;
+  font-weight: 700;
+}
+
+.price {
+  letter-spacing: -.0025em;
+  font-size: 24px;
+  line-height: 26px;
+  font-weight: 700;
+  color: #006933;
+}
+
+.rubles {
+  letter-spacing: -.0025em;
+  font-size: 20px;
+  line-height: 22px;
+  font-weight: 700;
+  padding-left: 5px;
+  color: #006933;
+}
+
+.container-price {
+  font-family: "YS Text Regular Regular";
+  display: flex;
+  gap: 20px;
+
+  .original-price {
+    letter-spacing: -.0025em;
+    font-size: 17px;
+    line-height: 18px;
+    font-weight: 600;
+    color: rgba(29,25,19,0.51);
+
+    &__ruble {
+      line-height: 14px;
+      font-size: 14px;
+      font-weight: 500;
+      padding-left: 5px;
+      color: rgba(29,25,19,0.51);
+    }
+  }
+}
+.category-title {
+  font-family: $font-family-roboto;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0 0 0 20px;
+}
+
+ion-card {
+  margin-top: 10px;
+}
+
+.description {
+  font-family: "YS Text Regular Regular";
+  color: black;
+}
+
+.button-connect {
+  --background: var(--main);
+  --border-color: unset;
+  font-family: $font-family-roboto;
+  font-weight: 500;
+  --color: var(--white);
+  width: 100%;
+  padding: 16px;
+}

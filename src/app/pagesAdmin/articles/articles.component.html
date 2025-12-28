@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Статьи</ion-title>
+      <ion-button class="create" slot="end" [routerLink]="['create-articles']" color="tertiary">
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+        Cоздать
+      </ion-button>
+  </ion-toolbar>
+</ion-header>
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>
+
+<ion-content>
+  <ng-container *ngIf="articles$ | async as items; else loading">
+    <table>
+      <thead>
+      <tr>
+        <th>Статья</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr (click)="navigate(item.id)" *ngFor="let item of items">
+        <td>{{ item['title'] }}</td>
+        <td>
+          <ion-button size="small" (click)="delete(item.id, $event); $event.stopPropagation();" color="danger">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</ion-content>

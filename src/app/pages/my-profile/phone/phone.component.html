@@ -1,0 +1,31 @@
+<ng-container *ngIf="item$ | async as item; else loading">
+  <ion-header>
+    <ion-toolbar class="phone-toolbar">
+      <ion-buttons slot="start" class="phone-toolbar-button">
+        <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+      </ion-buttons>
+      <ion-title class="ion-text-left phone-toolbar-title">Редактировать</ion-title>
+      <button class="phone-save" [disabled]="!item['phone']" (click)="save()" mat-flat-button>Сохранить</button>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+
+    <ion-item lines="none" [ngClass]="{'label-error': !item['phone'] && phoneTouched}">
+      <ion-input
+        class="text-input"
+        [(ngModel)]="item['phone']"
+        (ngModelChange)="phoneTouched = true"
+        labelPlacement="stacked"
+        appPhoneMask
+        placeholder="Введите номер телефона">
+      </ion-input>
+    </ion-item>
+    <ion-text class="error-text" color="danger" *ngIf="!item['phone'] && phoneTouched">
+      Это поле обязательно для заполнения!
+    </ion-text>
+  </ion-content>
+</ng-container>
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>

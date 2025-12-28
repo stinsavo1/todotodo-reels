@@ -1,0 +1,189 @@
+<ion-header>
+  <ion-toolbar class="order-detail-toolbar">
+    <ion-buttons slot="start" class="order-detail-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left order-detail-toolbar-title" *ngIf="order">{{ order['type'] }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-template #loading>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </ng-template>
+    <div class="container" *ngIf="order; else loading">
+      <div *ngIf="orderUser && order?.author !== authService.uid" class="phone-container">
+        <div class="title">О пользователе</div>
+      </div>
+      <div class="photo-container" *ngIf="orderUser && order?.author !== authService.uid">
+        <div class="photo-container__content">
+          <img *ngIf="!orderUser?.photo || !user" class="photo-container__no-photo" src="assets/no-avatar.svg"/>
+          <img *ngIf="orderUser?.photo && user" class="photo-container__photo" [src]="orderUser?.photo"/>
+          <div class="photo-container__details">
+            <div class="photo-container__fio">
+              <span>{{ !user ? getRole : (orderUser?.fio | shortName) }}</span>
+            </div>
+            <div class="photo-container__type" *ngIf="user">{{ getRole }}</div>
+            <div class="rating-stars">
+              <ng-container *ngFor="let star of stars; let i = index">
+                <ion-icon
+                  *ngIf="star.full"
+                  name="star"
+                  color="warning"
+                  class="star-icon">
+                </ion-icon>
+                <ion-icon
+                  *ngIf="star.half"
+                  name="star-half"
+                  color="warning"
+                  class="star-icon">
+                </ion-icon>
+                <ion-icon
+                  *ngIf="!star.full && !star.half"
+                  name="star-outline"
+                  color="medium"
+                  class="star-icon">
+                </ion-icon>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="user">
+          <ion-button
+            style="padding: unset"
+            class="default-button"
+            (click)="profileNavigate(order?.author)"
+          >Профиль
+          </ion-button>
+        </div>
+      </div>
+      <div class="details-with-count">
+        <div class="sub-title">Детали</div>
+        <div class="count-container" *ngIf="order['seenOrder']">
+          <ion-icon class="count-container__icon" name="eye-outline"></ion-icon>
+          <div class="count-container__count">{{ order['seenOrder']?.length }}</div>
+        </div>
+      </div>
+      <div class="container-details">
+        <div *ngIf="order['orderDate']" class="container-details__item">
+          <div class="container-details__title">Дата</div>
+          <div>{{ order['orderDate'] | date: 'dd.MM.yy' }}</div>
+        </div>
+        <div *ngIf="order['phone']" class="container-details__item">
+          <div class="container-details__title">Телефон</div>
+          <div>{{ order['phone'] }}</div>
+        </div>
+        <div *ngIf="order?.price !== undefined" class="container-details__item">
+          <div class="container-details__title">Цена за работу</div>
+          <div>{{ order?.price }} ₽</div>
+        </div>
+        <div *ngIf="order['payType']" class="container-details__item">
+          <div class="container-details__title">Форма оплаты</div>
+          <div>{{ order['payType'] }}</div>
+        </div>
+      </div>
+      <ng-container *ngIf="order['address']">
+        <div class="sub-title">Адрес</div>
+        <div class="container-details container-details__address">
+          <div style="padding: 15px; width: 100%;
+    display: flex;
+    align-items: center;
+">{{ order['address'] }}
+          </div>
+          <ion-button class="navigate-button" *ngIf="user" (click)="onNavigateButtonClick($event, order)">
+            <div class="navigate-button__flex">
+              <ion-icon class="navigate-button__icon" name="navigate-outline"></ion-icon>
+              <span *ngIf="order['distance']"> {{ order['distance'] | distance }}</span>
+            </div>
+          </ion-button>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="order['photo'] || order['files']">
+        <div class="sub-title">Файлы</div>
+        <div class="container-details container-details__files">
+          <div>
+            <ng-container *ngFor="let photo of order['photo'] || []">
+              <img height="60"
+                   style="padding-right: 5px"
+                   ionImgViewer
+                   [src]="photo"/>
+            </ng-container>
+          </div>
+
+          <!-- Файлы -->
+          <ng-container *ngFor="let file of order['files'] || []">
+            <div class="pdf-container">
+              <!-- Для аудио файлов -->
+              <div *ngIf="file.type === 'audio/mpeg' || file.type.startsWith('audio/')">
+                <!--              <ion-icon class="icon" name="musical-notes-outline"></ion-icon>-->
+                <audio [src]="file.url" controls class="audio-player">
+                  Ваш браузер не поддерживает воспроизведение аудио.
+                </audio>
+              </div>
+
+              <!-- Для других файлов -->
+              <div *ngIf="!(file.type === 'audio/mpeg' || file.type.startsWith('audio/'))">
+                <ion-icon class="icon" name="document-text-outline"></ion-icon>
+                <a class="pdf-container__text"
+                   [href]="file.url"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                  {{ file.name }}
+                </a>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="order['description']">
+        <div class="sub-title">Комментарий</div>
+        <div class="container-details container-details__comment">
+          <div>{{ order['description'] }}</div>
+        </div>
+      </ng-container>
+      <!--    <app-order-role-client-->
+      <!--      [id]="id"-->
+      <!--      [order]="order"-->
+      <!--      [chatId]="chatId"-->
+      <!--      (updateOrder)="getOrder()"-->
+      <!--      *ngIf="order['author'] === authService.uid"-->
+      <!--    ></app-order-role-client>-->
+      <!--    <app-order-role-executor-->
+      <!--      [id]="id"-->
+      <!--      [chatId]="chatId"-->
+      <!--      [order]="order"-->
+      <!--      [orderUser]="orderUser"-->
+      <!--      (updateOrder)="getOrder()"-->
+      <!--      *ngIf="order['author'] !== authService.uid"-->
+      <!--    ></app-order-role-executor>-->
+    </div>
+    <div class="btn-block">
+      <ion-button *ngIf="order && authService.uid && !order?.executor && order?.author !== authService.uid"
+                  [routerLink]="`/tabs/addresses/new-chat/${order?.author}_${authService?.uid}_${id}/false`"
+                  class="default-button">
+        Написать
+      </ion-button>
+      <ion-button *ngIf="user && order && (order?.author !== authService.uid)"
+                  (click)="callCustomer()"
+                  class="default-button">
+        Позвонить
+      </ion-button>
+      <ion-button
+        *ngIf="(order && order['author'] === authService.uid) && (order['status'] === orderStatusEnum.NEW_ORDER || order['status'] === orderStatusEnum.SEND_OFFER)"
+        (click)="removeOrder()"
+        class="default-button default-button--error">
+        {{ removeTitle }}
+      </ion-button>
+      <ion-button *ngIf="order && (order['author'] !== authService.uid) && user && !order['executor']"
+                  (click)="setHideOrder()"
+                  color="danger"
+                  class="default-button default-button--error">
+        Скрыть заказ
+      </ion-button>
+      <ion-button *ngIf="order && (order['status'] === orderStatusEnum.NEW_ORDER || order['status'] === orderStatusEnum.SEND_OFFER)"
+                  (click)="shareContent()"
+                  class="default-button">
+        Поделиться
+      </ion-button>
+    </div>
+</ion-content>

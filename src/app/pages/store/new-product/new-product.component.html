@@ -1,0 +1,103 @@
+<ion-header>
+  <ion-toolbar class="new-order-toolbar">
+    <ion-buttons slot="start" class="new-order-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left new-order-toolbar-title">Добавить товар</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="category-title">Фото товара</div>
+  <ion-item lines="none">
+    <div class="container-photo">
+      <img class="container-photo__empty" *ngIf="!photo"
+           src="/assets/no-image.svg">
+      <img *ngIf="photo" class="container-photo__img"
+           [src]="photo">
+      <div>
+      <div class="container-photo__button" (click)="picture('PHOTOS')">
+        <img src="../../../assets/profile/image.svg">
+        <span class="container-photo__text">Выбрать из галереи</span>
+      </div>
+      <div class="container-photo__button" (click)="picture('CAMERA')">
+        <img src="../../../assets/profile/photo.svg">
+        <span class="container-photo__text">Сделать фото</span>
+      </div>
+    </div>
+    </div>
+  </ion-item>
+
+  <div class="category-title">Детали</div>
+  <div class="details-container">
+    <ion-item lines="none">
+          <span class="material-icons-outlined icon">label</span>
+      <ion-input
+        [ngClass]="{'error': hasError && !name}"
+        [(ngModel)]="name"
+        class="text-input-icon"
+        placeholder="Название товара"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-textarea
+        [ngClass]="{'error': hasError && !description}"
+        class="text-textarea"
+        rows="2"
+        [(ngModel)]="description"
+        [counter]="true"
+        maxlength="1000"
+        [autoGrow]="true"
+        placeholder="Описание товара"
+      ></ion-textarea>
+    </ion-item>
+  </div>
+
+  <div class="category-title">Оплата</div>
+  <div class="details-price">
+    <ion-item lines="none">
+      <span class="material-icons-outlined icon">currency_ruble</span>
+      <ion-input
+        [(ngModel)]="price"
+        class="text-input-icon"
+        [ngClass]="{'error': hasError && (price === undefined || price === null)}"
+        placeholder="Стомость товара"
+        type="number"
+        inputmode="numeric"
+      ></ion-input>
+    </ion-item>
+
+    <ion-text class="info">Если скидки нет, то поле заполнять не нужно.</ion-text>
+    <ion-item lines="none">
+      <span class="material-icons-outlined icon">percent</span>
+      <ion-input
+        [(ngModel)]="discount"
+        class="text-input-icon"
+        placeholder="Скидка от стомости товара"
+        type="number"
+        inputmode="numeric"
+      ></ion-input>
+    </ion-item>
+
+    <ion-button
+      class="send-button ion-padding"
+      expand="block"
+      fill="outline"
+      (click)="submit()"
+      [disabled]="isLoading"
+    >Отправить
+    </ion-button
+    >
+  </div>
+
+</ion-content>
+<ion-toast
+  [isOpen]="showToast"
+  [message]="errorMessage"
+  duration="2000"
+  color="danger"
+  class="profile-toast"
+  position="top"
+  (didDismiss)="closeToast()"
+></ion-toast>

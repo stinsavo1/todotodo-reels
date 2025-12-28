@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button> </ion-back-button>
+    </ion-buttons>
+    <ion-title>Отчет монтажника</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <form-upload2 [count]="10" [(photoFiles)]="photos"></form-upload2>
+  </ion-item>
+
+  <ion-button
+    class="ion-padding-horizontal ion-margin-top"
+    expand="block"
+    fill="outline"
+    color="success"
+    routerLink="../"
+    router-direction="back"
+    (click)="orderService.orderSuccess(id, authService.uid, photos)"
+    [disabled]="!this.authService.uid"
+    >Выполнено</ion-button
+  >
+
+  <ion-nav-link router-direction="back">
+    <ion-button
+      class="ion-padding-horizontal ion-margin-top"
+      expand="block"
+      fill="outline"
+      color="danger"
+      routerLink="../"
+      router-direction="back"
+      (click)="orderService.orderRejection(id)"
+      >Отказ</ion-button
+    >
+  </ion-nav-link>
+</ion-content>

@@ -1,0 +1,309 @@
+@import "../../../theme/todo-theme";
+
+:host {
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+}
+
+.registration-page {
+  &__header {
+    background: var(--main);
+  }
+
+  &__toolbar {
+    --border-width: 0 !important;
+    --background: var(--main);
+    padding: 16px 0 0 16px;
+  }
+
+  &__icon {
+    color: var(--white);
+    font-size: 1.5rem;
+  }
+
+  &__content {
+    --background: var(--main);
+    --padding-start: 16px;
+    --padding-end: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  &__form {
+    padding-top: 33px;
+    flex-grow: 1;
+  }
+
+  &__title {
+    color: var(--white);
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: 48px;
+    letter-spacing: -0.03em;
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    padding-bottom: 24px;
+  }
+
+  &__input-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  &__input-container-label {
+    color: var(--white);
+    font-weight: 600;
+    font-size: 0.938rem;
+    margin-bottom: 8px;
+    line-height: 24px;
+    letter-spacing: -0.01em;
+  }
+
+  &__input {
+    color: var(--white);
+    caret-color: #6759FF;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 12px;
+    gap: 10px;
+    width: 100%;
+    height: 2.75rem;
+    border: 1px solid var(--white);
+    background: var(--main);
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+
+    &::placeholder {
+      height: 1.063rem;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 17px;
+      letter-spacing: -0.01em;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    &:focus {
+      font-weight: 600;
+      font-size: 14px;
+      outline: none;
+    }
+  }
+}
+
+.logo {
+  width: 7.188rem;
+  height: 6.625rem;
+  margin: 0 auto;
+  display: flex;
+}
+
+.button {
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  --background: var(--white);
+  color: var(--main);
+  padding-inline-start: 0;
+  padding-inline-end: 0;
+  --border-color: unset;
+}
+
+.registration-text {
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-size: 15px;
+  padding-top: 2vw;
+  padding-bottom: 5vw;
+  color: var(--white);
+
+  span {
+    text-decoration: underline;
+    font-weight: 700;
+  }
+}
+
+.mat-mdc-text-field-wrapper {
+  background: transparent;
+}
+
+:host ::ng-deep  {
+  .registration-select {
+    .mat-mdc-select-arrow svg {
+      fill: white;
+    }
+    .mat-mdc-text-field-wrapper {
+      background-color: transparent;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--white);
+      border-radius: 8px;
+    }
+    .mat-mdc-select-value {
+      font-weight: 600;
+      font-size: 14px;
+      font-family: "Inter", sans-serif;
+      color: var(--white);
+    }
+    .mat-mdc-select-placeholder {
+      height: 1.063rem;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 17px;
+      letter-spacing: -0.01em;
+      color: rgba(255, 255, 255, 0.3);
+    }
+  }
+}
+ion-item::part(native) {
+  background: #253079;
+}
+
+ion-select::part(placeholder) {
+  height: 1.063rem;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.3);
+  opacity: 1;
+}
+
+ion-select::part(container) {
+  height: 1.063rem;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: -0.01em;
+  color:var(--white);
+}
+
+ion-select::part(icon) {
+  color: var(--white);
+  position: absolute;
+  right: 0;
+}
+
+.select {
+  background-color: transparent;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--white);
+  border-radius: 8px;
+  --inner-padding-end: unset;
+}
+
+ion-modal {
+  --height: auto;
+  --background: var(--main);
+}
+
+.promo {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  &__title {
+    font-size: 25px;
+    color: white;
+    padding-top: 30px;
+  }
+
+  &__button {
+    width: 85%;
+    font-size: 16px;
+    margin-bottom: 20px;
+    height: 49px;
+  }
+
+  &__disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  input {
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 23px;
+    outline: none;
+    caret-color: white;
+
+    /* Центрирование текста */
+    text-align: center;        /* По центру по горизонтали */
+    line-height: 1.4;          /* Опционально: улучшает вертикальное центрирование */
+    padding: 0;                /* Убираем лишние отступы */
+    margin: 0;
+    height: 46px;              /* Высота инпута — подбирается под размер шрифта */
+    display: flex;
+    align-items: center;       /* Центрирование по вертикали (если поддерживается) */
+    justify-content: center;   /* Центрирование содержимого — для flex */
+    text-transform: uppercase;
+    width: 100%;
+
+    /* Убираем внутренние отступы браузера */
+    box-sizing: border-box;
+  }
+
+  /* Центрирование placeholder */
+  input::placeholder {
+    color: white;
+    opacity: 0.7;
+    text-transform: capitalize;
+    text-align: center;
+  }
+
+  &__input-error {
+    color: var(--error) !important;
+  }
+
+  &__error-title {
+    padding: 0 25px;
+    color: var(--error);
+  }
+
+  ion-spinner {
+    --color: var(--main);
+    width: 25px;
+  }
+}
+
+.promo-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 17px;
+  background: transparent;
+  color: white;
+  border-top: 1px solid white;
+  border-bottom: 1px solid white;
+  padding: 15px 0;
+  width: 100%;
+}
+
+.promo-button__content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.promo-button__right {
+  display: flex;
+  align-items: center;
+  gap: 4px; /* Управляй расстоянием между кодом и иконкой */
+}
+
+.promo-button__code {
+  font-weight: 500;
+  font-size: 15px;
+}

@@ -1,0 +1,128 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Пользователи</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addUser()">
+        Добавить пользователя
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="exportToExcel()">
+        <ion-icon name="download" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<mat-form-field style="width: 100%; border-top: 1px solid lightgray; border-bottom: 1px solid lightgray">
+  <mat-label>Поиск</mat-label>
+  <input matInput placeholder="Поиск по номеру телефона" #input (ngModelChange)="searchFilter($event)" [(ngModel)]="search">
+  @if (search) {
+    <button matSuffix mat-icon-button aria-label="Clear" (click)="search = '';searchFilter('')">
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+</mat-form-field>
+<!-- Индикатор загрузки -->
+<div class="loader-container" *ngIf="loading">
+  <mat-spinner class="loader-container__loader"></mat-spinner>
+</div>
+<div class="table-wrapper" *ngIf="!loading">
+  <!-- Контейнер с прокручиваемой таблицей -->
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" matSort [matSortActive]="sortField" (matSortChange)="onSortChange()" [matSortDirection]="sortDirection" [matSortDisableClear]="true">
+
+      <!-- ФИО -->
+      <ng-container matColumnDef="fio">
+        <mat-header-cell *matHeaderCellDef>ФИО</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.fio ?? '-' }}</mat-cell>
+      </ng-container>
+
+      <!-- Телефон -->
+      <ng-container matColumnDef="phone">
+        <mat-header-cell *matHeaderCellDef>Тел</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.phone ?? '-' }}</mat-cell>
+      </ng-container>
+
+      <!-- Почта -->
+      <ng-container matColumnDef="email">
+        <mat-header-cell *matHeaderCellDef>Почта</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.email ?? '-' }}</mat-cell>
+      </ng-container>
+
+      <!-- Роль -->
+      <ng-container matColumnDef="role">
+        <mat-header-cell *matHeaderCellDef>Роль</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.role ?? '-' }}</mat-cell>
+      </ng-container>
+
+      <!-- Регион -->
+      <ng-container matColumnDef="region">
+        <mat-header-cell *matHeaderCellDef>Регион</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ getRegionName(element.region) }}</mat-cell>
+      </ng-container>
+
+      <!-- Дата создания -->
+      <ng-container matColumnDef="createDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Дата рег-ии</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.createDate }}</mat-cell>
+      </ng-container>
+
+      <!-- Последняя активность -->
+      <ng-container matColumnDef="lastInactiveTime">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Последняя активность пользователя</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.lastInactiveTime ? element.lastInactiveTime : '-'  }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="finishPeriod">
+        <mat-header-cell *matHeaderCellDef>Подписка</mat-header-cell>
+        <mat-cell
+          *matCellDef="let element">{{ element?.finishPeriod ? (element.finishPeriod | formatDate: 'DD.MM.YYYY') : '-' }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="commentAdmin">
+        <mat-header-cell *matHeaderCellDef>Комментарий</mat-header-cell>
+        <mat-cell *matCellDef="let item">
+          <div style="display: flex; flex-direction: column">
+            <b>{{ item['commentAdmin'] }}</b>
+            <div style="display: flex; gap: 10px; padding-top: 10px">
+              <button *ngIf="item['commentAdmin']" mat-mini-fab color="primary"
+                      (click)="openModal(item, 'Редактировать'); $event.stopPropagation();">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button *ngIf="item['commentAdmin']" mat-mini-fab color="warn"
+                      (click)="deleteComment(item); $event.stopPropagation();">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+          <button *ngIf="!item['commentAdmin']" mat-mini-fab color="success"
+                  (click)="openModal(item, 'Добавить'); $event.stopPropagation();">
+            <mat-icon>add_circle</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"
+               [class.highlighted]="hoveredRow === row"
+               (mouseenter)="hoveredRow = row"
+               (click)="navigateProfileDetails(row)"
+               (mouseleave)="hoveredRow = null">
+      </mat-row>
+    </table>
+
+  </div>
+
+  <!-- Пагинатор, закрепленный внизу -->
+  <mat-paginator *ngIf="totalSize > 0"
+    [length]="totalSize"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[10, 20, 40]"
+    showFirstLastButtons
+    (page)="onPaginateChange($event)">
+  </mat-paginator>
+</div>

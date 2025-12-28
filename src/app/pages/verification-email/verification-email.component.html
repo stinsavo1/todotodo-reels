@@ -1,0 +1,26 @@
+<ion-toolbar class="registration-page__toolbar">
+  <ion-buttons slot="start" class="registration-page__back-btn">
+    <ion-icon class="registration-page__icon icon-left-arrow"></ion-icon>
+  </ion-buttons>
+</ion-toolbar>
+<ion-content class="registration-page__content">
+  <div class="registration-page__form">
+    <div class="registration-page__title">Укажите адрес электронной почты</div>
+    <div class="registration-page__info">Этот email будет использоваться для входа в аккаунт. Убедитесь, что он указан верно.</div>
+    <div class="registration-page__input-container">
+      <input class="registration-page__input"
+             autocomplete="email"
+             placeholder="E-mail"
+             [(ngModel)]="email"
+             required
+             inputmode="email"
+      />
+    </div>
+    <ion-button
+      class="ion-padding-horizontal ion-margin-top button"
+      expand="block"
+      (click)="save()"
+    >Продолжить
+    </ion-button>
+  </div>
+</ion-content>

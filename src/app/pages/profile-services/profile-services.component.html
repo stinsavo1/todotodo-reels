@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-toolbar class="profile-toolbar">
+    <ion-buttons slot="start" class="profile-detail-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text="" defaultHref="/tabs/map"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left profile-toolbar-title">Профиль</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ng-container *ngIf="item$ | async as item">
+    <ion-list lines="none">
+      <ion-item lines="none">
+        <div class="container">
+          <img *ngIf="!item?.photo" class="container__no-photo" src="assets/no-avatar.svg"/>
+          <img *ngIf="item?.photo" class="container__photo" [src]="item?.photo"/>
+          <div class="container__region">{{getRegionName(item?.region)}}</div>
+          <div class="container__role">{{item.role}}</div>
+          <div class="rating-stars">
+            <ng-container *ngFor="let star of stars; let i = index">
+              <ion-icon
+                *ngIf="star.full"
+                name="star"
+                color="warning"
+                class="star-icon">
+              </ion-icon>
+              <ion-icon
+                *ngIf="star.half"
+                name="star-half"
+                color="warning"
+                class="star-icon">
+              </ion-icon>
+              <ion-icon
+                *ngIf="!star.full && !star.half"
+                name="star-outline"
+                color="medium"
+                class="star-icon">
+              </ion-icon>
+            </ng-container>
+            <a class="link" [routerLink]="['/profile/', id, 'ratings', 'watch']">
+              см. отзывы
+            </a>
+          </div>
+        </div>
+      </ion-item>
+      <ion-item lines="none" *ngIf="item.fio">
+        <div class="container-details">
+          <img class="container-details__img" src="assets/profile-factory/person.svg"/>
+          <div>{{ item?.fio }}</div>
+        </div>
+      </ion-item>
+      <ion-item lines="none" *ngIf="item.description">
+        <div class="container-details">
+          <img class="container-details__img" src="assets/profile-factory/info.svg"/>
+          <div>{{ item?.description }}</div>
+        </div>
+      </ion-item>
+      <ion-item lines="none" *ngIf="item.address">
+        <div class="container-details">
+          <img class="container-details__img" src="assets/profile-factory/point.svg"/>
+          <div>{{ item?.address }}</div>
+        </div>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+</ion-content>
+<!--<ion-footer *ngIf="hideButton">-->
+<!--  <ion-button-->
+<!--    (click)="openChat()"-->
+<!--    class="button-factory"-->
+<!--  >Написать поставщику услуг-->
+<!--  </ion-button>-->
+<!--</ion-footer>-->

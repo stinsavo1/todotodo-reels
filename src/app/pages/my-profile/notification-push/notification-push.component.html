@@ -1,0 +1,28 @@
+<ng-container *ngIf="item$ | async as item; else loading">
+  <ion-header>
+    <ion-toolbar class="notification-toolbar">
+      <ion-buttons slot="start" class="notification-toolbar-button">
+        <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+      </ion-buttons>
+      <ion-title class="ion-text-left notification-toolbar-title">Редактировать</ion-title>
+      <button class="notification-save" (click)="save()" mat-flat-button>Сохранить</button>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-list>
+      <ion-item class="ion-item-radio">
+        <ion-checkbox labelPlacement="end" [(ngModel)]="callNotificationNewOrder">Уведомления новые заказы</ion-checkbox>
+      </ion-item>
+      <ion-item class="ion-item-radio">
+        <ion-checkbox labelPlacement="end" [(ngModel)]="callNotificationNewLead">Уведомления новые лиды</ion-checkbox>
+      </ion-item>
+      <ion-item class="ion-item-radio">
+        <ion-checkbox labelPlacement="end" [(ngModel)]="callNotificationMessage">Уведомления новые сообщения</ion-checkbox>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ng-container>
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>

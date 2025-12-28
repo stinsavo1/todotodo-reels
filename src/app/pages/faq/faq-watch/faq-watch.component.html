@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar class="faq-toolbar">
+    <ion-buttons slot="start" class="faq-toolbar-button">
+      <ion-back-button icon="chevron-back-outline" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-left faq-toolbar-title">Детали статьи</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-template #loading>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </ng-template>
+  <div style="padding: 20px" *ngIf="article$ | async as article; else loading">
+    <h1>{{ article.title }}</h1>
+    <div  [innerHTML]="getSafeHtml(article.content)"></div>
+  </div>
+</ion-content>

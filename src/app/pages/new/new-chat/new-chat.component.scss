@@ -1,0 +1,479 @@
+ion-content {
+  --background: #f3f5fd;
+}
+
+.header {
+
+  &__title {
+    padding-inline-start: 35px
+  }
+
+  &__call {
+    width: 38px;
+    height: 39px;
+    margin-right: 10px;
+    margin-left: 10px;
+    background: rgb(244, 244, 244);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  &__call-icon {
+    color: #22307e;
+    font-size: 23px;
+  }
+}
+
+.chat-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-list {
+  display: flex;
+  flex-direction: column;
+  background: none;
+  max-width: 900px;
+  margin-inline: auto;
+  padding: 16px;
+
+  &__chip-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  &__chip {
+    pointer-events: none;
+    background-color: white;
+    width: max-content;
+    color: oklch(.551 .027 264.364);
+    border: 1px solid #0000001a;
+  }
+
+  &__no-message {
+    --background: none;
+  }
+
+  &__client {
+    margin-bottom: 4px;
+    font-size: 16px;
+    color: oklch(.446 .03 256.802);
+  }
+
+  &__item {
+    display: flex;
+    justify-content: flex-start;
+    padding-bottom: 16px;
+
+    &--right {
+      justify-content: flex-end;
+
+      .message-block__text-block {
+        font-family: 'Roboto Flex';
+        width: 100%;
+        align-items: flex-end;
+      }
+    }
+  }
+}
+
+.message-block {
+  width: calc(100% - 50px);
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+
+  &__images-group {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+  }
+
+  &__avatar-header {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  &__no-avatar-container {
+    width: 32px;
+    height: 32px;
+    background: #ebe6e7;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center
+  }
+
+  &__no-avatar-container-header {
+    width: 38px;
+    height: 38px;
+    background: #ebe6e7;
+    border-radius: 10px;
+    display: flex;
+    color: black;;
+    justify-content: center;
+    align-items: center
+  }
+
+  &__no-avatar-title {
+    font-size: 16px;
+    font-family: 'Roboto Flex';
+  }
+
+  &__text-block {
+    width: max-content;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  &__text {
+    color: #fff;
+    font-size: 16px;
+    line-height: 20px;
+    border-radius: 12px;
+    border-top-left-radius: 4px;
+    background: rgba(40, 56, 145, 1);
+    padding: 8px;
+    margin: 0;
+    max-width: calc(100vw - 100px);
+
+    &--bg {
+      color: rgba(40, 40, 40, 1);
+      background-color: #fff;
+      border-radius: 12px;
+      border-bottom-right-radius: 4px;
+      max-width: calc(100vw - 100px);
+    }
+  }
+
+  &__width {
+    width: 6rem;
+  }
+
+  &__time {
+    width: 100%;
+    text-align: right;
+    color: oklch(.551 .027 264.364);
+    font-size: 16px;
+    padding-top: 4px;
+    line-height: 16px;
+    font-family: 'Roboto Flex'
+  }
+}
+
+.footer {
+  padding: 12px 16px;
+  border-top: 1px solid #0000001a;
+}
+
+.send-block {
+  ion-toolbar {
+    --background: #fff;
+    --border-width: 0;
+  }
+
+  &__content {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 8px;
+    justify-content: center;
+  }
+
+  &__textarea {
+    flex: 1;
+    min-height: 38px;
+    max-height: calc(1.5em * 4 + 20px);
+    color: rgb(40, 40, 40);
+    background-color: rgba(244, 244, 244, 1);
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    padding: 10px 16px;
+    font-family: 'Roboto Flex';
+    resize: none;
+    max-width: 900px;
+    overflow-y: auto;
+    line-height: 1.5;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.12);
+      border-radius: 3px;
+      &:hover {
+        background: rgba(0, 0, 0, 0.2);
+      }
+    }
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.12) transparent;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
+
+  &__btn {
+    min-width: 38px;
+    min-height: 38px;
+    width: 38px;
+    height: 38px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(40, 56, 145, 1);
+    border-radius: 10px;
+  }
+
+  &__buttons {
+    padding-left: 10px;
+  }
+
+  &__icon {
+    font-size: 22px;
+  }
+
+  &__disabled {
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  &__container-textarea {
+    display: flex;
+    width: 900px;
+    padding: 5px 10px 5px 0;
+    background: rgb(244, 244, 244);
+    border-radius: 10px;
+  }
+
+  &__btn-attach {
+    min-width: 38px;
+    min-height: 38px;
+    width: 38px;
+    height: 38px;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+
+    &:hover {
+      background: #e9ebef;
+    }
+  }
+
+  &__attach {
+    font-size: 22px;
+  }
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+  margin: 10px 0 0 10px;
+  vertical-align: text-top;
+
+  &__img {
+    height: 80px;
+    width: 80px;
+    border-radius: 10px;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__remove-button {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #ff4d4d;
+    color: white;
+    border: 1px solid white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+    outline: none;
+
+    &:hover {
+      background-color: #e60000;
+    }
+  }
+
+  &__container-file {
+    max-width: 200px;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    gap: 5px;
+    font-size: 16px;
+    font-family: 'Roboto Flex';
+    background-color: oklch(.967 .003 264.542);
+    border: 1px solid #0000001a;
+    border-radius: 10px;
+  }
+
+  &__container-file-chat {
+    max-width: 200px;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    gap: 5px;
+    font-size: 16px;
+    font-family: 'Roboto Flex';
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid #0000001a;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+      opacity: .7;
+    }
+  }
+
+  &__truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__docs {
+    font-size: 24px;
+    color: oklch(.446 .03 256.802);
+  }
+
+  &__size {
+    font-size: 15px;
+    color: oklch(.551 .027 264.364);
+  }
+}
+
+.img {
+  width: 6rem;
+  cursor: pointer;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.footer-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #0000001a;
+  border-bottom: 1px solid #0000001a;
+  padding: 8px 16px;
+  font-family: 'Roboto Flex';
+
+  &__container {
+    width: 900px;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__button-group {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    padding: 0 12px;
+    min-width: 0;
+  }
+
+  &__button {
+    flex: 1;
+    min-height: 36px;
+    min-width: 120px;
+    --padding-top: 9px;
+    --padding-bottom: 9px;
+  }
+
+  &__filled {
+    --background: #22307e;
+    --background-hover: color-mix(in srgb, var(--background) 85%, white 15%);
+    --background-activated: color-mix(in srgb, var(--background) 85%, black 15%);
+    --background-focused: var(--background-hover);
+    --border-radius: 10px;
+  }
+
+  &__outline {
+    --background-activated: #22307e;
+    --background-focused: #22307e;
+    --border-color: #22307e;
+    --color: #22307e;
+    --border-radius: 10px;
+  }
+}
+
+.rating-container {
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Roboto Flex';
+
+  &__card {
+    margin-top: 8px;
+    background: rgba(34, 48, 126, 0.1);
+    box-shadow: unset;
+    margin-bottom: 8px;
+    padding: 16px;
+  }
+
+  &__title {
+    font-size: 16px;
+    padding-bottom: 8px;
+    color: #22307e;
+  }
+
+  &__description {
+    padding-bottom: 12px;
+    color: oklch(.373 .034 259.733);
+  }
+
+
+  &__button {
+    min-height: 36px;
+    --padding-top: 9px;
+    --padding-bottom: 9px;
+    width: 100%;
+  }
+
+  &__outline {
+    --background-activated: #22307e;
+    --background-focused: #22307e;
+    --border-color: #22307e;
+    --color: #22307e;
+    --background: #fff;
+    --border-radius: 10px;
+  }
+}
+
+ion-footer {
+ --background: white;
+  background: white;
+}

@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button> </ion-back-button>
+    </ion-buttons>
+    <ion-title>Заказы в работе</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-template #loading>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </ng-template>
+
+  <ion-list *ngIf="items; else loading">
+    <ion-item button detail="false" *ngIf="items.length === 0">
+      <ion-label
+        ><ion-text color="medium"><p>Заказы отсутствуют...</p></ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-item
+      text-wrap
+      [routerLink]="['order', order['id']]"
+      *ngFor="let order of items"
+    >
+      <ion-text slot="end" color="medium">
+        <p>
+          <ion-icon name="navigate-outline"></ion-icon
+          >{{ order['distance'] | distance }}
+        </p>
+      </ion-text>
+      <ion-label text-wrap>
+        <ion-text color="medium">
+          <p>{{ order['type'] }} на {{ order['orderDate'] | date: 'dd.MM' }}</p>
+        </ion-text>
+        <h2>по адресу {{ order['address'] }}</h2>
+        <ion-text color="medium">
+          <p>{{ order['author'] | profileFIO | async }}</p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
