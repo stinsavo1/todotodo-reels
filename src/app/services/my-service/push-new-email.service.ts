@@ -185,7 +185,7 @@ export class PushNewEmailService {
 \t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>
 \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
 \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="alignment" align="center" style="line-height:10px">
-\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div style="max-width: 81.25px;"><a href="https://montaz.todotodo.ru" target="_blank" style="outline:none" tabindex="-1"><img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/kdht9b7v/z0t/8ru/hu4/1.png" style="display: block; height: auto; border: 0; width: 100%;" width="81.25" alt title height="auto"></a></div>
+\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div style="max-width: 81.25px;"><a href="https://todotodo-reels.web.app" target="_blank" style="outline:none" tabindex="-1"><img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/kdht9b7v/z0t/8ru/hu4/1.png" style="display: block; height: auto; border: 0; width: 100%;" width="81.25" alt title height="auto"></a></div>
 \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>
 \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>
 \t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>
@@ -447,7 +447,7 @@ export class PushNewEmailService {
 														<tr>
 															<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
 																<div class="alignment" align="center" style="line-height:10px">
-																	<div style="max-width: 81px;"><a href="https://montaz.todotodo.ru" target="_blank" style="outline:none" tabindex="-1"><img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/kdht9b7v/z0t/8ru/hu4/1.png" style="display: block; height: auto; border: 0; width: 100%;" width="81" alt title height="auto"></a></div>
+																	<div style="max-width: 81px;"><a href="https://todotodo-reels.web.app" target="_blank" style="outline:none" tabindex="-1"><img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/kdht9b7v/z0t/8ru/hu4/1.png" style="display: block; height: auto; border: 0; width: 100%;" width="81" alt title height="auto"></a></div>
 																</div>
 															</td>
 														</tr>
