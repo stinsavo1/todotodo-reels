@@ -30,6 +30,7 @@ import { provideStorage } from "@angular/fire/storage";
 registerLocaleData(localeRu);
 
 @NgModule({
+
   declarations: [AppComponent],
   bootstrap: [AppComponent], imports: [BrowserModule,
     BrowserAnimationsModule,

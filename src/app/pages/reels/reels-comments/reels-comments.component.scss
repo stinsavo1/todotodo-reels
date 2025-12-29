@@ -1,0 +1,52 @@
+.comments-content {
+    --background: #121212;
+    //--padding-bottom: calc(40px + var(--ion-safe-area-bottom)); // footer height + safe area
+}
+
+.footer-toolbar {
+  --background: #1e1e1e;
+  border-top: 1px solid #333;
+  padding-bottom: var(--ion-safe-area-bottom);
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+
+  ion-input {
+    --background: #2a2a2a;
+    --color: #fff;
+    border-radius: 20px;
+    margin-right: 8px;
+  }
+}
+
+.list-ios {
+  background: black;
+}
+
+ion-content {
+  --background: #121212;
+  --color: white;
+}
+
+ion-item {
+  --background: #121212;
+  --color: white;
+  --border-color: #222;
+
+  h3 {
+    color: white !important;
+    font-weight: 600;
+  }
+
+  p {
+    color: #b0b0b0 !important;
+  }
+}
+
+ion-list {
+  background: transparent !important;
+  padding: 0;
+}

@@ -1,0 +1,77 @@
+<!--@let previewUrl = videoService.previewUrl$ | async;-->
+@let isDowload = videoService.isDowload$ | async;
+@let dowloadUrl = videoService.uploadedVideoUrl$ | async;
+<ion-modal
+  [isOpen]="isOpenCreateModal"
+  class = "custom-modal-height"
+  (didDismiss)="dismiss()"
+>
+  <ng-template>
+
+    <ion-header class="ion-no-border">
+      <ion-toolbar color="dark">
+        <ion-title>Создание рилса</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="reels-content">
+      <div class="upload-container" (click)="fInput.click()">
+        <input
+          type="file"
+          #fInput
+          (change)="uploadVideo($event)"
+          accept="video/mp4,video/mov"
+          style="display: none"
+        >
+        @if (isDowload) {
+          <ion-spinner name="crescent"></ion-spinner>
+        }
+
+        @if (dowloadUrl) {
+          <div class="preview-wrapper">
+            <video [src]="dowloadUrl" autoplay playsinline class="preview"></video>
+<!--            <ion-button class="delete-icon-btn"  >-->
+              <ion-icon class="delete-icon-btn" name="trash-outline" (click)="deleteVideo()"></ion-icon>
+<!--            </ion-button>-->
+            <div class="change-hint">Нажмите, чтобы изменить видео</div>
+          </div>
+        } @else if (!isDowload) {
+          <div class="upload-box">
+            <ion-button mode="ios" class="upload-btn">
+              Загрузить контент
+            </ion-button>
+
+            <div class="upload-info">
+              <p>Допустимые форматы: mov, mp4;</p>
+              <p>продолжительность видео — от 2 секунд;</p>
+              <p>максимальный вес — 100 МБ</p>
+            </div>
+          </div>
+        }
+
+      </div>
+
+      <div class="description-section">
+        <ion-item lines="none" class="desc-input">
+          <ion-textarea
+            [(ngModel)]="description"
+            placeholder="Добавьте описание..."
+            auto-grow="true">
+          </ion-textarea>
+        </ion-item>
+      </div>
+    </ion-content>
+
+    <ion-footer slot="fixed">
+      <ion-toolbar class="footer-toolbar">
+        <ion-button fill="clear" (click)="createReels()" [disabled]="!description && !dowloadUrl">
+          Создать
+        </ion-button>
+        <ion-button fill="clear" (click)="dismiss()">
+          Отмена
+        </ion-button>
+      </ion-toolbar>
+    </ion-footer>
+
+  </ng-template>
+</ion-modal>

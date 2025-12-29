@@ -13,6 +13,7 @@ import { MenuInterface } from './interfaces/menu.interface';
 import { onAuthStateChanged } from "@angular/fire/auth";
 import { VersionCheckService } from "./services/version-check-service";
 
+
 @Component({
     selector: 'app-root',
     templateUrl: 'app.component.html',
@@ -39,6 +40,7 @@ export class AppComponent implements OnInit {
   public isMobile: boolean;
   public loading$: Observable<boolean>;
   public isCollapsed = false;
+  public openReels=false;
   public isAdmin = false;
   public isMenuActive = false;
   public primaryNav: Map<string, MenuInterface> = new Map([
@@ -49,6 +51,7 @@ export class AppComponent implements OnInit {
     ['handshake', { icon: 'handshake', label: 'Партнерство', route: 'tabs/menu/partnership' }],
     ['help', { icon: 'help', label: 'Вопрос-ответ', route: 'tabs/menu/faq' }],
     ['list', { icon: 'list', label: 'Прочее', route: 'tabs/documents' }],
+    // ['reals', { icon: 'hangout_video', label: 'Видео', route: 'tabs/menu/reals' }],
     ['contact_support', { icon: 'contact_support', label: 'Контакты', route: 'tabs/menu/contacts' }],
 
   ]);
@@ -83,6 +86,7 @@ export class AppComponent implements OnInit {
     this.initializeApp();
     // TODO техдолг переделать проверку админа
     const pathname = window.location.pathname;
+    console.log(this.openReels);
 
     if (pathname.includes('admin')) {
       this.isAdmin = true;
@@ -210,7 +214,14 @@ export class AppComponent implements OnInit {
     ]).pipe(untilDestroyed(this)).subscribe((res: any) => {
       this.primaryNav.get('notifications').count = res[0].count;
       this.primaryNav.get('chat').count = res[1].count;
-      this.primaryNav.get('overview').count = res[2].length ?? 0;
+      // this.primaryNav.get('overview').count = res[2]?.length ?? 0;
     });
+  }
+
+  public onOpenReels(): void {
+    this.openReels=true;
+    console.log('ssss');
+    this.router.navigate(['/reels']).then(() => {})
+    // this.router.navigateByUrl('/reels');
   }
 }

@@ -1,0 +1,53 @@
+<ion-modal
+  [isOpen]="isOpen"
+  (didDismiss)="dismiss()"
+  class="custom-fixed-modal"
+>
+  <ng-template>
+
+    <ion-header class="ion-no-border">
+      <ion-toolbar color="dark">
+        <ion-title>Comments</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="comments-content">
+      @if (comments.length === 0) {
+        <div class="empty">
+          No comments yet
+        </div>
+      }
+
+      <ion-list lines="none">
+        @for (comment of comments;track comment.id) {
+          <ion-item>
+            <ion-avatar slot="start">
+              <img [src]="comment.avatar || '/assets/avatar.svg'"/>
+            </ion-avatar>
+            <ion-label>
+              <h3>{{ comment.username }}</h3>
+              <p>{{ comment.text }}</p>
+            </ion-label>
+          </ion-item>
+        }
+
+      </ion-list>
+    </ion-content>
+
+    <ion-footer slot="fixed">
+      <ion-toolbar class="footer-toolbar">
+        <div class="input-container">
+          <ion-input
+            autofocus
+            [(ngModel)]="newCommentText"
+            placeholder="Add comment..."
+          ></ion-input>
+          <ion-button fill="clear" (click)="postComment()">
+            Post
+          </ion-button>
+        </div>
+      </ion-toolbar>
+    </ion-footer>
+
+  </ng-template>
+</ion-modal>

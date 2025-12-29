@@ -11,6 +11,12 @@ const routes: Routes = [
     path: '',
     component: MenuPage,
   },
+  // {
+  //   path: 'reals',
+  //   loadChildren: () => import('../reels/reels.module').then(
+  //     m => m.ReelsModule
+  //   )
+  // },
   {
     path: 'orders-in-progress',
     loadChildren: () =>

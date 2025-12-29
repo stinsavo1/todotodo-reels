@@ -1,0 +1,17 @@
+
+ion-icon{
+  margin: 0;
+}
+
+ion-tab-bar {
+  --background: #000000;
+  --border: 1px solid #222;
+
+
+  ion-tab-button {
+    --color: #888888;
+    --color-selected: #ffffff;
+
+    --ripple-color: transparent;
+  }
+}

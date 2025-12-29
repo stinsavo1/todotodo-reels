@@ -32,6 +32,31 @@ body {
   font-family: $font-family-roboto;
 }
 
+.main-blur-effect {
+  filter: blur(10px) brightness(0.7);
+  transition: filter 0.3s ease-in-out, brightness 0.3s ease-in-out;
+  pointer-events: none;
+}
+
+.custom-modal-height {
+  --height: 90vh;
+  --border-radius: 20px;
+
+}
+
+.custom-fixed-modal {
+  --height: 50%;
+  align-items: flex-end;
+  --width: 100%;
+  --max-width: 100%;
+  --border-radius: 20px 20px 0 0;
+
+  &::part(content) {
+    position: absolute;
+    bottom: 0;
+  }
+}
+
 .file {
   position: relative;
   z-index: 1;

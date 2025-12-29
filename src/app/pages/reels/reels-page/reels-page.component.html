@@ -1,0 +1,77 @@
+<ion-content [fullscreen]="true" scrollY="false" class="my-background">
+  @if (showSpinner) {
+
+    <ion-spinner></ion-spinner>
+  }
+
+  <div
+    class="content ion-display-flex ion-flex-direction-column ion-text-center ion-align-items-center ion-justify-content-center ion-height-100">
+
+    <swiper-container
+      #swiperRef
+      direction="vertical"
+      slides-per-view="1"
+      mousewheel="true"
+      (swiperslidechange)="onSlideChange($event)"
+      preload-images="false"
+      lazy="true"
+      style="width: 100%;  display: block;"
+    >
+      @for (video of videoList; track video.url; let i = $index) {
+        <swiper-slide>
+          <div class="video-container">
+            <video
+              [id]="'video-' + i"
+              class="reels-video"
+              loop
+              autoplay
+              playsinline
+              [muted]="isMuted"
+              preload="auto"
+              [src]="video.url">
+            </video>
+
+            <div class="video-info">
+              <h3>{{ video.userName }}</h3>
+              <p>{{ video.viewsCount || '' }}</p>
+              <p>{{ video.description }}</p>
+            </div>
+
+            <div class="side-actions">
+              <ion-button fill="clear" (click)="toggleLike(video)">
+                <ion-icon slot="icon-only"
+                          [name]="Array.isArray(video.likes) && video.likes?.includes(userId) ? 'heart' :
+                          'heart-outline'"></ion-icon>
+              </ion-button>
+              <div class="count">{{video.likesCount}}</div>
+              <ion-button fill="clear" (click)="openComments(video)">
+
+                <ion-icon slot="icon-only" [name]="video.commentsCount > 0 ? 'chatbubble' :
+                'chatbubble-outline'"></ion-icon>
+              </ion-button>
+              <div class="count">{{video.commentsCount}}</div>
+              <ion-button fill="clear" (click)="shareVideo(video)">
+                <ion-icon name="arrow-redo-outline" color="light"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" (click)="toggleMute()">
+                <ion-icon slot="icon-only" [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+        </swiper-slide>
+      }
+    </swiper-container>
+    <app-reels-tabs (createReels)="isCreateOpen=true"></app-reels-tabs>
+    <app-reels-comments
+      [isOpen]="isCommentsOpen"
+      [videoId]="selectedVideoId"
+      (closeModal)="closeModal()">
+    </app-reels-comments>
+
+    <app-reels-create
+      [isOpenCreateModal]="isCreateOpen"
+      (closeModal)="isCreateOpen=false">
+    </app-reels-create>
+  </div>
+
+</ion-content>
