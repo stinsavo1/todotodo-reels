@@ -18,7 +18,7 @@ export class TabsPage implements OnInit {
   }
 
   ngOnInit() {
-    this.isAdmin = environment.adminUid !== this.authService.uid;
+    this.isAdmin = true;
   }
 
   public signOut(): void {

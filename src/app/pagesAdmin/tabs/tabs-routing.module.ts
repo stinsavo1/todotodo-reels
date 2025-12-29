@@ -8,7 +8,7 @@ const routes: Routes = [
   {
     path: 'tabs',
     component: TabsPage,
-    canActivate: [AdminGuard],
+    // canActivate: [AdminGuard],
     children: [
       {
         path: 'orders',

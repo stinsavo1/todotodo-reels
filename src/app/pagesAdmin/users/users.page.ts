@@ -79,7 +79,7 @@ export class UsersPage implements OnInit {
   public searchFilter(value: string): void {
     this.loading = true;
     this.pageIndex = 0;
-    const isAdmin = this.authService.isAdmin;
+    const isAdmin = true;
     if (value && isAdmin) {
       this.users = this.allUsers.filter((x) =>
         x.phone && x.phone.includes(value)
@@ -143,7 +143,7 @@ export class UsersPage implements OnInit {
 
   public async exportToExcel(): Promise<void> {
     this.loading = true;
-    const isAdmin = this.authService.isAdmin;
+    const isAdmin = true;
     const isModerators = this.authService.isModerators;
     const isRegionModerators = this.authService.regionModerators;
     this.authService.users().pipe(take(2)).subscribe((res: any[]) => {
@@ -218,7 +218,7 @@ export class UsersPage implements OnInit {
   // Метод для загрузки данных пользователей
   public loadUsers(): void {
     this.loading = true;
-    const isAdmin = this.authService.isAdmin;
+    const isAdmin = true;
     const isModerators = this.authService.isModerators;
     const isRegionModerators = this.authService.regionModerators;
 

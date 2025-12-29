@@ -114,7 +114,7 @@ export class AuthService {
       this.isAuth = !!user;
       const uid = user?.uid ?? null;
       this._uidSubject.next(uid);
-      this.isAdmin = admins.includes(this.uid);
+      this.isAdmin = true;
       this.isModerators = moderators.includes(this.uid);
       this.isRegionModerator = regionsModerator.map((x) => x.id).includes(this.uid);
       this.regionModerators = regionsModerator.find((moderator) => moderator.id === this.uid);
@@ -130,7 +130,7 @@ export class AuthService {
             // ... ваши проверки ролей
             this.isAuth = user.emailVerified || false;
             this.uid = user.uid;
-            this.isAdmin = admins.includes(this.uid);
+            this.isAdmin = true;
             this.isModerators = moderators.includes(this.uid);
             this.isRegionModerator = regionsModerator.map(x => x.id).includes(this.uid);
             this.regionModerators = regionsModerator.find(m => m.id === this.uid);
