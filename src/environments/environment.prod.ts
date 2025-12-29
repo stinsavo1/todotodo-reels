@@ -10,6 +10,6 @@ export const environment = {
   },
   adminUid: 'GiaBb13A05Sg8s5X0kPY3QLtBP53',
   apikeyYandexMap: 'de192988-d580-484d-a4ff-5f9b59ad78d7',
-  apikeySuggest: 'de192988-d580-484d-a4ff-5f9b59ad78d7',
+  apikeySuggest: '88eccfc5-6fb2-452f-9e25-1e6c57856fb8',
   VAPID_PUBLIC_KEY: 'BHpTP_BalnCMXaCE736BS7ILfWZde7s4wn0ndUnvv3rVIK6_7DwjRkRVenzOhg0WmUvxVefH3MlW2iS9UbyaNUo',
 }
