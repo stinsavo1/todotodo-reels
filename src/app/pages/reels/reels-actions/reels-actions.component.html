@@ -1,0 +1,31 @@
+
+<div class="side-actions">
+  <div class="button-count">
+    <ion-button fill="clear" (click)="toggleLike(reel)">
+      <ion-icon slot="icon-only"
+                [name]="Array.isArray(reel?.likes) && reel?.likes?.includes(userId) ? 'heart' :
+                            'heart-outline'"></ion-icon>
+
+    </ion-button>
+    <div class="count">{{ reel?.likesCount }}</div>
+  </div>
+
+  <div class="button-count">
+  <ion-button fill="clear" (click)="openModalComments(reel)">
+
+    <ion-icon slot="icon-only" [name]="reel?.commentsCount > 0 ? 'chatbubble' :
+                  'chatbubble-outline'"></ion-icon>
+  </ion-button>
+    <div class="count">{{ reel?.commentsCount }}</div>
+
+  </div>
+  <ion-button fill="clear" (click)="shareVideo(reel)">
+    <ion-icon name="arrow-redo-outline" color="light"></ion-icon>
+  </ion-button>
+  <ion-button fill="clear" (click)="openModalAdditionalActions(reel)">
+    <ion-icon name="ellipsis-horizontal"></ion-icon>
+  </ion-button>
+  <ion-button fill="clear" (click)="toggleMute()">
+    <ion-icon slot="icon-only" [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
+  </ion-button>
+</div>

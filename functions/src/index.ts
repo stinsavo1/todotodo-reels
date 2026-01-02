@@ -2,6 +2,7 @@ export { newOrder } from './new-order';
 export { createAuthUserWithCustomUid } from './create-auth-user-userId';
 export { sendVerificationCodeByEmail } from './send-verification-code-email';
 export { createOrder } from './create-order';
+export { sendToTelegram } from './send-telegram';
 export { registration } from './registration';
 export { verifyCodeBySms } from './verify-code-by-sms';
 export { deleteAuthUser } from './delete-auth-user';

@@ -1,0 +1,145 @@
+@use 'swiper/css';
+@use 'swiper/css/virtual';
+
+.swiper {
+  width: 100%;
+  height: var(--video-height)px;
+  max-width: 460px;
+}
+.swiper-slide {
+  height: var(--video-height)px;
+  width: var(--video-width)px;
+  display: flex;
+  background: #000;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.input-container {
+  .native-input.sc-ion-input-ios{
+    padding-left: 10px!important;
+  }
+}
+
+
+.reels-video {
+  width: 100%;
+  height: var(--video-height)px;
+  object-fit: cover;
+  @media screen and (max-width: 480px) {
+    height: 100vh;
+  }
+}
+
+.main-blur-effect {
+  filter: blur(10px) brightness(0.7);
+  transition: filter 0.3s ease-in-out, brightness 0.3s ease-in-out;
+  pointer-events: none;
+}
+
+ion-toolbar.reels-toolbar, ion-item.custom-radio-item {
+  --background: var(--light-black);
+  --color: white;
+}
+
+ion-content.reels-content, ion-list.reels-list {
+  --background:var(--light-black)!important;
+  --color: white;
+}
+
+ion-toolbar.reels-toolbar ion-button {
+  --color: white;
+}
+
+.custom-modal-height {
+  --height: 90vh;
+  --border-radius: 20px;
+}
+
+.custom-fixed-modal {
+  align-items: flex-end;
+  --width: 100%;
+  --max-width: 100%;
+  --border-radius: 20px 20px 0 0;
+
+  &::part(content) {
+    position: absolute;
+    bottom: 0;
+  }
+  &.half {
+    --height: 50%;
+  }
+
+  &.small {
+    --height: 30%;
+  }
+}
+
+.custom-modal-height ion-modal ion-content::part(scroll) {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #1a1b1f;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--bg-button);
+    border-radius: 10px;
+  }
+}
+
+ion-radio {
+  --color: #d1d1d1;
+  --color-checked: var(--bg-button);
+
+
+  &::part(container) {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--color);
+    border-radius: 50%;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+  }
+
+  &::part(mark) {
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.2s ease-in-out;
+    background-color: var(--bg-button);
+  }
+
+
+  &.radio-checked {
+    &::part(container) {
+      border-color: var(--bg-button);
+    }
+
+    &::part(mark) {
+      transform: scale(1);
+    }
+  }
+}
+
+.reels-button {
+  --border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  --color:white;
+  --background: var(--light-black);
+  --transition: 0.3s ease-in-out;
+  --background-hover: var(--bg-button);
+  --background-hover-opacity: 1;
+}
+
+
+
+.reels-button::part(hover) {
+  display: none;
+}

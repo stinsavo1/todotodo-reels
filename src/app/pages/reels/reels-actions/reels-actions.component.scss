@@ -1,0 +1,26 @@
+.side-actions {
+  //position: absolute;
+  //right: 10px;
+  //bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  //z-index: 10;
+
+  .count {
+    margin-top: -10px;
+    color: white;
+  }
+  ion-button {
+    --color: white;
+    font-size: 20px;
+    margin-bottom: 5px;
+
+
+  }
+}
+
+.button-count{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

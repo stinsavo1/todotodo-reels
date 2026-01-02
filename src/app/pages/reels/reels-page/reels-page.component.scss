@@ -19,81 +19,61 @@ ion-spinner {
   height: 100px;
 }
 
-swiper-container {
+.swiper-container {
   display: block;
-  width: 100%;
-  height: calc(100vh - 50px);
-  max-width: 458px;
+  height: var(--video-height);
+  width:var(--video-width);
+  max-width: var(--video-width);
+  @media (max-width: 480px) {
+    height: 100vh;
+    .reels-video {
+      width: 100%;
+      height: 100vh;
+    }
+
+    .swiper-slide {
+      background: #000;
+    }
+  }
 }
 
-swiper-slide {
-
-  height: 100% !important;
-
-  width: 100% !important;
+.reals-container {
   display: flex;
-  background: #000;
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
-  border-radius: 10px;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  padding-top: 40px;
+  @media screen and (max-width: 480px){
+    padding-top: 0;
+    background: transparent;
+  }
 }
 
 .video-container {
-
   width: 100%;
   height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-
-.reels-video {
-
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.video-overlay {
-  position: absolute;
-  bottom: 50px;
-  left: 20px;
-  color: white;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-}
-
-
-.video-info {
-  position: absolute;
-  bottom: 20px;
-  left: 15px;
-  color: white;
-  z-index: 10;
-}
-
-.my-background {
-  background-color: #000 !important;
-}
-
-.side-actions {
-  position: absolute;
-  right: 10px;
-  bottom: 100px;
   display: flex;
   flex-direction: column;
-  z-index: 10;
+  align-items: center;
+  position: relative;
+}
 
-  .count {
-    margin-top: -17px;
-    color: white;
+app-reels-actions {
+  position: absolute;
+  right: 50%;
+  transform: translate(calc(-50% + 345px), calc(-50% + 70px));
+  top:50%;
+  z-index: 100;
+  @media screen and (max-width: 480px) {
+    right:0px;
+    transform: translateY(-50%);
+    top:50%;
   }
-  ion-button {
-    --color: white;
-    font-size: 20px;
-    margin-bottom: 5px;
+}
 
 
-  }
+
+
+.bg-black {
+  background-color: #000 !important;
 }

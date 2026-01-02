@@ -1,0 +1,35 @@
+
+<ion-content class="ion-padding reels-content">
+  <ion-header class="ion-no-border">
+    <ion-toolbar class="reels-toolbar">
+      <ion-title>Пожаловаться</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="close()">
+          <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-radio-group [(ngModel)]="selectedReason" >
+    <ion-list lines="none">
+      @for (reason of Object.values(resonsForReporting); let i=$index;track reason) {
+        <ion-item [detail]="false" class="custom-radio-item">
+          <ion-radio [value]="i"
+                     justify="start"
+                     label-placement="end">
+            {{ reason }}
+          </ion-radio>
+        </ion-item>
+      }
+
+
+
+
+    </ion-list>
+  </ion-radio-group>
+  <ion-button class="submit-button" expand="block" (click)="sendReport()" [disabled]="!selectedReason ||
+  isSending">
+    <ion-spinner name="crescent" *ngIf="isSending"></ion-spinner>
+    <span *ngIf="!isSending">Пожаловаться</span>
+  </ion-button>
+</ion-content>

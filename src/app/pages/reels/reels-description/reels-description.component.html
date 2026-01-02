@@ -1,0 +1,14 @@
+<div class="video-info" [ngClass]="{'expended':isDescriptionExpanded}">
+  <div class="description-container" [ngClass]="{'video-overlay':isDescriptionExpanded}"
+       (click)="toggleDescription($event)">
+    <p #descText [class.expanded]="isDescriptionExpanded" class="description-text">
+      {{ reel?.description }}
+    </p>
+
+  </div>
+  <h3>{{ reel?.userName }}</h3>
+  <p
+    class="views">{{
+      reel?.viewsCount|declension:'просмотр':'просмотра':'просмотров'
+    }}</p>
+</div>

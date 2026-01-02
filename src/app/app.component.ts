@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
 
   @HostListener('window:resize')
   onResize() {
-    const sidebarEl = this.sidebar.nativeElement;
+    const sidebarEl = this.sidebar?.nativeElement;
 
     if (window.innerWidth >= 800) {
       this.isCollapsed = false;
@@ -51,7 +51,6 @@ export class AppComponent implements OnInit {
     ['handshake', { icon: 'handshake', label: 'Партнерство', route: 'tabs/menu/partnership' }],
     ['help', { icon: 'help', label: 'Вопрос-ответ', route: 'tabs/menu/faq' }],
     ['list', { icon: 'list', label: 'Прочее', route: 'tabs/documents' }],
-    // ['reals', { icon: 'hangout_video', label: 'Видео', route: 'tabs/menu/reals' }],
     ['contact_support', { icon: 'contact_support', label: 'Контакты', route: 'tabs/menu/contacts' }],
 
   ]);

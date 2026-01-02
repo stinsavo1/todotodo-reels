@@ -1,9 +1,11 @@
 <!--@let previewUrl = videoService.previewUrl$ | async;-->
-@let isDowload = videoService.isDowload$ | async;
+@let isDowload = videoService.isLoading$ | async;
 @let dowloadUrl = videoService.uploadedVideoUrl$ | async;
+@let error = videoService.errorMessages$ | async;
+@let progress = videoService.uploadProgress$ | async;
 <ion-modal
   [isOpen]="isOpenCreateModal"
-  class = "custom-modal-height"
+  class="custom-modal-height"
   (didDismiss)="dismiss()"
 >
   <ng-template>
@@ -15,56 +17,78 @@
     </ion-header>
 
     <ion-content class="reels-content">
-      <div class="upload-container" (click)="fInput.click()">
-        <input
-          type="file"
-          #fInput
-          (change)="uploadVideo($event)"
-          accept="video/mp4,video/mov"
-          style="display: none"
-        >
-        @if (isDowload) {
-          <ion-spinner name="crescent"></ion-spinner>
-        }
+      <form [formGroup]="uploadForm">
+        <div class="upload-container">
+          <input
+            type="file"
+            [formControl]="uploadForm.controls.file"
+            #fInput
+            (change)="uploadVideo($event)"
+            accept="video/mp4,video/mov"
+            style="display: none"
+          >
+          @if (isDowload) {
+            <ion-progress-bar [value]="progress"></ion-progress-bar>
+<!--            <ion-spinner name="crescent"></ion-spinner>-->
+          }
 
-        @if (dowloadUrl) {
-          <div class="preview-wrapper">
-            <video [src]="dowloadUrl" autoplay playsinline class="preview"></video>
-<!--            <ion-button class="delete-icon-btn"  >-->
+          @if (dowloadUrl) {
+            <div class="preview-wrapper">
+              <video #videoPlayer [src]="dowloadUrl" (click)="togglePlay($event, videoPlayer)" playsinline
+                     muted class="preview" (timeupdate)="updateProgress(videoPlayer)"></video>
               <ion-icon class="delete-icon-btn" name="trash-outline" (click)="deleteVideo()"></ion-icon>
-<!--            </ion-button>-->
-            <div class="change-hint">Нажмите, чтобы изменить видео</div>
-          </div>
-        } @else if (!isDowload) {
-          <div class="upload-box">
-            <ion-button mode="ios" class="upload-btn">
-              Загрузить контент
-            </ion-button>
+              <div class="progress-container" (click)="$event.stopPropagation()">
+                <input type="range"
+                       class="seek-slider"
+                       min="0"
+                       [max]="videoPlayer.duration || 0"
+                       [value]="videoPlayer.currentTime"
+                       (input)="seekVideo($event, videoPlayer)">
+              </div>
+              <div class="play-btn" (click)="togglePlay($event,videoPlayer)">
+                <ion-icon name="play"></ion-icon>
+              </div>
 
-            <div class="upload-info">
-              <p>Допустимые форматы: mov, mp4;</p>
-              <p>продолжительность видео — от 2 секунд;</p>
-              <p>максимальный вес — 100 МБ</p>
+              <div class="mute-btn" (click)="toggleMute($event)">
+                <ion-icon [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
+              </div>
             </div>
-          </div>
-        }
+          } @else if (!isDowload) {
+            <div class="upload-box" (click)="fInput.click()">
+              <ion-button mode="ios" class="upload-btn">
+                Загрузить контент
+              </ion-button>
 
-      </div>
+              <div class="upload-info">
+                <p>Допустимые форматы: mov, mp4;</p>
+                <p>продолжительность видео — от 2 секунд;</p>
+                <p>максимальный вес — {{ MAX_SIZE_FILE }} МБ</p>
+              </div>
+            </div>
+          }
 
-      <div class="description-section">
-        <ion-item lines="none" class="desc-input">
-          <ion-textarea
-            [(ngModel)]="description"
-            placeholder="Добавьте описание..."
-            auto-grow="true">
-          </ion-textarea>
-        </ion-item>
-      </div>
+        </div>
+        <div class="error">{{ error }}</div>
+        <div class="description-section">
+          <ion-item lines="none" class="desc-input">
+            <ion-textarea
+              [formControl]="uploadForm.controls.description"
+              placeholder="Добавьте описание..."
+              auto-grow="true">
+            </ion-textarea>
+
+
+          </ion-item>
+          <ion-text class="counter" color="medium">
+            {{ wordCount }} / {{ MAX_SIZE_COMMENT }}
+          </ion-text>
+        </div>
+      </form>
     </ion-content>
 
     <ion-footer slot="fixed">
       <ion-toolbar class="footer-toolbar">
-        <ion-button fill="clear" (click)="createReels()" [disabled]="!description && !dowloadUrl">
+        <ion-button fill="clear" (click)="createReels()" [disabled]="uploadForm.invalid || isDowload">
           Создать
         </ion-button>
         <ion-button fill="clear" (click)="dismiss()">

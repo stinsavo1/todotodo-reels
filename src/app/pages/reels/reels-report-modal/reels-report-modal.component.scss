@@ -1,0 +1,25 @@
+.submit-button {
+  --background: #cb5b0e;
+  --background-activated: #d66c1a;
+  --background-hover: #dc4b11;
+  --color: #ffffff;
+
+  --border-radius: 12px;
+  --padding-top: 15px;
+  --padding-bottom: 15px;
+  height: 54px;
+
+  font-weight: 600;
+  text-transform: none;
+  font-size: 16px;
+  margin: 20px 0;
+}
+
+.submit-button::part(native) {
+  box-shadow: 0 4px 15px rgba(240, 75, 19, 0.3);
+  transition: transform 0.1s ease-in-out;
+}
+
+.submit-button:active::part(native) {
+  transform: scale(0.98);
+}

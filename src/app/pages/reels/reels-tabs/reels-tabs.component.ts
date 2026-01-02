@@ -19,4 +19,8 @@ export class ReelsTabsComponent  implements OnInit {
   public openCreateModal(): void {
     this.createReels.emit();
   }
+
+  goTo(tab: string) {
+    console.log('Navigate to:', tab);
+  }
 }

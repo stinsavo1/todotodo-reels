@@ -1,0 +1,35 @@
+.custom-radio-item {
+  --padding-start: 16px;
+  --min-height: 20px;
+  padding-bottom: 8px;
+  --background: var(--light-black);;
+}
+
+
+
+
+ion-list, ion-item {
+  --background: var(--light-black);
+  background-color: var(--light-black);
+}
+ion-header{
+  --min-height: 26px;
+}
+
+
+ion-content {
+  --background: var(--light-black);
+  --color: white;
+}
+
+ion-radio-group {
+  --background: var(--light-black);
+  --color: white;
+}
+
+.submit-button {
+  --background: #cb5b0e;
+  --background-activated: #d66c1a;
+  --background-hover: #dc4b11;
+  --color: #ffffff;
+}

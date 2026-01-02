@@ -1,0 +1,36 @@
+<ion-content class="ion-padding">
+  <ion-header class="ion-no-border">
+    <ion-toolbar class="reels-toolbar">
+      <ion-title>Что именно скрыть?</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="close()">
+          <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-radio-group [(ngModel)]="selectedType" >
+    <ion-list lines="none" class="reels-list">
+
+      <ion-item [detail]="false" class="custom-radio-item">
+        <ion-radio value="video"
+                   justify="start"
+                   label-placement="end">
+          Скрыть это видео
+        </ion-radio>
+      </ion-item>
+
+      <ion-item [detail]="false" class="custom-radio-item">
+        <ion-radio value="author"
+                   justify="start"
+                   label-placement="end">
+          Не показывать видео автора
+        </ion-radio>
+      </ion-item>
+
+    </ion-list>
+  </ion-radio-group>
+  <ion-button class="submit-button" expand="block" (click)="onSelectionChange()">
+    Не показывать
+  </ion-button>
+</ion-content>

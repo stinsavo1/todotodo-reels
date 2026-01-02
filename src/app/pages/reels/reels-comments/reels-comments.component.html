@@ -1,20 +1,25 @@
 <ion-modal
   [isOpen]="isOpen"
   (didDismiss)="dismiss()"
-  class="custom-fixed-modal"
+  class="custom-fixed-modal half"
 >
   <ng-template>
 
     <ion-header class="ion-no-border">
-      <ion-toolbar color="dark">
-        <ion-title>Comments</ion-title>
+      <ion-toolbar color="dark" class="reels-toolbar">
+        <ion-title>Комментарии</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="dismiss()">
+            <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
-    <ion-content class="comments-content">
+    <ion-content class="comments-content reels-content">
       @if (comments.length === 0) {
         <div class="empty">
-          No comments yet
+          Комментарий нет
         </div>
       }
 
@@ -40,10 +45,10 @@
           <ion-input
             autofocus
             [(ngModel)]="newCommentText"
-            placeholder="Add comment..."
+            placeholder="Добавьте свой комментарий..."
           ></ion-input>
           <ion-button fill="clear" (click)="postComment()">
-            Post
+            Отправить
           </ion-button>
         </div>
       </ion-toolbar>
