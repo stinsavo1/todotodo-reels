@@ -1,6 +1,6 @@
-<div class="video-info" [ngClass]="{'expended':isDescriptionExpanded}">
+<div class="video-info" [ngClass]="{'expended':isDescriptionExpanded}" (click)="toggleDescription($event)">
   <div class="description-container" [ngClass]="{'video-overlay':isDescriptionExpanded}"
-       (click)="toggleDescription($event)">
+       >
     <p #descText [class.expanded]="isDescriptionExpanded" class="description-text">
       {{ reel?.description }}
     </p>

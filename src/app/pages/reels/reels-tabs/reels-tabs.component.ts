@@ -1,4 +1,5 @@
 import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 
 
 
@@ -10,8 +11,14 @@ import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 })
 export class ReelsTabsComponent  implements OnInit {
  @Output() createReels = new EventEmitter();
+ navigation = {
+   'profile':'/tabs/menu/my-profile',
+   'home':'/tabs/menu',
+   'docs':'/tabs/menu',
+   'cart':'/tabs/menu'
+ }
 
-  constructor() { }
+  constructor(private router:Router) { }
 
   ngOnInit() {
   }
@@ -21,6 +28,6 @@ export class ReelsTabsComponent  implements OnInit {
   }
 
   goTo(tab: string) {
-    console.log('Navigate to:', tab);
+    this.router.navigate([this.navigation[tab]]).then();
   }
 }

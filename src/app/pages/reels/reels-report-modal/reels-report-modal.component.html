@@ -1,5 +1,5 @@
 
-<ion-content class="ion-padding reels-content">
+<ion-content class="ion-padding" scrollY="false">
   <ion-header class="ion-no-border">
     <ion-toolbar class="reels-toolbar">
       <ion-title>Пожаловаться</ion-title>
@@ -11,7 +11,7 @@
     </ion-toolbar>
   </ion-header>
   <ion-radio-group [(ngModel)]="selectedReason" >
-    <ion-list lines="none">
+    <ion-list  lines="none">
       @for (reason of Object.values(resonsForReporting); let i=$index;track reason) {
         <ion-item [detail]="false" class="custom-radio-item">
           <ion-radio [value]="i"
@@ -22,14 +22,16 @@
         </ion-item>
       }
 
-
-
-
     </ion-list>
   </ion-radio-group>
   <ion-button class="submit-button" expand="block" (click)="sendReport()" [disabled]="!selectedReason ||
   isSending">
-    <ion-spinner name="crescent" *ngIf="isSending"></ion-spinner>
-    <span *ngIf="!isSending">Пожаловаться</span>
+    @if (isSending) {
+      <ion-spinner name="crescent"></ion-spinner>
+    } @else {
+      <span >Пожаловаться</span>
+    }
+
+
   </ion-button>
 </ion-content>

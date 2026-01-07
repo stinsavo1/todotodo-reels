@@ -1,16 +1,22 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core'
+import { getApp } from '@angular/fire/app';
+import { connectFirestoreEmulator, getFirestore } from '@angular/fire/firestore';
+import { connectFunctionsEmulator, getFunctions } from '@angular/fire/functions';
+import { connectStorageEmulator } from '@angular/fire/storage';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker'
 import { AlertController, Platform } from '@ionic/angular'
+import { getStorage } from 'firebase/storage';
 import { Observable, switchMap, zip } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 import { NotificationService } from './services/notification.service'
 import { AuthService } from './services/auth.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { LoadingScreenService } from './services/my-service/loading-screen.service';
+import { ResizeService } from './services/resize.service';
 import { UserStoreService } from './services/store-service/user-store.service';
 import { Router } from '@angular/router';
 import { MenuInterface } from './interfaces/menu.interface';
-import { onAuthStateChanged } from "@angular/fire/auth";
+import { connectAuthEmulator, getAuth, onAuthStateChanged } from '@angular/fire/auth';
 import { VersionCheckService } from "./services/version-check-service";
 
 
@@ -27,14 +33,17 @@ export class AppComponent implements OnInit {
   @HostListener('window:resize')
   onResize() {
     const sidebarEl = this.sidebar?.nativeElement;
-
-    if (window.innerWidth >= 800) {
-      this.isCollapsed = false;
-      this.isMenuActive = false;
-      sidebarEl.style.height = this.fullSidebarHeight;
-    } else {
-      sidebarEl.style.height = this.collapsedSidebarHeight;
+    if (sidebarEl) {
+      this.resizableService.currensSizeOfScreen$.next(window.innerWidth);
+      if (window.innerWidth >= 800) {
+        this.isCollapsed = false;
+        this.isMenuActive = false;
+        sidebarEl.style.height = this.fullSidebarHeight;
+      } else {
+        sidebarEl.style.height = this.collapsedSidebarHeight;
+      }
     }
+
   }
 
   public isMobile: boolean;
@@ -74,6 +83,7 @@ export class AppComponent implements OnInit {
     private notificationsService: NotificationService,
     private authService: AuthService,
     private swUpdate: SwUpdate,
+    private resizableService:ResizeService,
     private userStoreService: UserStoreService,
     private loadingScreenService: LoadingScreenService,
     private alertController: AlertController,
@@ -83,10 +93,30 @@ export class AppComponent implements OnInit {
 
   public ngOnInit(): void {
     this.initializeApp();
+    // if (location.hostname === 'localhost') {
+    //   const app = getApp();
+    //
+    //   // 1. Database (Firestore)
+    //   const db = getFirestore(app);
+    //   connectFirestoreEmulator(db, 'localhost', 8080);
+    //
+    //   // 2. Storage
+    //   const storage = getStorage(app);
+    //   connectStorageEmulator(storage, 'localhost', 9199);
+    //
+    //   // 3. Functions
+    //   const functions = getFunctions(app, 'us-central1');
+    //   connectFunctionsEmulator(functions, 'localhost', 5001);
+    //
+    //   // 4. Auth (Важно: добавьте опцию disableWarnings)
+    //   const auth = getAuth(app);
+    //   // connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+    //
+    //   console.log('--- Firebase Emulators Connected ---');
+    // }
     // TODO техдолг переделать проверку админа
     const pathname = window.location.pathname;
-    console.log(this.openReels);
-
+    this.resizableService.currensSizeOfScreen$.next(window.innerWidth);
     if (pathname.includes('admin')) {
       this.isAdmin = true;
     }
@@ -114,6 +144,8 @@ export class AppComponent implements OnInit {
       .pipe(switchMap(() => this.authService.get(this.authService.uid).pipe(untilDestroyed(this))))
       .subscribe((res: any) => {
         this.userStoreService.updateUser({id: this.authService.uid, ...res });
+
+
       });
     this.loading$ = this.loadingScreenService.loading$;
     this.isMobile = this.platform.is('mobile');
@@ -219,7 +251,6 @@ export class AppComponent implements OnInit {
 
   public onOpenReels(): void {
     this.openReels=true;
-    console.log('ssss');
     this.router.navigate(['/reels']).then(() => {})
     // this.router.navigateByUrl('/reels');
   }

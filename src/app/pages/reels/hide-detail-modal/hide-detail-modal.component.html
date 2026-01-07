@@ -30,7 +30,7 @@
 
     </ion-list>
   </ion-radio-group>
-  <ion-button class="submit-button" expand="block" (click)="onSelectionChange()">
+  <ion-button class="submit-button" expand="block" [disabled]="!selectedType" (click)="onSelectionChange()">
     Не показывать
   </ion-button>
 </ion-content>

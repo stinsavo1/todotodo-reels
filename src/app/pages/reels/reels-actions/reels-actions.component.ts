@@ -1,11 +1,26 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Share } from '@capacitor/share';
-import { ModalController } from '@ionic/angular';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Auth } from '@angular/fire/auth';
+import { ModalController, Platform, PopoverController } from '@ionic/angular';
+import { exhaustMap, from, Subject, switchMap, take } from 'rxjs';
+import { UserStoreService } from '../../../services/store-service/user-store.service';
 import { HideDetailModalComponent } from '../hide-detail-modal/hide-detail-modal.component';
 import { Reel } from '../interfaces/reels.interface';
 import { ReelsAdditionalActionsComponent } from '../reels-additional-actions/reels-additional-actions.component';
 import { ReelsReportModalComponent } from '../reels-report-modal/reels-report-modal.component';
+import { ReelsShareModalComponent } from '../reels-share-modal/reels-share-modal.component';
 import { LikesService } from '../services/likes.service';
+import { ShareService } from '../services/share.service';
 import { UsersPreferencesService } from '../services/users-preferences.service';
 import { VideoService } from '../services/video.service';
 
@@ -17,33 +32,53 @@ import { VideoService } from '../services/video.service';
 })
 export class ReelsActionsComponent implements OnInit, OnChanges {
   @Input() reel: Reel;
-  @Input() userId: string;
-  @Output() openComments = new EventEmitter<string>()
-  public isDescriptionExpanded = false;
-  isTruncated = false;
+  @Input() activeIndex: number;
+  @Output() openComments = new EventEmitter<void>();
   isMuted = true;
-  private selectedVideoId: string;
-  private isCommentsOpen = false;
+  userId:string;
+  private toggleLikeSubject = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(private videoService: VideoService,
               private likesService: LikesService,
+              private shareService: ShareService,
               private modalCtrl: ModalController,
-              private usersPreferencesService:UsersPreferencesService
+              private platform:Platform,
+              private userService:UserStoreService,
+              private popoverCtrl:PopoverController,
+              private usersPreferencesService: UsersPreferencesService
   ) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-        if (changes['reel']) {
-          this.reel=changes['reel'].currentValue;
-          console.log('change',this.reel);
-        }
+    if (changes['reel']) {
+      this.reel = changes['reel'].currentValue;
     }
-
-  ngOnInit() {
+    if (changes['activeIndex']) {
+      this.activeIndex = changes['activeIndex'].currentValue;
+    }
   }
 
+  ngOnInit() {
+    this.userService.getUser().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((user)=>{
+     this.userId = user.id;
+    })
 
-
+    this.toggleLikeSubject.pipe(
+      exhaustMap(() => this.likesService.toggleLike(this.reel, this.userId)),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: (data) => {
+       if (data) {
+          this.videoService.updateReels(data, this.activeIndex);
+          this.videoService.currentReel$.next(data);
+        }
+      },
+      error: (err: any) => {
+        console.error(err);
+      }
+    });
+  }
 
   public toggleMute(): void {
     this.isMuted = !this.isMuted;
@@ -54,30 +89,42 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
     });
   }
 
-  toggleLike(video: Reel) {
-    console.log(video.url);
-    this.likesService.toggleLike(video);
+  toggleLike() {
+    this.toggleLikeSubject.next();
   }
 
   protected readonly Array = Array;
 
-  async shareVideo(video: Reel) {
-    try {
-      console.log(222, video);
-      await Share.share({
-        url: video.url, //todo mn update to full path in application
-      });
-    } catch (error) {
-      console.error('Ошибка при попытке поделиться:', error);
+  shareVideo(event: any) {
+    const isMobile = this.platform.is('ios') || this.platform.is('android');
+    if (!isMobile) {
+      from(this.popoverCtrl.create({
+        component: ReelsShareModalComponent,
+        translucent: true,
+        size:'auto',
+        alignment:'center',
+        side:'bottom',
+        cssClass: 'share-popover',
+        componentProps: {
+          videoUrl: this.reel.url,
+        }
+      })).pipe(
+        switchMap(popover => from(popover.present())),
+        take(1)
+      ).subscribe();
+    } else {
+      this.shareService.openShareSheet$(this.reel).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     }
-  }
 
-  public openModalComments(video: Reel): void {
-    this.openComments.emit(video.id);
 
   }
 
-  async openModalAdditionalActions(video: Reel) {
+  public openModalComments(): void {
+    this.openComments.emit();
+
+  }
+
+  async openModalAdditionalActions() {
     const modal = await this.modalCtrl.create({
       component: ReelsAdditionalActionsComponent,
       cssClass: 'custom-fixed-modal small',
@@ -87,10 +134,10 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
     const { data } = await modal.onWillDismiss();
 
     if (data?.action === 'open_hide_details') {
-      this.openHideDetailModal(video).then();
+      this.openHideDetailModal(this.reel).then();
     }
     if (data?.action === 'open_report_details') {
-      this.openReportModal(video).then();
+      this.openReportModal(this.reel).then();
     }
   }
 
@@ -98,7 +145,7 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
     const modal = await this.modalCtrl.create({
       component: ReelsReportModalComponent,
       componentProps: { video },
-      cssClass: '',
+      cssClass: 'report-modal',
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
@@ -107,27 +154,38 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
     }
   }
 
+  isLikedByUser(): boolean {
+    return Array.isArray(this.reel?.likes) && this.reel?.likes.includes(this.userId);
+  }
+
+  getLikeIcon(): string {
+    const likesCount = Array.isArray(this.reel?.likes) ? this.reel.likes.length : 0;
+    if (this.isLikedByUser()) {
+      return 'heart';
+    }
+    if (likesCount > 0) {
+      return 'heart';
+    }
+    return 'heart-outline';
+  }
+
   async openHideDetailModal(video: Reel) {
     const modal = await this.modalCtrl.create({
       component: HideDetailModalComponent,
-      componentProps: { video },
-      cssClass: 'custom-fixed-modal small',
+      componentProps: { video, activeIndex:this.activeIndex },
+      cssClass: 'custom-fixed-modal hide-detail',
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (data?.isReady) {
-      const filteredReels = this.videoService.videoListSubject.value.filter((reel)=>{
-        if (data.type === 'video') {
-              return reel.id !== video.id;
+      if (data.type === 'video') {
+        this.videoService.deleteReels(data.activeIndex);
+      }
 
-            }
-            if (data.type === 'author') {
-              return reel.userId !== video.userId;
-            }
-            return true;
-      });
-      this.videoService.videoListSubject.next(filteredReels)
-      this.usersPreferencesService.addToLocalCache(data.type,data.id);
+        if (data.type === 'author') {
+          this.videoService.hideAuthor(data.id,data.activeIndex);
+        }
+      this.usersPreferencesService.addToLocalCache(data.type, data.id);
     }
   }
 }

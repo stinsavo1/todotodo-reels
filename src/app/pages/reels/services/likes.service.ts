@@ -1,67 +1,41 @@
 import { Injectable } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import { arrayRemove, arrayUnion, doc, Firestore, increment, updateDoc } from '@angular/fire/firestore';
-import { catchError, from, of, switchMap, take, tap } from 'rxjs';
+import { catchError, from, of, switchMap, take, tap, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Reel } from '../interfaces/reels.interface';
-import { VideoService } from './video.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LikesService {
-  constructor(private firestore:Firestore,
-              private auth:Auth,
-              private videoService:VideoService) {
+  constructor(private firestore:Firestore) {
   }
 
 
-  toggleLike(video: Reel) {
-    const user = this.auth.currentUser;
-    if (!user) return;
-
-    const userId = user.uid;
+  toggleLike(video: Reel, userId:string) {
+    if (!userId) return of(undefined);
     const videoRef = doc(this.firestore, 'reels', video.id);
+    const isLiked = video.likes?.includes(userId);
+    const updatedReel: Reel = {
+      ...video,
+      likes: isLiked
+        ? video.likes.filter(id => id !== userId)
+        : [...(video.likes || []), userId],
+      likesCount: Math.max(0, (video.likesCount || 0) + (isLiked ? -1 : 1))
+    };
 
-    of(this.videoService.videoListSubject.getValue()).pipe(
-      take(1),
-      map(currentVideos => {
-        const index = currentVideos.findIndex(v => v.id === video.id);
-        if (index === -1) return { currentVideos, updatedVideo: null, isLiked: false };
-
-        const updatedVideo = { ...currentVideos[index] };
-        const isLiked = updatedVideo.likes?.includes(userId);
-
-        if (!isLiked) {
-          updatedVideo.likes = [...(updatedVideo.likes || []), userId];
-          updatedVideo.likesCount = (updatedVideo.likesCount || 0) + 1;
-        } else {
-          updatedVideo.likes = updatedVideo.likes.filter(id => id !== userId);
-          updatedVideo.likesCount = Math.max(0, (updatedVideo.likesCount || 0) - 1);
-        }
-
-        const newVideos = [...currentVideos];
-        newVideos[index] = updatedVideo;
-        this.videoService.currentReels$.next(updatedVideo);
-        return { newVideos, isLiked, originalVideos: currentVideos };
+    return from(updateDoc(videoRef, {
+      likes: !isLiked ? arrayUnion(userId) : arrayRemove(userId),
+      likesCount: increment(!isLiked ? 1 : -1)
+    })).pipe(
+      map(() => {
+        return updatedReel;
       }),
-      tap(({ newVideos }) => {
-        //todo delete
-        this.videoService.videoListSubject.next(newVideos);
-
-      }),
-      switchMap(({ isLiked, originalVideos }) =>
-        from(updateDoc(videoRef, {
-          likes: !isLiked ? arrayUnion(userId) : arrayRemove(userId),
-          likesCount: increment(!isLiked ? 1 : -1)
-        })).pipe(
-          catchError(error => {
-            console.error("Error saving like:", error);
-            this.videoService.videoListSubject.next(originalVideos);
-            return of(null);
-          })
-        )
-      )
-    ).subscribe();
+      catchError(error => {
+        console.error("Error saving like, rolling back:", error);
+        return throwError(() => error);
+      })
+    );
   }
 }

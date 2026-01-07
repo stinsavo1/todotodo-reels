@@ -1,13 +1,33 @@
-
-
-.comments-content {
-  --background: var(--light-black);
-  --padding-top: 10px;
-  --padding-bottom: 10px;
-  --padding-start: 10px;
-  --padding-end:10px;
+:host {
+  //display: block;
 }
+.comments-wrap{
+  height: calc(100% - 110px);
+  &.desctop{
+    & ion-content {
+      --background: transparent!important;
+      //--background:var(--bg-grey);
 
+    }
+
+    & #background-content{
+      background-color:var(--bg-grey);
+      --background: var(--bg-grey);
+    }
+
+
+
+    & .footer-toolbar{
+      --background: var(--bg-grey);
+    }
+
+    & ion-title {
+      --padding-start: 0;
+      --padding-left:0;
+      padding-left: 16px;
+    }
+  }
+}
 .empty {
   padding-left: 10px;
 }
@@ -15,7 +35,7 @@
 .footer-toolbar {
   --background: #1e1e1e;
   border-top: 1px solid #333;
-  padding-bottom: var(--ion-safe-area-bottom);
+  //padding-bottom: var(--ion-safe-area-bottom);
 }
 
 .input-container {
@@ -36,25 +56,21 @@
   }
 }
 
-
-
-.list-ios {
-  background: black;
-}
-
 ion-content {
   --background: var(--light-black);
   --color: white;
+
 }
 
-ion-item {
-  --background: var(--light-black);
+.reels-comments ion-item {
+  --background: transparent;
   --color: white;
   --border-color: #222;
 
-  h3 {
+  div {
     color: white !important;
     font-weight: 600;
+    margin-bottom: 3px;
   }
 
   p {
@@ -62,7 +78,58 @@ ion-item {
   }
 }
 
+
+.list-ios {
+  background: black;
+}
+
+
 ion-list {
   background: transparent !important;
   padding: 0;
+}
+.send {
+  display: block;
+  --background: var(--grey);
+  --background-activated: #a4a3a2;
+  --background-hover: #7f7d7d;
+  --color: #ffffff;
+  --min-height: 20px!important;
+  --font-size: 20px!important;
+  width: 28px !important;
+  height: 28px !important;
+  min-height: 28px;
+  --width: 28px;
+  --height: 28px;
+  --border-radius: 50%;
+
+  margin: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+
+  &::part(native) {
+    width: 28px !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+  }
+
+  ion-icon {
+    font-size: 16px; /* Icon must be smaller than the button */
+  }
+}
+
+.comments-content {
+  --background: var(--light-black);
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  --padding-start: 10px;
+  --padding-end: 10px;
+}
+
+.footer-toolbar {
+  margin-right: 10px;
 }

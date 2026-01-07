@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "mobile": "ng serve --host 0.0.0.0 --allowed-hosts=192.168.100.16",
     "build": "ionic build --prod",
     "deploy": "ionic build --prod; firebase deploy --only hosting",
     "dev": "ionic build --prod; firebase hosting:channel:deploy dev",
@@ -28,7 +29,9 @@
     "@capacitor/android": "^7.4.3",
     "@capacitor/angular": "^2.0.3",
     "@capacitor/app": "^7.0.2",
+    "@capacitor/browser": "^7.0.3",
     "@capacitor/camera": "^7.0.2",
+    "@capacitor/clipboard": "^7.0.3",
     "@capacitor/core": "^7.4.3",
     "@capacitor/device": "^7.0.2",
     "@capacitor/ios": "^7.4.3",

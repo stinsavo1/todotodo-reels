@@ -12,6 +12,7 @@ import { UsersPreferencesService } from '../services/users-preferences.service';
 })
 export class HideDetailModalComponent  implements OnInit {
   @Input() video: Reel;
+  @Input() activeIndex: number;
   public selectedType: 'video'|'author';
   private readonly destroyRef = inject(DestroyRef);
   constructor(private modalCtrl: ModalController,private usersPreferencesService:UsersPreferencesService) { }
@@ -21,7 +22,8 @@ export class HideDetailModalComponent  implements OnInit {
   onSelectionChange() {
       const targetId = this.selectedType === 'video' ? this.video.id : this.video.userId;
       this.usersPreferencesService.hideContent( this.selectedType,targetId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(()=>{
-        this.modalCtrl.dismiss({'isReady':true, id:targetId, type:this.selectedType}).then();
+        this.usersPreferencesService.addToLocalCache(this.selectedType,targetId);
+        this.modalCtrl.dismiss({'isReady':true, id:targetId, type:this.selectedType, activeIndex:this.activeIndex}).then();
         this.selectedType = null;
       });
 

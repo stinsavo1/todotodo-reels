@@ -1,7 +1,7 @@
 <ion-app [ngClass]="{'app': !isMobile}">
   <app-cookie-banner></app-cookie-banner>
   <app-splash-screen *ngIf="loading$ | async"></app-splash-screen>
-  <aside #sidebar *ngIf="!isMobile && !isAdmin && !openReels" class="sidebar" [class.collapsed]="isCollapsed"
+  <aside #sidebar *ngIf="!isMobile && !isAdmin " class="sidebar" [class.collapsed]="isCollapsed"
          [class.menu-active]="isMenuActive">
     <!-- Sidebar header -->
     <header class="sidebar-header">
@@ -47,5 +47,5 @@
       </ul>
     </nav>
   </aside>
-  <ion-router-outlet [ngClass]="{'router': !isMobile && !isAdmin && !openReels}"></ion-router-outlet>
+  <ion-router-outlet [ngClass]="{'router': !isMobile && !isAdmin }"></ion-router-outlet>
 </ion-app>

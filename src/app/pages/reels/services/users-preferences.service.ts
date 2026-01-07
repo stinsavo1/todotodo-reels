@@ -19,18 +19,6 @@ export class UsersPreferencesService {
   constructor(private firestore: Firestore, private auth: AuthService) {
   }
 
-  //
-  // async loadHiddenPrefs(uid) {
-  //   if (!uid) return;
-  //
-  //   const colRef = collection(this.firestore, `users/${uid}/hiddenAuthors`);
-  //   const snapshot = await getDocs(colRef);
-  //   this.hiddenAuthors.clear();
-  //   snapshot.forEach(doc => {
-  //     this.hiddenAuthors.add(doc.data()['targetId']);
-  //   });
-  //   console.log('hiddens autors', this.hiddenAuthors);
-  // }
 
   loadPreferences(uid: string): Observable<{
     blockedAuthors: Set<string>;
@@ -65,20 +53,7 @@ export class UsersPreferencesService {
     );
   }
 
-  // async hideContent(type: 'video' | 'author', targetId: string) {
-  //   const user = this.auth.currentUser;
-  //   if (!user) return;
-  //
-  //   const docId = `${type}_${targetId}`;
-  //   const docRef = doc(this.firestore, `users/${user.uid}/hidden_content`, docId);
-  //   console.log('hideContent', targetId,type);
-  //   return setDoc(docRef, {
-  //     type: type,
-  //     targetId: targetId,
-  //     createdAt: new Date().toISOString()
-  //   });
-  //
-  // }
+
 
   hideContent(type: 'video' | 'author', targetId: string): Observable<void> {
     const collectionName =
@@ -101,7 +76,6 @@ export class UsersPreferencesService {
       updated.hiddenVideos.add(targetId);
     }
 
-    this.prefs$.next(updated);
 
     return from(
       setDoc(docRef, { createdAt: serverTimestamp() })

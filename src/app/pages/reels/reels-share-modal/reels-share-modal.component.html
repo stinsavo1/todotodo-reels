@@ -1,0 +1,23 @@
+<ion-content class="ion-no-padding"  scrollY="false">
+  <div class="share-container">
+    <div class="drag-handle"></div>
+    <div class="share-grid">
+      <div class="share-item" (click)="onAction('copy')">
+        <div class="icon-circle"><ion-icon name="link-outline"></ion-icon></div>
+        <ion-label>Ссылка</ion-label>
+      </div>
+      <div class="share-item" (click)="onAction('vk')">
+        <div class="icon-circle"><ion-icon name="logo-vk"></ion-icon></div>
+        <ion-label>Вконтакте</ion-label>
+      </div>
+      <div class="share-item" (click)="onAction('telegram')">
+        <div class="icon-circle"><ion-icon name="paper-plane"></ion-icon></div>
+        <ion-label>Telegram</ion-label>
+      </div>
+      <div class="share-item" (click)="onAction('whatsapp')">
+        <div class="icon-circle"><ion-icon name="logo-whatsapp"></ion-icon></div>
+        <ion-label>WhatsApp</ion-label>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -3,6 +3,8 @@ import { FieldValue } from '@firebase/firestore';
 export interface Reel {
   id: string;
   url: string;
+  filePath:string;
+  posterUrl:string;
   userId: string;
   userName: string;
   description?: string;
@@ -18,8 +20,8 @@ export interface UserPreferences {
   hiddenVideos: Set<string>
 }
 
-export const MAX_SIZE_FILE = 35;
+export const MAX_SIZE_FILE = 200;
 export const MAX_SIZE_COMMENT=500;
-export const DOWLOAD_LIMIT=5;
+export const SWIPER_LIMIT=3;
 export const TELEGRAM_TOKEN='';
 export const TELEGRAM_CHAT_ID='';

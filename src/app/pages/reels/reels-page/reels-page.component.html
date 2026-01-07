@@ -1,36 +1,48 @@
+@let windowSize = resizeService.currensSizeOfScreen$ | async;
 <ion-content [fullscreen]="true" scrollY="false" class="reels-content bg-black">
   @if (showSpinner) {
+    <ion-spinner></ion-spinner>
+  }
+  @if (windowSize > 800) {
 
-    <!--    <ion-spinner></ion-spinner>-->
+    <div class="ion-text-end">
+      <ion-button class=" reels-create submit-button" (click)="openCreateReels()">Создать</ion-button>
+    </div>
   }
 
   <div class="reals-container">
-
 
     <div class="video-container">
       <div #swiperRef class="swiper-container">
         <div class="swiper-wrapper">
         </div>
       </div>
-
-
-      <app-reels-actions [reel]="currentReel" [userId]="userId"
-                         (openComments)="openComments($event)"></app-reels-actions>
+      @if (reels.length === 0) {
+        <div class="empty-reels">Ваше видео будет первым</div>
+      }
+      <app-reels-actions [reel]="currentReel" [activeIndex]="currentActiveIndex"
+                         (openComments)="openComments()"></app-reels-actions>
     </div>
+    @if (windowSize > 1280) {
 
+      <div class="comments-container ">
+        <app-reels-comments [reel]="currentReel"></app-reels-comments>
+        <!--        <h2>Комментарии-->
+        <!--          {{ comments.length > 0 ? ' (' + comments.length + ')' : '' }}</h2>-->
+        <!--        @for (comment of comments; track comment.id) {-->
+        <!--          <ion-item>-->
+        <!--            <ion-avatar slot="start">-->
+        <!--              <img [src]="comment.avatar || '/assets/avatar.svg'"/>-->
+        <!--            </ion-avatar>-->
+        <!--            <ion-label>-->
+        <!--              <div>{{ comment.username }}</div>-->
+        <!--              <p>{{ comment.text }}</p>-->
+        <!--            </ion-label>-->
+        <!--          </ion-item>-->
+        <!--        }-->
+      </div>
+    }
 
-
-    <app-reels-tabs (createReels)="isCreateOpen=true"></app-reels-tabs>
-    <app-reels-comments
-      [isOpen]="isCommentsOpen"
-      [videoId]="selectedVideoId"
-      (closeModal)="closeModal()">
-    </app-reels-comments>
-
-    <app-reels-create
-      [isOpenCreateModal]="isCreateOpen"
-      (closeModal)="isCreateOpen=false">
-    </app-reels-create>
   </div>
-
+  <app-reels-tabs (createReels)="openCreateReels()"></app-reels-tabs>
 </ion-content>

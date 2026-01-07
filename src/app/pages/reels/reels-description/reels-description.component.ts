@@ -36,6 +36,7 @@ export class ReelsDescriptionComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['reel']) {
+
       this.reel=changes['reel'].currentValue;
       this.checkTextTruncated();
     }
@@ -47,7 +48,6 @@ export class ReelsDescriptionComponent implements OnInit, OnChanges {
 
   toggleDescription(event: Event) {
     event.stopPropagation();
-    console.log('toggleDescription', this.isTruncated);
     if (this.isTruncated) {
       this.isDescriptionExpanded = !this.isDescriptionExpanded;
       this.isExpended.emit(this.isDescriptionExpanded);
@@ -61,7 +61,6 @@ export class ReelsDescriptionComponent implements OnInit, OnChanges {
     requestAnimationFrame(() => {
       const el = this.descElement.nativeElement;
       this.isTruncated = el.scrollHeight > el.clientHeight;
-      console.log('checkTextTruncated', this.isTruncated, el.scrollHeight, el.clientHeight);
     });
   }
 

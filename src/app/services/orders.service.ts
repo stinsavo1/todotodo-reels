@@ -65,6 +65,12 @@ export class OrdersService {
     }));
   }
 
+  getOrdersByAuthor(authorId: string): Observable<any[]> {
+    const ordersRef = collection(this.firestore, 'orders');
+    const q = query(ordersRef, where('author', '==', authorId));
+    return collectionData(q, { idField: 'id' }) as Observable<any[]>;
+  }
+
   getProductsStore(uid: string): Observable<any[]> {
       return defer(async() => {
         if (!uid) {
@@ -522,5 +528,3 @@ export class OrdersService {
     return [item['author'], item['executor']].sort().join('_')
   }
 }
-
-

@@ -7,14 +7,17 @@ import {
   Input,
   OnChanges,
   OnInit,
-  Output
+  Output, SimpleChanges
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Auth } from '@angular/fire/auth';
+import { ModalController } from '@ionic/angular';
+import { ResizeService } from '../../../services/resize.service';
 import { CommentsWithAvatar, ReelsComment } from '../interfaces/comments.interface';
 import { ReelsHelper } from '../helper/reels.helper';
-import { MAX_SIZE_COMMENT } from '../interfaces/reels.interface';
+import { MAX_SIZE_COMMENT, Reel } from '../interfaces/reels.interface';
 import { CommentsService } from '../services/comments.service';
+import { VideoService } from '../services/video.service';
 
 @Component({
   selector: 'app-reels-comments',
@@ -23,20 +26,25 @@ import { CommentsService } from '../services/comments.service';
   standalone:false,
 })
 export class ReelsCommentsComponent  implements OnInit,OnChanges {
-  @Input() videoId!: string;
-  @Input() isOpen: boolean = false;
-  @Output() closeModal = new EventEmitter<void>();
+  @Input() reel!: Reel;
+  @Input() activeIndex!: number;
   newCommentText: string='';
   comments: CommentsWithAvatar[] = [];
   private readonly destroyRef = inject(DestroyRef);
   constructor(private commentsService: CommentsService,
               private cdr:ChangeDetectorRef,
-              private auth: Auth,) { }
+              private auth: Auth,
+              private modalCtrl:ModalController,
+              public resizeService: ResizeService,
+              private videoService:VideoService
+              ) { }
 
-  ngOnChanges() {
-    if (this.isOpen && this.videoId) {
-      this.commentsService.loadComments(this.videoId).then(comments => {console.log(111,comments)});
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['reel']) {
+      this.reel=changes['reel'].currentValue
+      this.cdr.markForCheck();
     }
+
   }
 
   ngOnInit() {
@@ -49,8 +57,8 @@ export class ReelsCommentsComponent  implements OnInit,OnChanges {
   }
 
   public postComment(): void {
-      this.newCommentText=this.newCommentText.trim();
-    if (!this.newCommentText || !this.videoId) return;
+    this.newCommentText=this.newCommentText.trim();
+    if (!this.newCommentText || !this.reel) return;
     const user = this.auth.currentUser;
     if (!user) return;
     let sanitizedText = ReelsHelper.sanitizeText(this.newCommentText);
@@ -58,14 +66,21 @@ export class ReelsCommentsComponent  implements OnInit,OnChanges {
     if (sanitizedText.length > MAX_SIZE_COMMENT) {
       sanitizedText = sanitizedText.substring(0, MAX_SIZE_COMMENT);
     }
-    this.commentsService.postComment(sanitizedText,this.videoId,user).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(()=>{
-      this.commentsService.loadComments(this.videoId).then();
+    this.commentsService.postComment(sanitizedText,this.reel,user).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data)=>{
+      if (data.reelId) {
+        const currentReels = { ...this.videoService.currentReel$.value };
+        currentReels.commentsCount = (currentReels.commentsCount || 0) + 1;
+        this.videoService.currentReel$.next(currentReels);
+        this.videoService.updateReels(currentReels,this.activeIndex);
+        this.videoService.videoListUpdated$.next(true);
+      }
+      this.commentsService.loadComments(this.reel.id).then();
       this.newCommentText = '';
     });
   }
 
   public dismiss(): void {
-    this.closeModal.emit();
+    this.modalCtrl.dismiss(true).then();
   }
 
 }

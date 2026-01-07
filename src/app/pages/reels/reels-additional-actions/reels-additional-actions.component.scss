@@ -2,6 +2,17 @@
 ion-content {
   --background: #121212;
   --color: white;
+  & ion-list {
+    --background: #121212;
+  }
+
+
+
+}
+
+#background-content{
+  background-color:#121212;
+  --background: #121212;
 }
 
 ion-item {

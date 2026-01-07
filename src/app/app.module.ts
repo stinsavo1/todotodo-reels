@@ -23,7 +23,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { Capacitor } from "@capacitor/core";
 import { indexedDBLocalPersistence } from "firebase/auth";
-import { getFunctions, provideFunctions } from "@angular/fire/functions";
+import { connectFunctionsEmulator, getFunctions, provideFunctions } from '@angular/fire/functions';
 import { getStorage } from "firebase/storage";
 import { provideStorage } from "@angular/fire/storage";
 
@@ -68,6 +68,7 @@ registerLocaleData(localeRu);
     provideFunctions(() => getFunctions()),
     provideMessaging(() => getMessaging()),
     provideStorage(() => getStorage()),
+
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     SwUpdate,
     AuthService,

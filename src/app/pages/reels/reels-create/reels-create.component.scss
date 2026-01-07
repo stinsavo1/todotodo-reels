@@ -3,13 +3,16 @@
   align-items: center;
   justify-content: center;
   width: 280px;
-  height: 420px;
+  height: 380px;
   margin: 20px 0;
   border: 1px dashed rgb(56, 81, 173);
   border-radius: 20px;
   background: #1a1b1f;
   cursor: pointer;
   transition: all 0.3s ease;
+  @media screen and (max-width: 480px) {
+    height: 320px;
+  }
 
 }
 
@@ -46,24 +49,24 @@ form{
   }
 }
 
-ion-content::part(scroll) {
-  scrollbar-width: thin;
-  scrollbar-color: var(--bg-button) transparent;
-}
-
-
-ion-content::part(scroll)::-webkit-scrollbar {
-  width: 6px;
-}
-
-ion-content::part(scroll)::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-ion-content::part(scroll)::-webkit-scrollbar-thumb {
-  background: var(--bg-button);
-  border-radius: 4px;
-}
+//ion-content::part(scroll) {
+//  scrollbar-width: thin;
+//  scrollbar-color: var(--bg-button) transparent;
+//}
+//
+//
+//ion-content::part(scroll)::-webkit-scrollbar {
+//  width: 6px;
+//}
+//
+//ion-content::part(scroll)::-webkit-scrollbar-track {
+//  background: transparent;
+//}
+//
+//ion-content::part(scroll)::-webkit-scrollbar-thumb {
+//  background: var(--bg-button);
+//  border-radius: 4px;
+//}
 
 ion-content {
   --background: var(--light-black);
@@ -85,6 +88,9 @@ ion-toolbar {
     --color: white;
     border-radius: 12px;
     margin-bottom: 5px;
+    & ion-textarea{
+      --min-height: 150px;
+    }
 
   }
 }
@@ -97,6 +103,7 @@ ion-toolbar {
 
 .error{
   color:red;
+  padding: 0 8px;
 }
 
 
@@ -174,23 +181,33 @@ ion-toolbar {
     //width: 100%;
     display: block;
     width: 280px;
-    height: 416px;
+    height: 380px;
     object-fit: cover;
     overflow: hidden;
     //z-index: 2000;
     //border-radius: 40px;
     //box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    @media screen and (max-width: 480px) {
+      height: 320px;
+    }
   }
 
 }
 
+.custom-progress {
+  --progress-background: var(--bg-button);
+  //--progress-color: #4caf50;
+  height: 8px;
+  border-radius: 8px;
+  width: calc(100% - 10px);
+}
 
 
 .seek-slider {
   width: 100%;
   height: 2px;
   cursor: pointer;
-  accent-color: var(--ion-color-primary);
+  accent-color: var(--bg-button);
 
   background: rgba(255, 255, 255, 0.3);
   border-radius: 2px;
@@ -204,4 +221,13 @@ ion-toolbar {
     background: white;
     border-radius: 50%;
   }
+}
+
+ion-button{
+  --color:white;
+
+}
+
+.processing-text{
+  color:#c3cdd7b3;
 }

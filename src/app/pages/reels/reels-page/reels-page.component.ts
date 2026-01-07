@@ -3,24 +3,35 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ComponentRef,
   DestroyRef,
   ElementRef,
+  EnvironmentInjector,
   inject,
+  OnDestroy,
   OnInit,
-  ViewChild, ViewContainerRef
+  runInInjectionContext,
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Auth, authState } from '@angular/fire/auth';
+import { outputToObservable, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Auth } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
 import { ModalController } from '@ionic/angular';
-import { from, switchMap, take, tap } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { delay } from 'rxjs/operators';
 import { Swiper } from 'swiper';
 import { Mousewheel, Navigation, Pagination, Virtual } from 'swiper/modules';
 import { SwiperOptions } from 'swiper/types';
+import { ResizeService } from '../../../services/resize.service';
+import { UserStoreService } from '../../../services/store-service/user-store.service';
+import { ReelsHelper } from '../helper/reels.helper';
+import { CommentsWithAvatar } from '../interfaces/comments.interface';
 
 import { Reel } from '../interfaces/reels.interface';
+import { ReelsCommentsComponent } from '../reels-comments/reels-comments.component';
+import { ReelsCreateComponent } from '../reels-create/reels-create.component';
 import { ReelsDescriptionComponent } from '../reels-description/reels-description.component';
+import { CommentsService } from '../services/comments.service';
 import { UsersPreferencesService } from '../services/users-preferences.service';
 import { VideoService } from '../services/video.service';
 
@@ -31,9 +42,9 @@ import { VideoService } from '../services/video.service';
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReelsPageComponent implements OnInit, AfterViewInit {
+export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('swiperRef', { static: true }) swiperEl!: ElementRef;
-
+  private currentComponentRef: ComponentRef<ReelsDescriptionComponent> | null = null;
 
   swiperInstance?: Swiper;
 
@@ -41,23 +52,27 @@ export class ReelsPageComponent implements OnInit, AfterViewInit {
   index = 1;
   showSpinner = false;
   userId: string;
-  isCommentsOpen: boolean = false;
-  selectedVideoId: string = '';
-  isMuted = true;
 
+  isMuted = true;
   private firestore: Firestore = inject(Firestore);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly Array = Array;
   public isCreateOpen = false;
   currentReel: Reel;
-
+  private injector = inject(EnvironmentInjector);
+  isExpendedDescription = false;
+  comments: CommentsWithAvatar[] = [];
+  currentActiveIndex: number;
 
   constructor(private videoService: VideoService,
               private cdr: ChangeDetectorRef,
               private auth: Auth,
+              private vcr: ViewContainerRef,
+              public resizeService: ResizeService,
+              private commentsService: CommentsService,
               private modalCtrl: ModalController,
-              private vcr:ViewContainerRef,
               private usersPreferencesService: UsersPreferencesService,) {
+    this.reels = this.videoService.reels;
 
   }
 
@@ -69,81 +84,98 @@ export class ReelsPageComponent implements OnInit, AfterViewInit {
     this.initVideoList();
     this.videoService.isLoading$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
-
-        this.showSpinner = !data;
+        this.showSpinner = data;
         this.cdr.markForCheck();
 
       }
     });
 
-    this.videoService.currentReels$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(updatedReels => {
+
+    this.videoService.currentReel$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(updatedReels => {
       this.currentReel = updatedReels;
 
       this.cdr.markForCheck();
 
     });
-    this.videoService.videoListSubject.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (data) => {
-        if (data.length > 0) {
-
-          data = this.usersPreferencesService.applyFilter(data);
-        }
+    this.videoService.videoListUpdated$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (forceUpdate) => {
+        console.log('new update', forceUpdate);
         if (this.swiperInstance) {
-          this.videoService.updateSwiper(this.swiperInstance, data);
+          this.videoService.updateSwiper(this.swiperInstance, forceUpdate);
+          this.handleVideoPlayback();
         }
         this.cdr.markForCheck();
       }
     });
+
+    this.videoService.uploadedVideoReady$.pipe(delay(0), takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (reel) => {
+        if (this.swiperInstance) {
+          console.log('go to new slide');
+          // this.videoService.currentReel$.next(reel);
+          this.swiperInstance.slideNext();
+        }
+      }
+    });
+
+    this.commentsService.comments$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => {
+      console.log('comments', data);
+      this.comments = data;
+      this.cdr.markForCheck();
+    });
+
+  }
+
+  ngOnDestroy(): void {
+    const swiper = this.swiperEl.nativeElement.swiper;
+    if (swiper) {
+      this.clearPreviousVideoListener(swiper);
+    }
+    this.destroyComponentRef();
   }
 
   private initSwiper(): void {
-    const swiperParams:SwiperOptions = {
+    const swiperParams: SwiperOptions = {
       modules: [Virtual, Navigation, Pagination, Mousewheel],
       virtual: {
         enabled: true,
         slides: this.reels,
-
         renderSlide: (slide: Reel, index) => {
           console.log('Rendering:', index);
-          return `
-<div class="swiper-slide" id="container-${index}">
-  <video
-    id="${slide.id}"
-    class="reels-video"
-    loop
-    playsinline
-    muted
-    preload="auto"
-    src="${slide.url}">
-  </video>
-</div>`;
+          return ReelsHelper.renderSlide(slide, index);
         },
       },
 
       on: {
         slideChange: (swiper) => {
-
+          this.clearPreviousVideoListener(swiper);
+          this.videoService.attachVideoListener(swiper);
           this.handleVideoPlayback();
           const totalSlides = swiper.virtual.slides.length;
-          const currentIndex = swiper.activeIndex;
-          this.currentReel = this.reels[currentIndex];
+          this.currentActiveIndex = swiper.activeIndex;
+          this.videoService.currentReel$.next(this.reels[this.currentActiveIndex]);
+          this.commentsService.loadComments(this.videoService.reels[this.currentActiveIndex].id).then();
           this.createComponentDescription(this.swiperInstance);
-          this.managePlayers(currentIndex);
-          if (currentIndex >= totalSlides - 2) {
-            const preferences = this.usersPreferencesService.prefs$.value;
-            this.videoService.loadMoreReels(preferences.blockedAuthors,preferences.hiddenVideos);
+          if (this.currentActiveIndex >= totalSlides - 2) {
+            console.log('need looad more');
+            this.videoService.loadMore();
+
           }
           this.cdr.markForCheck();
         },
         afterInit: (swiper) => {
+          this.createComponentDescription(swiper);
+          this.videoService.attachVideoListener(swiper);
           this.handleVideoPlayback();
-        }
+        },
+
       },
       slidesPerView: 1,
       navigation: true,
+      watchSlidesProgress: true,
       autoHeight: false,
       direction: 'vertical',
-      spaceBetween: 40,
+      // spaceBetween: 40,
       breakpoints: {
 
         480: {
@@ -162,105 +194,95 @@ export class ReelsPageComponent implements OnInit, AfterViewInit {
 
     this.swiperInstance = new Swiper(this.swiperEl.nativeElement, swiperParams);
     this.videoService.swiper = this.swiperInstance;
-    this.createComponentDescription(this.swiperInstance)
-
+    if (this.reels[0]?.id) {
+      this.videoService.currentReel$.next(this.reels[0]);
+      this.commentsService.loadComments(this.reels[0].id).then();
+    }
   }
 
   initVideoList() {
-    console.log('getVideo');
-    from(authState(this.auth)).pipe(
-      filter(user => user !== null),
-      take(1),
-      tap((user) => {
-        this.userId = user.uid;
-      }),
-      switchMap(() => this.usersPreferencesService.loadPreferences(this.userId)),
-      switchMap(prefs =>
-        this.videoService.loadInitialData(
-          this.firestore,
-          prefs.blockedAuthors,
-          prefs.hiddenVideos,
-          5
-        )
-      ),
-      tap((reels) => {
-
-        this.reels = this.usersPreferencesService.applyFilter(reels);
+    this.videoService.loadInitialData().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (data) => {
+        console.log('reels', data.data.reels);
+        this.videoService.reels.push(...data.data.reels);
+        this.videoService.lastId = data.data.nextCursor;
         this.currentReel = this.reels[0];
-
         setTimeout(() => {
           this.initSwiper();
-
         }, 0);
         this.cdr.markForCheck();
-      }),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe(()=>{
-
+      },
+      error: (err: any) => {
+        console.error(err);
+      }
     });
-
 
 
   }
 
-  createComponentDescription(swiper:Swiper){
-    console.log('create com');
+  createComponentDescription(swiper: Swiper) {
     const currentIndex = swiper.activeIndex;
-    const container = document.getElementById(`container-${currentIndex}`);
-console.log('this.createComponentDescription',container,currentIndex);
-    if (container ) {
-      const componentRef = this.vcr.createComponent(ReelsDescriptionComponent);
+    this.destroyComponentRef();
+    setTimeout(() => {
+      const container = document.getElementById(`container-${currentIndex}`);
+      if (container) {
+        const componentRef = this.vcr.createComponent(ReelsDescriptionComponent);
+        outputToObservable(componentRef.instance.isExpended)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(status => {
+            this.isExpendedDescription = true;
+            this.cdr.markForCheck();
+          });
+        componentRef.instance.reel = { ...this.reels[currentIndex] };
+        container.appendChild(componentRef.location.nativeElement);
+        componentRef.changeDetectorRef.detectChanges();
+        this.currentComponentRef = componentRef;
+      }
+    }, 0);
 
-      componentRef.instance.reel = this.reels[currentIndex];
+  }
 
-      container.appendChild(componentRef.location.nativeElement);
+  destroyComponentRef() {
+    if (this.currentComponentRef) {
+      this.currentComponentRef.destroy();
+      this.currentComponentRef = null;
+      this.isExpendedDescription = false;
+    }
+  }
 
-      componentRef.changeDetectorRef.detectChanges();
-  }}
+  clearPreviousVideoListener(swiper: any) {
 
-
-  managePlayers(activeIndex: number) {
-    const slides = document.querySelectorAll('.swiper-slide');
-    slides.forEach((slide, index) => {
-      const video = slide.querySelector('video') as HTMLVideoElement;
-      if (!video) return;
-
-      if (index === activeIndex) {
-        this.videoService.trackView(video.id).then();
-        video.muted = true;
-        video.play().catch(e => console.log('Ждем клика пользователя'));
-      } else {
-        video.pause();
-        if (Math.abs(index - activeIndex) > 3) {
-          video.preload = 'none';
-        } else {
-          video.preload = 'auto';
-        }
+    swiper.slides.forEach((slide: HTMLElement) => {
+      const video = slide.querySelector('video');
+      if (video) {
+        video.ontimeupdate = null;
       }
     });
   }
 
 
-  public openComments(video: string): void {
+
+  async openComments() {
+    if (window.innerWidth > 1280) {
+      return;
+    }
     const content = document.querySelector('ion-router-outlet');
     content?.classList.add('main-blur-effect');
-    this.selectedVideoId = video;
-    this.isCommentsOpen = true;
+    const modal = await this.modalCtrl.create({
+      component: ReelsCommentsComponent,
+      componentProps: { reel: this.currentReel, activeIndex: this.currentActiveIndex },
+      cssClass: 'custom-fixed-modal half',
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+      const content = document.querySelector('ion-router-outlet');
+      content?.classList.remove('main-blur-effect');
+    }
 
   }
-
-  public closeModal(): void {
-    this.isCommentsOpen = false;
-    const content = document.querySelector('ion-router-outlet');
-    content?.classList.remove('main-blur-effect');
-  }
-
-
-
-
 
   private handleVideoPlayback(): void {
-
     setTimeout(() => {
       const allVideos = document.querySelectorAll<HTMLVideoElement>('.reels-video');
       allVideos.forEach(v => v.pause());
@@ -272,12 +294,11 @@ console.log('this.createComponentDescription',container,currentIndex);
 
         if (video) {
           console.log('Target video found, attempting play:', video.src);
-
           video.muted = this.isMuted;
           video.currentTime = 0;
-
           const playPromise = video.play();
           if (playPromise !== undefined) {
+            this.videoService.trackView(video.id).then();
             playPromise.catch(error => {
               console.error('Playback failed for:', video.src, error);
             });
@@ -288,7 +309,18 @@ console.log('this.createComponentDescription',container,currentIndex);
       } else {
         console.warn('No slide with .swiper-slide-active found in DOM.');
       }
-    }, 80);
+    }, 0);
 
+  }
+
+  async openCreateReels() {
+   const modal = await this.modalCtrl.create({
+      component: ReelsCreateComponent,
+      cssClass: `custom-fixed-modal half ${window.innerWidth>1280 ? 'desctop' : ''}`,
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data?.isReady) {
+    }
   }
 }

@@ -1,12 +1,14 @@
 
 <nav class="floating-nav">
-  <ion-button class="nav-button" (click)="goTo('home')"><ion-icon name="home-outline"></ion-icon></ion-button>
   <ion-button class="nav-button"
-              (click)="goTo('docs')"><ion-icon name="document-text-outline"></ion-icon></ion-button>
+              (click)="goTo('home')"><ion-icon slot="icon-only" name="home-outline"></ion-icon></ion-button>
+  <ion-button class="nav-button"
+              (click)="goTo('docs')"><ion-icon slot="icon-only" name="document-text-outline"></ion-icon></ion-button>
   <ion-button class="center-button reels-button" (click)="openCreateModal()">
-    <ion-icon  name="add-circle-outline"></ion-icon>
+    <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
   </ion-button>
-  <ion-button class="nav-button" (click)="goTo('cart')"><ion-icon name="cart-outline"></ion-icon></ion-button>
+  <ion-button class="nav-button" (click)="goTo('cart')"><ion-icon slot="icon-only"
+                                                                  name="cart-outline"></ion-icon></ion-button>
   <ion-button class="nav-button" (click)="goTo('profile')"><ion-icon
-    name="person-circle-outline"></ion-icon></ion-button>
+    slot="icon-only" name="person-circle-outline"></ion-icon></ion-button>
 </nav>

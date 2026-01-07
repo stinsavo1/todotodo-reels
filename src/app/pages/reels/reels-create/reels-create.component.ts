@@ -12,9 +12,12 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Auth } from '@angular/fire/auth';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAX_SIZE_COMMENT, MAX_SIZE_FILE } from '../interfaces/reels.interface';
-import { VideoService } from '../services/video.service';
+import { ModalController } from '@ionic/angular';
+import { timeout } from 'rxjs';
 import { ReelsHelper } from '../helper/reels.helper';
+import { MAX_SIZE_COMMENT, MAX_SIZE_FILE } from '../interfaces/reels.interface';
+import { UploadService } from '../services/upload.service';
+import { VideoService } from '../services/video.service';
 
 interface UploadFormType {
   description: FormControl<string>,
@@ -36,8 +39,12 @@ export class ReelsCreateComponent implements OnInit {
   isMuted: boolean = true;
   public wordCount: number = 0;
   private readonly destroyRef = inject(DestroyRef);
+  step = 1;
 
-  constructor(public videoService: VideoService, private auth: Auth) {
+  constructor(public videoService: VideoService,
+              private modalCtrl:ModalController,
+              private auth: Auth, public uploadService:UploadService) {
+
     this.uploadForm = new FormGroup<UploadFormType>({
       description: new FormControl('', [
         Validators.required,
@@ -52,12 +59,11 @@ export class ReelsCreateComponent implements OnInit {
     this.uploadForm.controls.description.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
       const newValue = value.trim() || '';
       this.wordCount = newValue ? newValue.length : 0;
-    })
+    });
 
   }
 
-  togglePlay(event: Event,player: HTMLVideoElement) {
-    console.log('togglePlay', player);
+  togglePlay(event: Event, player: HTMLVideoElement) {
     event.stopPropagation();
     if (player.paused) {
       player.play().then();
@@ -67,54 +73,60 @@ export class ReelsCreateComponent implements OnInit {
   }
 
   toggleMute(event: Event) {
-    console.log('toggleMute', event);
     event.stopPropagation();
     this.isMuted = !this.isMuted;
   }
 
   public dismiss(): void {
     this.deleteVideo();
-    this.closeModal.emit();
+    this.modalCtrl.dismiss().then();
   }
 
   public createReels(): void {
     if (this.uploadForm.invalid) {
       const descErr = this.uploadForm.controls.description.errors;
       if (descErr['maxlength']) {
-      this.videoService.errorMessages$.next(`Превышена максимальная длина ${MAX_SIZE_COMMENT}`);
+        this.uploadService.errorMessages$.next(`Превышена максимальная длина ${MAX_SIZE_COMMENT}`);
       }
-      console.error('Форма заполнена неверно',this.uploadForm);
+      console.error('Форма заполнена неверно', this.uploadForm);
       return;
     }
     const text = this.uploadForm.value.description;
     const cleanDescription = ReelsHelper.sanitizeText(text);
     this.videoService.onPublish(cleanDescription).then(() => {
-      this.closeModal.emit();
+      this.modalCtrl.dismiss().then();
     });
 
   }
 
   uploadVideo(event: any) {
-    this.videoService.uploadVideo(event, this.auth.currentUser.uid).then();
+    const file: File = event.target.files[0];
+    if (!file) return;
+    this.uploadService.uploadVideo(event,this.auth.currentUser.uid).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (data) => {
+        console.log('finish',data);
+      },
+      error: (err: any) => {
+        console.error(err);
+      }
+    })
+
+
+
   }
 
   public deleteVideo(): void {
-    const uploadedVideoUrl = this.videoService.uploadedVideoUrl$.value;
+    const uploadedVideoUrl = this.uploadService.uploadedVideo$.value;
     if (uploadedVideoUrl) {
-      this.videoService.deleteFileFromStorage(uploadedVideoUrl).then();
-      this.videoService.uploadedVideoUrl$.next(null);
+      this.uploadService.deleteFileFromStorage(uploadedVideoUrl).then();
+      this.uploadService.uploadedVideo$.next(null);
     }
     if (this.fInput) {
       this.fInput.nativeElement.value = '';
     }
   }
 
-  public updateProgress(videoPlayer: HTMLVideoElement): void {
-    console.log('videoPlayer', videoPlayer);
-  }
-
   seekVideo(event: any, player: HTMLVideoElement) {
-    console.log('seekVideo', player);
     const seekTime = event.target.value;
     player.currentTime = seekTime;
   }
