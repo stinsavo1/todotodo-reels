@@ -5,9 +5,7 @@ import { catchError, from, of, switchMap, take, tap, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Reel } from '../interfaces/reels.interface';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class LikesService {
   constructor(private firestore:Firestore) {
   }

@@ -2,53 +2,39 @@ import { EnvironmentInjector, inject, Injectable } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import {
   addDoc,
-  collection, deleteDoc,
+  collection,
+  deleteDoc,
   doc,
-  docData,
   Firestore,
-  getDocs,
   increment,
-  limit,
-  orderBy,
-  query,
   serverTimestamp,
-  startAfter,
-  updateDoc,
-  where
+  updateDoc
 } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
-import { deleteObject, ref, Storage as FireStorage, uploadBytesResumable } from '@angular/fire/storage';
-import { BehaviorSubject, finalize, from, Observable, of, Subject, take, tap } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { BehaviorSubject, finalize, from, Observable, Subject, take } from 'rxjs';
 import { Swiper } from 'swiper';
 import { UserStoreService } from '../../../services/store-service/user-store.service';
-import { MAX_SIZE_FILE, Reel, SWIPER_LIMIT } from '../interfaces/reels.interface';
+import { Reel, SWIPER_LIMIT } from '../interfaces/reels.interface';
 import { UploadService } from './upload.service';
-import { UsersPreferencesService } from './users-preferences.service';
 
 @Injectable()
 export class VideoService {
-  readonly reels: Reel[] = [];
-  videoListSubject = new BehaviorSubject<Reel[]>([]);
+  reels: Reel[] = [];
   videoListUpdated$ = new Subject<boolean>();
   uploadedVideoReady$ = new Subject<Reel>();
   currentReel$ = new BehaviorSubject<Reel>(null);
   isLoading$ = new BehaviorSubject<boolean>(false);
-  lastVisible: any = null;
   private firestore: Firestore = inject(Firestore);
-  private injector = inject(EnvironmentInjector);
   swiper: Swiper = undefined;
-  private reelIds = new Set<string>();
- lastId = null;
+  lastId = null;
 
-  constructor(private storage: FireStorage, private auth: Auth,
+  constructor(private auth: Auth,
               private functions: Functions,
-              private uploadService:UploadService,
-              private user:UserStoreService,
-              private usersPreferencesService: UsersPreferencesService) {
+              private uploadService: UploadService,
+              private user: UserStoreService,
+  ) {
 
   }
-
 
   async onPublish(description: string) {
     if (!this.uploadService.uploadedVideo$.value.videoUrl) {
@@ -61,8 +47,8 @@ export class VideoService {
       const savedFile = this.uploadService.uploadedVideo$.value;
       const newReel: Omit<Reel, 'id'> = {
         url: savedFile.videoUrl,
-        posterUrl:savedFile.thumbUrl,
-        filePath:savedFile.videoPath,
+        posterUrl: savedFile.thumbUrl,
+        filePath: savedFile.videoPath,
         userId: this.auth.currentUser.uid,
         userName: this.user.getUserValue().fio || 'user',
         description: description,
@@ -79,7 +65,7 @@ export class VideoService {
         console.log('Временная запись tmpReels успешно удалена');
       }
       localStorage.removeItem('pending_video_url');
-      const savedReel: Reel = { ...newReel, id: docRef.id }
+      const savedReel: Reel = { ...newReel, id: docRef.id };
       const currentReelIndex = this.swiper.activeIndex ?? 0;
       let newIndex = this.reels.length === 0 ? 0 : (currentReelIndex + 1);
       this.reels.splice(newIndex, 0, savedReel);
@@ -95,7 +81,6 @@ export class VideoService {
   }
 
   async trackView(videoId: string) {
-    console.log('track view', this.swiper.activeIndex);
     const reelRef = doc(this.firestore, 'reels', videoId);
     try {
       await updateDoc(reelRef, {
@@ -105,14 +90,12 @@ export class VideoService {
       if (index !== -1) {
         this.reels[index] = { ...this.reels[index], viewsCount: (this.reels[index].viewsCount || 0) + 1 };
       }
-      // this.videoListUpdated$.next(false);
     } catch (e) {
       console.error('Ошибка при обновлении просмотров:', e, videoId);
     }
   }
 
-
-  getFilteredReels(lastVisibleId: string | null = null, pageSize= 10): Observable<any> {
+  getFilteredReels(lastVisibleId: string | null = null, pageSize = 10): Observable<any> {
     const callable = httpsCallable(this.functions, 'getFilteredReels');
     return from(callable({ lastVisibleId, pageSize }));
   }
@@ -120,29 +103,26 @@ export class VideoService {
   loadInitialData() {
     this.isLoading$.next(true);
     this.lastId = null;
-    return this.getFilteredReels(null,SWIPER_LIMIT)
-      .pipe(finalize(() => this.isLoading$.next(false)))
+    return this.getFilteredReels(null, SWIPER_LIMIT)
+      .pipe(finalize(() => this.isLoading$.next(false)));
 
   }
 
   loadMore() {
     if (!this.lastId) {
-      return ;
+      return;
     }
 
-   this.getFilteredReels(this.lastId,SWIPER_LIMIT).pipe(take(1)).subscribe({
-     next: (result) => {
-       this.reels.push(...result.data.reels);
-       this.videoListUpdated$.next(true);
-       this.lastId = result.data.nextCursor;
-     },
-     error: (err) => {
-       console.error(err);
-     }
-   });
-
-
-
+    this.getFilteredReels(this.lastId, SWIPER_LIMIT).pipe(take(1)).subscribe({
+      next: (result) => {
+        this.reels.push(...result.data.reels);
+        this.videoListUpdated$.next(true);
+        this.lastId = result.data.nextCursor;
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
 
   }
 
@@ -163,9 +143,7 @@ export class VideoService {
     }
   }
 
-
-
-  updateSwiper(swiper: Swiper, force: boolean,newIndex?:number) {
+  updateSwiper(swiper: Swiper, force: boolean, newIndex?: number) {
     if (swiper && swiper.virtual) {
       swiper.virtual.cache = {};
       swiper.virtual.slides = this.reels;
@@ -191,19 +169,21 @@ export class VideoService {
     }
   }
 
-  updateReels(updatedReel:Reel,index:number){
+  updateReels(updatedReel: Reel, index: number) {
     if (!updatedReel && !index) {
-      return
+      return;
     }
-    this.reels[index]=updatedReel;
+    this.reels[index] = updatedReel;
   }
 
-  deleteReels(index:number) {
+  deleteReels(index: number) {
     this.reels.splice(index, 1);
+    this.currentReel$.next(this.reels[index]);
     this.loadMore();
+
   }
 
-  hideAuthor(authorId:string, activeIndex:number) {
+  hideAuthor(authorId: string, activeIndex: number) {
     for (let i = this.reels.length - 1; i >= 0; i--) {
       if (this.reels[i].userId === authorId) {
         this.reels.splice(i, 1);
@@ -212,11 +192,10 @@ export class VideoService {
         }
       }
     }
-    this.swiper.slideTo(activeIndex)
+    this.swiper.slideTo(activeIndex);
+    this.currentReel$.next(this.reels[activeIndex]);
     this.loadMore();
 
   }
-
-
 
 }

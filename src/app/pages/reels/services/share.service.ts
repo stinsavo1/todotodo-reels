@@ -12,9 +12,7 @@ export interface ShareResult {
   shared: boolean;
   platform?: 'copy' | 'telegram' | 'whatsapp';
 }
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ShareService {
   constructor (private toast: ToastService, private modalCtrl:ModalController, private popoverCtrl:PopoverController){}
 
@@ -45,7 +43,6 @@ export class ShareService {
   }
 
   copyToClipboard$(text: string): Observable<boolean> {
-    console.log('copyToClipboard$',text);
     return from(Clipboard.write({ string: text })).pipe(
       switchMap(() =>
         this.toast.showIonicToast('Ссылка скопирована').pipe(

@@ -23,27 +23,11 @@
       }
       <app-reels-actions [reel]="currentReel" [activeIndex]="currentActiveIndex"
                          (openComments)="openComments()"></app-reels-actions>
-<!--      @if (windowSize <= 480) {-->
-<!--        <app-reels-description [reel]="currentReel"></app-reels-description>-->
-<!--      }-->
+
     </div>
     @if (windowSize > 1280) {
-
       <div class="comments-container ">
         <app-reels-comments [reel]="currentReel"></app-reels-comments>
-        <!--        <h2>Комментарии-->
-        <!--          {{ comments.length > 0 ? ' (' + comments.length + ')' : '' }}</h2>-->
-        <!--        @for (comment of comments; track comment.id) {-->
-        <!--          <ion-item>-->
-        <!--            <ion-avatar slot="start">-->
-        <!--              <img [src]="comment.avatar || '/assets/avatar.svg'"/>-->
-        <!--            </ion-avatar>-->
-        <!--            <ion-label>-->
-        <!--              <div>{{ comment.username }}</div>-->
-        <!--              <p>{{ comment.text }}</p>-->
-        <!--            </ion-label>-->
-        <!--          </ion-item>-->
-        <!--        }-->
       </div>
     }
 

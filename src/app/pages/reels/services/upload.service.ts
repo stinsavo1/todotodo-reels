@@ -24,9 +24,7 @@ export interface UploadedFile {
   fileId:string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UploadService {
   constructor(private storage:FireStorage) {
   }

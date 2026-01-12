@@ -17,6 +17,10 @@ import { ReelsShareModalComponent } from './reels-share-modal/reels-share-modal.
 import { ReelsTabsComponent } from './reels-tabs/reels-tabs.component';
 import SwiperCore from 'swiper';
 import { Virtual } from 'swiper/modules';
+import { CommentsService } from './services/comments.service';
+import { LikesService } from './services/likes.service';
+import { ShareService } from './services/share.service';
+import { UploadService } from './services/upload.service';
 import { VideoService } from './services/video.service';
 
 SwiperCore.use([Virtual]);
@@ -50,7 +54,7 @@ const routes: Routes = [
     CdkVirtualScrollViewport,
     NgOptimizedImage
   ],
-  providers: [VideoService]
+  providers: [VideoService, UploadService,LikesService,CommentsService,ShareService]
 })
 export class ReelsModule {
 }

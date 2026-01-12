@@ -1,12 +1,9 @@
-:host {
-  //display: block;
-}
+
 .comments-wrap{
   height: calc(100% - 110px);
   &.desctop{
     & ion-content {
       --background: transparent!important;
-      //--background:var(--bg-grey);
 
     }
 

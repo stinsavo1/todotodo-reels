@@ -16,9 +16,7 @@ import { UserStoreService } from '../../../services/store-service/user-store.ser
 import { CommentsWithAvatar, ReelsComment } from '../interfaces/comments.interface';
 import { Reel } from '../interfaces/reels.interface';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CommentsService {
 
   comments$ = new BehaviorSubject<CommentsWithAvatar[]>([]);
@@ -35,7 +33,7 @@ export class CommentsService {
     const q = query(
       commentsRef,
       where('reelId', '==', videoId),
-      orderBy('createdAt', 'asc')
+      orderBy('createdAt', 'desc')
     );
 
     onSnapshot(q, async (snapshot) => {

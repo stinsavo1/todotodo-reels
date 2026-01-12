@@ -101,9 +101,11 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
       from(this.popoverCtrl.create({
         component: ReelsShareModalComponent,
         translucent: true,
-        size:'auto',
-        alignment:'center',
+        alignment: 'center',
+        reference: 'event',
         side:'bottom',
+        arrow: false,
+        event: event,
         cssClass: 'share-popover',
         componentProps: {
           videoUrl: this.reel.url,
@@ -124,10 +126,15 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
 
   }
 
-  async openModalAdditionalActions() {
+  async openModalAdditionalActions(event) {
+
     const modal = await this.modalCtrl.create({
       component: ReelsAdditionalActionsComponent,
       cssClass: 'custom-fixed-modal small',
+      componentProps: {
+        video: this.reel,
+        activeIndex:this.activeIndex,
+      }
     });
 
     await modal.present();
@@ -179,7 +186,7 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
     const { data } = await modal.onWillDismiss();
     if (data?.isReady) {
       if (data.type === 'video') {
-        this.videoService.deleteReels(data.activeIndex);
+        this.videoService.deleteReels(this.activeIndex);
       }
 
         if (data.type === 'author') {

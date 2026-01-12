@@ -1,7 +1,8 @@
 import {
   Component,
   ElementRef,
-  EventEmitter, Input,
+  EventEmitter,
+  Input,
   OnChanges,
   OnInit,
   Output,
@@ -31,13 +32,12 @@ export class ReelsDescriptionComponent implements OnInit, OnChanges {
   descElement: ElementRef | undefined = undefined;
   isTruncated: boolean = false;
 
-  constructor(private videoService: VideoService) {
+  constructor() {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['reel']) {
-
-      this.reel=changes['reel'].currentValue;
+      this.reel = changes['reel'].currentValue;
       this.checkTextTruncated();
     }
   }
