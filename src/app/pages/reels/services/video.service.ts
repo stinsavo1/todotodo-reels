@@ -95,6 +95,7 @@ export class VideoService {
   }
 
   async trackView(videoId: string) {
+    console.log('track view', this.swiper.activeIndex);
     const reelRef = doc(this.firestore, 'reels', videoId);
     try {
       await updateDoc(reelRef, {
@@ -104,6 +105,7 @@ export class VideoService {
       if (index !== -1) {
         this.reels[index] = { ...this.reels[index], viewsCount: (this.reels[index].viewsCount || 0) + 1 };
       }
+      // this.videoListUpdated$.next(false);
     } catch (e) {
       console.error('Ошибка при обновлении просмотров:', e, videoId);
     }

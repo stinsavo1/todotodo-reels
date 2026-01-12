@@ -22,6 +22,6 @@ export interface UserPreferences {
 
 export const MAX_SIZE_FILE = 200;
 export const MAX_SIZE_COMMENT=500;
-export const SWIPER_LIMIT=3;
+export const SWIPER_LIMIT=5;
 export const TELEGRAM_TOKEN='';
 export const TELEGRAM_CHAT_ID='';

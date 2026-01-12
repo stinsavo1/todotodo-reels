@@ -99,7 +99,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     this.videoService.videoListUpdated$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (forceUpdate) => {
-        console.log('new update', forceUpdate);
+        console.log('#####new update', forceUpdate);
         if (this.swiperInstance) {
           this.videoService.updateSwiper(this.swiperInstance, forceUpdate);
           this.handleVideoPlayback();
@@ -147,7 +147,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
       },
 
       on: {
-        slideChange: (swiper) => {
+        slideChangeTransitionEnd: (swiper) => {
           console.log('slide change');
           this.clearPreviousVideoListener(swiper);
           this.videoService.attachVideoListener(swiper);
@@ -156,7 +156,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
           this.currentActiveIndex = swiper.activeIndex;
           this.videoService.currentReel$.next(this.reels[this.currentActiveIndex]);
           this.commentsService.loadComments(this.videoService.reels[this.currentActiveIndex].id).then();
-          console.log('call create');
+          // console.log('call create');
           // this.createComponentDescription(this.swiperInstance);
           if (this.currentActiveIndex >= totalSlides - 2) {
             console.log('need looad more');
@@ -165,8 +165,26 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
           }
           this.cdr.markForCheck();
         },
+        slidesUpdated:(swiper)=>{
+          // console.log('slide change');
+          // this.clearPreviousVideoListener(swiper);
+          // this.videoService.attachVideoListener(swiper);
+          // this.handleVideoPlayback();
+          // const totalSlides = swiper.virtual.slides.length;
+          // this.currentActiveIndex = swiper.activeIndex;
+          // this.videoService.currentReel$.next(this.reels[this.currentActiveIndex]);
+          // this.commentsService.loadComments(this.videoService.reels[this.currentActiveIndex].id).then();
+          // console.log('call create');
+          // this.createComponentDescription(this.swiperInstance);
+          // if (this.currentActiveIndex >= totalSlides - 2) {
+          //   console.log('need looad more');
+          //   this.videoService.loadMore();
+          //
+          // }
+          // this.cdr.markForCheck();
+        },
         afterInit: (swiper) => {
-          this.createComponentDescription(swiper);
+          // this.createComponentDescription(swiper);
           this.videoService.attachVideoListener(swiper);
           this.handleVideoPlayback();
         },
@@ -196,6 +214,9 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.swiperInstance = new Swiper(this.swiperEl.nativeElement, swiperParams);
     this.videoService.swiper = this.swiperInstance;
+    this.swiperInstance.onAny((eventName, ...args) => {
+      console.log('Event Triggered:', eventName);
+    });
     if (this.reels[0]?.id) {
       this.videoService.currentReel$.next(this.reels[0]);
       this.commentsService.loadComments(this.reels[0].id).then();

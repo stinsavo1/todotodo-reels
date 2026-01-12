@@ -28,6 +28,7 @@
 
 .swiper-container {
   display: block;
+  position: relative;
   width: 100%;
   height: var(--video-height);
   max-width: var(--video-width);

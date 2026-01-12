@@ -16,13 +16,16 @@
       <div #swiperRef class="swiper-container">
         <div class="swiper-wrapper">
         </div>
+        <app-reels-description [reel]="currentReel"></app-reels-description>
       </div>
       @if (reels.length === 0) {
         <div class="empty-reels">Ваше видео будет первым</div>
       }
       <app-reels-actions [reel]="currentReel" [activeIndex]="currentActiveIndex"
                          (openComments)="openComments()"></app-reels-actions>
-      <app-reels-description [reel]="currentReel"></app-reels-description>
+<!--      @if (windowSize <= 480) {-->
+<!--        <app-reels-description [reel]="currentReel"></app-reels-description>-->
+<!--      }-->
     </div>
     @if (windowSize > 1280) {
 
