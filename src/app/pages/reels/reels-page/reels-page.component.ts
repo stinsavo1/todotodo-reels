@@ -112,7 +112,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
       next: (reel) => {
         if (this.swiperInstance) {
           console.log('go to new slide');
-          // this.videoService.currentReel$.next(reel);
+          this.videoService.currentReel$.next(reel);
           this.swiperInstance.slideNext();
         }
       }
@@ -148,6 +148,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
       on: {
         slideChange: (swiper) => {
+          console.log('slide change');
           this.clearPreviousVideoListener(swiper);
           this.videoService.attachVideoListener(swiper);
           this.handleVideoPlayback();
@@ -155,7 +156,8 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
           this.currentActiveIndex = swiper.activeIndex;
           this.videoService.currentReel$.next(this.reels[this.currentActiveIndex]);
           this.commentsService.loadComments(this.videoService.reels[this.currentActiveIndex].id).then();
-          this.createComponentDescription(this.swiperInstance);
+          console.log('call create');
+          // this.createComponentDescription(this.swiperInstance);
           if (this.currentActiveIndex >= totalSlides - 2) {
             console.log('need looad more');
             this.videoService.loadMore();
@@ -226,10 +228,12 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     setTimeout(() => {
       const container = document.getElementById(`container-${currentIndex}`);
       if (container) {
+        console.log('create');
         const componentRef = this.vcr.createComponent(ReelsDescriptionComponent);
         outputToObservable(componentRef.instance.isExpended)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(status => {
+            console.log('####');
             this.isExpendedDescription = true;
             this.cdr.markForCheck();
           });
@@ -238,12 +242,14 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
         componentRef.changeDetectorRef.detectChanges();
         this.currentComponentRef = componentRef;
       }
-    }, 0);
+    }, 10);
 
   }
 
   destroyComponentRef() {
+    console.log('destroy',this.currentComponentRef);
     if (this.currentComponentRef) {
+      console.log('destroy');
       this.currentComponentRef.destroy();
       this.currentComponentRef = null;
       this.isExpendedDescription = false;
