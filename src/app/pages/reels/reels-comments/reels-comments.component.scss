@@ -42,12 +42,24 @@
   display: flex;
   align-items: center;
   padding: 8px 16px;
+  color:white;
 
   ion-input {
     --background: #2a2a2a;
     --color: #fff;
     border-radius: 20px;
     margin-right: 8px;
+    &::part(native) {
+      color: white !important;
+      -webkit-text-fill-color: white!important;
+      opacity: 1;
+      background: transparent !important;
+    }
+
+    input {
+      color: #fff !important;
+      -webkit-text-fill-color: #fff !important;
+    }
 
   }
 
@@ -131,5 +143,6 @@ ion-list {
 }
 
 .footer-toolbar {
+  color:white;
   margin-right: 10px;
 }

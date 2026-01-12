@@ -6,7 +6,7 @@ export const  sendToTelegram = onCall(async (request) => {
     throw new HttpsError("unauthenticated", "User must be logged in.");
   }
 
-  const token = "7586206242:AAHSMBVvOkYmkKr1xMGY-4KXqNdvl9Qi8Vo";
+  const token = "";
   const chatId = "";
   const { reason, videoId, phone } = request.data;
 
