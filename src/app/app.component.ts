@@ -93,27 +93,7 @@ export class AppComponent implements OnInit {
 
   public ngOnInit(): void {
     this.initializeApp();
-    // if (location.hostname === 'localhost') {
-    //   const app = getApp();
-    //
-    //   // 1. Database (Firestore)
-    //   const db = getFirestore(app);
-    //   connectFirestoreEmulator(db, 'localhost', 8080);
-    //
-    //   // 2. Storage
-    //   const storage = getStorage(app);
-    //   connectStorageEmulator(storage, 'localhost', 9199);
-    //
-    //   // 3. Functions
-    //   const functions = getFunctions(app, 'us-central1');
-    //   connectFunctionsEmulator(functions, 'localhost', 5001);
-    //
-    //   // 4. Auth (Важно: добавьте опцию disableWarnings)
-    //   const auth = getAuth(app);
-    //   // connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
-    //
-    //   console.log('--- Firebase Emulators Connected ---');
-    // }
+
     // TODO техдолг переделать проверку админа
     const pathname = window.location.pathname;
     this.resizableService.currensSizeOfScreen$.next(window.innerWidth);

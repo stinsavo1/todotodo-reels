@@ -3,24 +3,22 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ComponentRef,
   DestroyRef,
   ElementRef,
-  EnvironmentInjector,
   inject,
   OnDestroy,
   OnInit,
-  ViewChild,
-  ViewContainerRef
+  ViewChild
 } from '@angular/core';
-import { outputToObservable, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Auth } from '@angular/fire/auth';
-import { Firestore } from '@angular/fire/firestore';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ModalController } from '@ionic/angular';
-import { delay } from 'rxjs/operators';
+import { delay, filter, switchMap } from 'rxjs/operators';
 import { Swiper } from 'swiper';
 import { Mousewheel, Navigation, Pagination, Virtual } from 'swiper/modules';
 import { SwiperOptions } from 'swiper/types';
+import { UserInterface } from '../../../interfaces/user.interface';
+import { AuthService } from '../../../services/auth.service';
+import { UserService } from '../../../services/my-service/user.service';
 import { ResizeService } from '../../../services/resize.service';
 import { ReelsHelper } from '../helper/reels.helper';
 import { CommentsWithAvatar } from '../interfaces/comments.interface';
@@ -58,6 +56,8 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
               public resizeService: ResizeService,
               private commentsService: CommentsService,
               private modalCtrl: ModalController,
+              private usersService: UserService,
+              private auth: AuthService,
               private usersPreferencesService: UsersPreferencesService,) {
     this.reels = this.videoService.reels;
 
@@ -68,7 +68,24 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
+    this.auth.authState$.pipe(
+      switchMap((userData) => this.usersService.getUserById(userData.user.uid)),
+      takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (data: UserInterface) => {
+        console.log('user pre',data,);
+        this.userId=data.id;
+        if (data.subscribersIds?.length > 0) {
+
+          this.usersPreferencesService.currentSubscribtions$.next({
+            subscribers: data.subscribersIds,
+            count: data.subscribersCount
+          });
+        }
+      }
+    });
     this.initVideoList();
+
     this.videoService.isLoading$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.showSpinner = data;
@@ -79,7 +96,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.videoService.currentReel$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(updatedReels => {
       this.currentReel = { ...updatedReels };
-      this.commentsService.loadComments(this.currentReel.id).then()
+      this.commentsService.loadComments(this.currentReel.id).then();
       this.cdr.markForCheck();
 
     });
@@ -147,7 +164,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
         afterInit: (swiper) => {
           this.videoService.attachVideoListener(swiper);
           this.handleVideoPlayback();
-          this.currentActiveIndex=0;
+          this.currentActiveIndex = 0;
         },
 
       },
@@ -199,9 +216,6 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-
-
-
   clearPreviousVideoListener(swiper: any) {
 
     swiper.slides.forEach((slide: HTMLElement) => {
@@ -221,7 +235,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     const modal = await this.modalCtrl.create({
       component: ReelsCommentsComponent,
       componentProps: { reel: this.currentReel, activeIndex: this.currentActiveIndex },
-      cssClass: 'custom-fixed-modal half',
+      cssClass: 'custom-fixed-modal half comments',
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
@@ -266,7 +280,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
   async openCreateReels() {
     const modal = await this.modalCtrl.create({
       component: ReelsCreateComponent,
-      cssClass: `custom-fixed-modal half ${window.innerWidth > 1280 ? 'desctop' : ''}`,
+      cssClass: `custom-fixed-modal half ${window.innerWidth > 1280 ? 'desctop' : 'mobile'}`,
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();

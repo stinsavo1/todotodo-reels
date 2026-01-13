@@ -28,6 +28,9 @@ export class CommentsService {
 
 
   async loadComments(videoId: string) {
+    if (!videoId) {
+      return
+    }
 
     const commentsRef = collection(this.firestore, 'comments');
     const q = query(

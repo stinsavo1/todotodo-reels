@@ -1,58 +1,60 @@
 @let windowSize = resizeService.currensSizeOfScreen$ | async;
-<div class="comments-wrap" [ngClass]="{'desctop':windowSize>1280}">
-<ion-header class="ion-no-border">
-  <ion-toolbar color="dark" class="reels-toolbar">
-    <ion-title slot="start" class="ion-text-start"
-    >Комментарии {{ comments.length > 0 ? ' (' + comments.length + ')' : '' }}
-    </ion-title>
-    @if (windowSize < 1280) {
-      <ion-buttons slot="end">
-        <ion-button slot="end" (click)="dismiss()">
-          <ion-icon slot="icon-only" name="close-outline"></ion-icon>
-        </ion-button>
-      </ion-buttons>
+<!--<div class="comments-wrap" [ngClass]="{'desctop':windowSize>1280}">-->
+  <ion-header class="ion-no-border">
+    <ion-toolbar color="dark" class="reels-toolbar">
+      <ion-title slot="start" class="ion-text-start"
+      >Комментарии {{ comments.length > 0 ? ' (' + comments.length + ')' : '' }}
+      </ion-title>
+      @if (windowSize < 1280) {
+        <ion-buttons slot="end">
+          <ion-button slot="end" (click)="dismiss()">
+            <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      }
+
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="comments-content reels-content" [ngClass]="{'desctop':windowSize>1280}" >
+
+    @if (comments.length === 0) {
+      <div class="empty">
+        Ваш комментарий будет первым
+      </div>
+    } @else {
+
+
+    <ion-list lines="none" class="reels-comments ">
+      @for (comment of comments; track comment.id) {
+        <ion-item>
+          <ion-avatar slot="start">
+            <img [src]="comment.avatar || '/assets/avatar.svg'"/>
+          </ion-avatar>
+          <ion-label>
+            <div>{{ comment.username }}</div>
+            <p>{{ comment.text }}</p>
+          </ion-label>
+        </ion-item>
+      }
+
+    </ion-list>
     }
 
-  </ion-toolbar>
-</ion-header>
-<ion-content class="comments-content reels-content">
-  @if (comments.length === 0) {
-    <div class="empty">
-      Ваш комментарий будет первым
-    </div>
-  }
-  <ion-list lines="none" class="reels-comments">
-    @for (comment of comments; track comment.id) {
-      <ion-item>
-        <ion-avatar slot="start">
-          <img [src]="comment.avatar || '/assets/avatar.svg'"/>
-        </ion-avatar>
-        <ion-label>
-          <div>{{ comment.username }}</div>
-          <p>{{ comment.text }}</p>
-        </ion-label>
-      </ion-item>
-    }
-
-  </ion-list>
-
-</ion-content>
-
-<!--<ion-footer>-->
-  <ion-toolbar class="footer-toolbar">
+  </ion-content>
+<ion-footer class="ion-no-border" [ngClass]="{'desctop':windowSize>1280}">
+  <ion-toolbar class="input-toolbar">
     <div class="input-container">
       <ion-input
-        autofocus
-        autocapitalize="off"
-        autocorrect="off"
-        spellcheck="false"
         [(ngModel)]="newCommentText"
         placeholder="Добавьте свой комментарий..."
+        class="comment-input"
       ></ion-input>
-      <ion-button class="send" fill="clear" [disabled]="!newCommentText" (click)="postComment()">
-        <ion-icon name="arrow-up-outline"></ion-icon>
+      <ion-button (click)="postComment()" class="send" [disabled]="!newCommentText">
+        <ion-icon slot="icon-only" name="arrow-up-outline"></ion-icon>
       </ion-button>
     </div>
   </ion-toolbar>
-<!--</ion-footer>-->
-</div>
+</ion-footer>
+
+
+<!--</div>-->

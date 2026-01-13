@@ -12,10 +12,11 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Auth } from '@angular/fire/auth';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
-import { timeout } from 'rxjs';
+import { ModalController, PopoverController } from '@ionic/angular';
+import { ResizeService } from '../../../services/resize.service';
 import { ReelsHelper } from '../helper/reels.helper';
 import { MAX_SIZE_COMMENT, MAX_SIZE_FILE } from '../interfaces/reels.interface';
+import { ReelsAdditionalActionsComponent } from '../reels-additional-actions/reels-additional-actions.component';
 import { UploadService } from '../services/upload.service';
 import { VideoService } from '../services/video.service';
 
@@ -39,15 +40,16 @@ export class ReelsCreateComponent implements OnInit {
   isMuted: boolean = true;
   public wordCount: number = 0;
   private readonly destroyRef = inject(DestroyRef);
-  step = 1;
+  showDescription = false;
 
   constructor(public videoService: VideoService,
               private modalCtrl:ModalController,
+              public resizeService:ResizeService,
+              private popoverCtrl:PopoverController,
               private auth: Auth, public uploadService:UploadService) {
 
     this.uploadForm = new FormGroup<UploadFormType>({
       description: new FormControl('', [
-        Validators.required,
         Validators.minLength(3),
         Validators.maxLength(MAX_SIZE_COMMENT)
       ]),
@@ -132,5 +134,11 @@ export class ReelsCreateComponent implements OnInit {
   }
 
   protected readonly MAX_SIZE_COMMENT = MAX_SIZE_COMMENT;
-  protected readonly MAX_SIZE_FILE = MAX_SIZE_FILE;
+  protected readonly Math = Math;
+
+  async addDescription() {
+    this.showDescription=!this.showDescription;
+
+
+  }
 }

@@ -1,9 +1,26 @@
 import { Injectable } from '@angular/core';
-import { collection, collectionData, doc, Firestore, serverTimestamp, setDoc } from '@angular/fire/firestore';
+import {
+  arrayRemove,
+  arrayUnion,
+  collection,
+  collectionData,
+  doc,
+  Firestore,
+  increment,
+  runTransaction,
+  serverTimestamp,
+  setDoc
+} from '@angular/fire/firestore';
 import { BehaviorSubject, combineLatest, from, Observable, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
+import { UserService } from '../../../services/my-service/user.service';
 import { Reel, UserPreferences } from '../interfaces/reels.interface';
+
+export interface Subscriptions {
+  subscribers: string[],
+  count: number
+}
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +32,88 @@ export class UsersPreferencesService {
     blockedAuthors: new Set(),
     hiddenVideos: new Set()
   });
+  currentSubscribtions$ = new BehaviorSubject<Subscriptions | null>(null);
 
-  constructor(private firestore: Firestore, private auth: AuthService) {
+  constructor(private firestore: Firestore, private auth: AuthService, private usersService: UserService) {
   }
 
+  // trackSubscription(targetUserId: string, myUserId: string) {
+  //   const userRef = doc(this.firestore, "users", targetUserId);
+  //
+  //   // onSnapshot listens for real-time changes
+  //   onSnapshot(userRef, (doc) => {
+  //     const data = doc.data();
+  //     if (data && data.subscriberIds) {
+  //       // Check if MY ID is in THEIR list
+  //       this.isSubscribed = data.subscriberIds.includes(myUserId);
+  //     } else {
+  //       this.isSubscribed = false;
+  //     }
+  //   });}
+
+  getDataUser(userId) {
+
+  }
+
+  subscribeToUser(userId: string, subscriberId: string): Observable<void> {
+    const userRef = doc(this.firestore, `users/${userId}`);
+
+    return from(
+      runTransaction(this.firestore, async (transaction) => {
+        const userDoc = await transaction.get(userRef);
+
+        if (!userDoc.exists()) throw new Error('User does not exist');
+
+        const data = userDoc.data() as any;
+
+        if (data.subscribersIds?.includes(subscriberId)) {
+          console.log('Already subscribed');
+          return;
+        }
+
+        transaction.update(userRef, {
+          subscribersIds: arrayUnion(subscriberId),
+          subscribersCount: increment(1)
+        });
+      })
+    ).pipe(
+      tap(()=>{
+        const previos = {...this.currentSubscribtions$.value};
+        this.currentSubscribtions$.next({
+          subscribers:previos?.subscribers ?[...previos.subscribers, subscriberId] : [subscriberId],
+          count:previos?.count ? previos.count+1 : 0})
+      })
+    );
+  }
+
+  unsubscribeFromUser(userId: string, subscriberId: string): Observable<void> {
+    const userRef = doc(this.firestore, `users/${userId}`);
+
+    return from(
+      runTransaction(this.firestore, async (transaction) => {
+        const userDoc = await transaction.get(userRef);
+
+        if (!userDoc.exists()) throw new Error('User does not exist');
+
+        const data = userDoc.data() as any;
+
+        if (!data.subscribersIds?.includes(subscriberId)) return;
+
+        transaction.update(userRef, {
+          subscribersIds: arrayRemove(subscriberId),
+          subscribersCount: increment(-1)
+        });
+      })
+    ).pipe(
+      tap(()=>{
+        const previos = {...this.currentSubscribtions$.value};
+
+        this.currentSubscribtions$.next({
+          subscribers: previos?.subscribers ? previos.subscribers.filter(id => id !== subscriberId) : [],
+          count: previos.count ? previos.count - 1 : 0
+        });
+      }));
+  }
 
   loadPreferences(uid: string): Observable<{
     blockedAuthors: Set<string>;
@@ -53,8 +148,6 @@ export class UsersPreferencesService {
     );
   }
 
-
-
   hideContent(type: 'video' | 'author', targetId: string): Observable<void> {
     const collectionName =
       type === 'author' ? 'hiddenAuthors' : 'hiddenVideos';
@@ -75,7 +168,6 @@ export class UsersPreferencesService {
     } else {
       updated.hiddenVideos.add(targetId);
     }
-
 
     return from(
       setDoc(docRef, { createdAt: serverTimestamp() })

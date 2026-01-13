@@ -12,6 +12,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Auth } from '@angular/fire/auth';
 import { ModalController } from '@ionic/angular';
+import { finalize } from 'rxjs';
 import { ResizeService } from '../../../services/resize.service';
 import { CommentsWithAvatar, ReelsComment } from '../interfaces/comments.interface';
 import { ReelsHelper } from '../helper/reels.helper';
@@ -30,6 +31,7 @@ export class ReelsCommentsComponent  implements OnInit,OnChanges {
   @Input() activeIndex!: number;
   newCommentText: string='';
   comments: CommentsWithAvatar[] = [];
+  disableButton = false;
   private readonly destroyRef = inject(DestroyRef);
   constructor(private commentsService: CommentsService,
               private cdr:ChangeDetectorRef,
@@ -66,7 +68,8 @@ export class ReelsCommentsComponent  implements OnInit,OnChanges {
     if (sanitizedText.length > MAX_SIZE_COMMENT) {
       sanitizedText = sanitizedText.substring(0, MAX_SIZE_COMMENT);
     }
-    this.commentsService.postComment(sanitizedText,this.reel,user).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data)=>{
+    this.disableButton=true;
+    this.commentsService.postComment(sanitizedText,this.reel,user).pipe(finalize(()=>this.disableButton=false),takeUntilDestroyed(this.destroyRef)).subscribe((data)=>{
       if (data.reelId) {
         const currentReels = { ...this.videoService.currentReel$.value };
         currentReels.commentsCount = (currentReels.commentsCount || 0) + 1;

@@ -54,6 +54,7 @@
   flex-direction: column;
   justify-content: end;
   align-items: flex-start;
+  margin: 0;
 
   &.expended {
     width: 100%;
@@ -64,7 +65,33 @@
   }
 
   h3 {
+    display: block;
     padding-left: 10px;
+    margin: 0;
   }
 
+}
+
+.user-data {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  margin-bottom: 5px;
+
+  ion-button {
+    //padding: 5px;
+    min-height: 40px;
+    --background-activated: transparent;
+    --background-hover: transparent;
+    --border-radius: 16px;
+    --border-width: 1px;
+    --border-style: solid;
+    --border-color: white;
+    --color: white;
+    --min-height: 40px;
+    --padding-top: 6px;
+    --padding-bottom: 6px;
+    --background: transparent;
+  }
 }

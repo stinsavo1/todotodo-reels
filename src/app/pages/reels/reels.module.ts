@@ -9,6 +9,7 @@ import { DeclensionPipe } from './pipes/declension.pipe';
 import { ReelsActionsComponent } from './reels-actions/reels-actions.component';
 import { ReelsAdditionalActionsComponent } from './reels-additional-actions/reels-additional-actions.component';
 import { ReelsCommentsComponent } from './reels-comments/reels-comments.component';
+import { DescriptionSectionComponent } from './reels-create/description-section/description-section.component';
 import { ReelsCreateComponent } from './reels-create/reels-create.component';
 import { ReelsDescriptionComponent } from './reels-description/reels-description.component';
 import { ReelsPageComponent } from './reels-page/reels-page.component';
@@ -41,6 +42,7 @@ const routes: Routes = [
     HideDetailModalComponent,
     ReelsDescriptionComponent,
     ReelsShareModalComponent,
+    DescriptionSectionComponent,
     ReelsAdditionalActionsComponent],
   imports: [
     CommonModule,

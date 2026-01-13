@@ -1,7 +1,8 @@
 .upload-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-evenly;
   width: 280px;
   height: 380px;
   margin: 20px 0;
@@ -10,13 +11,24 @@
   background: #1a1b1f;
   cursor: pointer;
   transition: all 0.3s ease;
-  @media screen and (max-width: 480px) {
-    height: 320px;
+  font-size: 20px;
+  //@media screen and (max-width: 480px) {
+  //  height: 320px;
+  //}
+
+  ion-spinner {
+    width: 100px;
+    height: 100px;
   }
+
 
 }
 
-form{
+.footer-button {
+  min-width: 150px;
+}
+
+form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,6 +61,9 @@ form{
   }
 }
 
+ion-spiner {
+  display: block;
+}
 
 ion-content {
   --background: var(--light-black);
@@ -58,34 +73,27 @@ ion-content {
 ion-toolbar {
   --background: #222428;
   --color: white;
-}
-
-.description-section {
-  width: 100%;
-  padding: 15px;
-  text-align: left;
-
-  .desc-input {
-    --background: #25262b;
-    --color: white;
-    border-radius: 12px;
-    margin-bottom: 5px;
-    & ion-textarea{
-      --min-height: 150px;
-    }
-
+  & ion-icon{
+    font-size: 25px;
   }
 }
 
-.counter {
-  text-align: left;
-  font-size: 12px;
-  color: #999;
+
+
+.error {
+  color: red;
+  padding: 0 8px;
 }
 
-.error{
-  color:red;
-  padding: 0 8px;
+.mobile {
+  position: relative;
+  height: 100%;
+  & app-description-section {
+    position: sticky;
+    bottom: 10px;
+    left:0;
+    z-index: 1000;
+  }
 }
 
 
@@ -100,10 +108,21 @@ ion-toolbar {
   flex-direction: column;
   align-items: center;
 
-  .play-btn {
+  .action-buttons {
     position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    left: 5px;
     bottom: 7px;
-    left: 20px;
+    width: calc(100% - 14px);
+    z-index: 2000;
+  }
+
+  .play-btn {
+    //position: absolute;
+    //bottom: 7px;
+    //left: 20px;
     width: 26px;
     height: 26px;
     //transform: translate(-50%, -50%);
@@ -114,6 +133,17 @@ ion-toolbar {
     padding: 3px;
     z-index: 20000;
     pointer-events: none;
+  }
+
+  .description-icon {
+    width: 26px;
+    height: 26px;
+    padding: 3px;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
   }
 
   .mute-btn {
@@ -135,9 +165,9 @@ ion-toolbar {
   }
 
   .delete-icon-btn {
-    position: absolute;
-    bottom: 10px;
-    right: 20px;
+    //position: absolute;
+    //bottom: 10px;
+    //right: 20px;
     padding: 3px;
     width: 18px;
     height: 18px;
@@ -155,7 +185,7 @@ ion-toolbar {
     width: 100%;
     padding: 0 10px 5px 10px; // Небольшой отступ снизу
     z-index: 20000;
-    background: linear-gradient(transparent, rgba(0,0,0,0.5)); // Тень для видимости
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.5)); // Тень для видимости
   }
 
   .preview {
@@ -170,7 +200,7 @@ ion-toolbar {
     //border-radius: 40px;
     //box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     @media screen and (max-width: 480px) {
-      height: 320px;
+      //height: 320px;
     }
   }
 
@@ -205,11 +235,18 @@ ion-toolbar {
   }
 }
 
-ion-button{
-  --color:white;
+ion-button {
+  --color: white;
 
 }
 
-.processing-text{
-  color:#c3cdd7b3;
+ion-footer {
+  ion-button {
+    //width: 100%;
+
+  }
+}
+
+.processing-text {
+  color: #c3cdd7b3;
 }

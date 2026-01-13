@@ -1,12 +1,22 @@
 <div class="video-info" [ngClass]="{'expended':isDescriptionExpanded}" (click)="toggleDescription($event)">
   <div class="description-container" [ngClass]="{'video-overlay':isDescriptionExpanded}"
-       >
+  >
     <p #descText [class.expanded]="isDescriptionExpanded" class="description-text">
       {{ reel?.description }}
     </p>
 
   </div>
-  <h3>{{ reel?.userName }}</h3>
+  @if (reel?.userId) {
+    <div class="user-data">
+      <h3>{{ reel?.userName }}</h3>
+      @if (!hideSubscr) {
+        <ion-button (click)="updateSubscriber($event)" [disabled]="loading">
+          {{ isSubscribe ? 'Вы подписаны' : 'Подписаться' }}</ion-button>
+      }
+    </div>
+  }
+
+
   <p
     class="views">{{
       reel?.viewsCount|declension:'просмотр':'просмотра':'просмотров'

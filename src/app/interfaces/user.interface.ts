@@ -32,4 +32,6 @@ export interface UserInterface {
   partnership?: boolean;
   cashback: number;
   nameFactory: string;
+  subscribersIds?:string[];
+  subscribersCount?:number;
 }

@@ -16,7 +16,7 @@
       <div #swiperRef class="swiper-container">
         <div class="swiper-wrapper">
         </div>
-        <app-reels-description [reel]="currentReel"></app-reels-description>
+        <app-reels-description [reel]="currentReel" [userId]="userId"></app-reels-description>
       </div>
       @if (reels.length === 0) {
         <div class="empty-reels">Ваше видео будет первым</div>
