@@ -1,5 +1,7 @@
 
 <ion-content>
+<!--  todo delete button-->
+  <ion-button class="my-button" (click)="onOpenReels()">open Reels</ion-button>
   <div class="button-container" *ngIf="title">
     <ion-button *ngIf="userDetails?.mode !== usersMode.STORE && userDetails?.mode !== 'agency'"
                 (click)="setOpen(true, '/tabs/map/new-order')"
@@ -156,4 +158,3 @@
     </ng-template>
   </ion-modal>
 </ion-content>
-

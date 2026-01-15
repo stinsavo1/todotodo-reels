@@ -143,12 +143,25 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
         slides: this.reels,
         renderSlide: (slide: Reel, index) => {
           console.log('Rendering:', index);
-          return ReelsHelper.renderSlide(slide, index);
+          return ReelsHelper.renderSlide(slide, index, this.isMuted);
         },
       },
 
       on: {
-        slideChange:()=>{
+        slideChange:(swiper)=>{
+          const activeIndex = swiper.activeIndex;
+          const videos = document.querySelectorAll('video');
+
+          if (this.videoService.isIOS()) {
+
+            [activeIndex + 1, activeIndex + 2].forEach(index => {
+              const nextVid = videos[index] as HTMLVideoElement;
+              if (nextVid && nextVid.paused) {
+                nextVid.load();
+                nextVid.muted = true;
+              }
+            });
+          }
           this.handleVideoPlayback();
         },
         slideChangeTransitionEnd: (swiper) => {
@@ -264,6 +277,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
         if (video) {
           console.log('Target video found, attempting play:', video.src);
           video.muted = this.isMuted;
+          console.log('isMuted',this.isMuted);
           video.currentTime = 0;
           const playPromise = video.play();
           if (playPromise !== undefined && this.userId) {

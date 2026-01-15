@@ -22,7 +22,7 @@
         <div class="empty-reels">Ваше видео будет первым</div>
       }
       <app-reels-actions [reel]="currentReel" [activeIndex]="currentActiveIndex"
-                         (openComments)="openComments()"></app-reels-actions>
+                         (openComments)="openComments()" (togleSound)="isMuted=$event"></app-reels-actions>
 
     </div>
     @if (windowSize > 1280) {

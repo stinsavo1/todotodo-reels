@@ -65,9 +65,10 @@ export const processVideoUpload = https.onCall({
         ])
         .outputOptions([
           '-c:v libx264',
-          '-profile:v baseline',
+          '-profile:v main',
           '-pix_fmt yuv420p',
-          '-crf 18',
+          '-crf 24',
+          '-level 3.1',
           '-preset superfast',
           '-movflags +faststart',
           '-c:a aac',

@@ -12,20 +12,20 @@ export class ReelsHelper {
       .replace(/>/g, '&gt;');
   }
 
-  static renderSlide(slide:Reel, index: number): string {
-    console.log('REN', slide.id, index, slide.description);
+  static renderSlide(slide:Reel, index: number,isMuted:boolean): string {
+    console.log('REN', slide.id, index, slide.description, isMuted);
     return `
 <div class="swiper-slide" id="container-${index}">
   <video
     id="${slide.id}"
     src="${slide.url}"
-    
+    [poster]="${slide.posterUrl}"
     class="reels-video"
     loop
     type="video/mp4"
     webkit-playsinline
     playsinline
-    muted
+    [muted]="${isMuted}"
     preload="auto"
     >
   </video>

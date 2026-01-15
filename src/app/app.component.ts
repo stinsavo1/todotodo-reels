@@ -229,9 +229,5 @@ export class AppComponent implements OnInit {
     });
   }
 
-  public onOpenReels(): void {
-    this.openReels=true;
-    this.router.navigate(['/reels']).then(() => {})
-    // this.router.navigateByUrl('/reels');
-  }
+
 }

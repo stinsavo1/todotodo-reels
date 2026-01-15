@@ -34,6 +34,7 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
   @Input() reel: Reel;
   @Input() activeIndex: number;
   @Output() openComments = new EventEmitter<void>();
+  @Output() togleSound = new EventEmitter<boolean>();
   isMuted = true;
   userId:string;
   private toggleLikeSubject = new Subject<void>();
@@ -82,11 +83,13 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
 
   public toggleMute(): void {
     this.isMuted = !this.isMuted;
+    console.log('toggleMute',this.isMuted);
     const videos = document.querySelectorAll('video');
     videos.forEach(video => {
       video.muted = this.isMuted;
       video.volume = this.isMuted ? 0 : 1;
     });
+    this.togleSound.emit(this.isMuted);
   }
 
   toggleLike() {

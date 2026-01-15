@@ -595,6 +595,10 @@ export class MapPage implements ViewWillEnter {
     }
   }
 
+  onOpenReels(): void {
+    this.router.navigate(['/reels']).then(() => {})
+  }
+
   private getDefaultFilters(): any {
     return {
       factoryServiceUsers: true,
