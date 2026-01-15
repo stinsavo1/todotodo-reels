@@ -19,9 +19,11 @@ export class ReelsHelper {
   <video
     id="${slide.id}"
     src="${slide.url}"
-    [poster]="${slide.posterUrl}"
+    
     class="reels-video"
     loop
+    type="video/mp4"
+    webkit-playsinline
     playsinline
     muted
     preload="auto"

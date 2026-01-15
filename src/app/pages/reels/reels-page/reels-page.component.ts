@@ -138,6 +138,8 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
       modules: [Virtual, Navigation, Pagination, Mousewheel],
       virtual: {
         enabled: true,
+        addSlidesBefore: 3,
+        addSlidesAfter: 3,
         slides: this.reels,
         renderSlide: (slide: Reel, index) => {
           console.log('Rendering:', index);
@@ -146,10 +148,13 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
       },
 
       on: {
+        slideChange:()=>{
+          this.handleVideoPlayback();
+        },
         slideChangeTransitionEnd: (swiper) => {
           this.clearPreviousVideoListener(swiper);
           this.videoService.attachVideoListener(swiper);
-          this.handleVideoPlayback();
+
           const totalSlides = swiper.virtual.slides.length;
           this.currentActiveIndex = swiper.activeIndex;
           this.videoService.currentReel$.next(this.reels[this.currentActiveIndex]);
@@ -261,8 +266,8 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
           video.muted = this.isMuted;
           video.currentTime = 0;
           const playPromise = video.play();
-          if (playPromise !== undefined) {
-            this.videoService.trackView(video.id).then();
+          if (playPromise !== undefined && this.userId) {
+            this.videoService.trackView(video.id,this.userId,this.currentReel.userId).then();
             playPromise.catch(error => {
               console.error('Playback failed for:', video.src, error);
             });
@@ -280,6 +285,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
   async openCreateReels() {
     const modal = await this.modalCtrl.create({
       component: ReelsCreateComponent,
+      id:'createModal',
       cssClass: `custom-fixed-modal half ${window.innerWidth > 1280 ? 'desctop' : 'mobile'}`,
     });
     await modal.present();

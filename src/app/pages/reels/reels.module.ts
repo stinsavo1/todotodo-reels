@@ -1,4 +1,3 @@
-import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -51,12 +50,12 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     DeclensionPipe,
-    CdkFixedSizeVirtualScroll,
-    CdkVirtualForOf,
-    CdkVirtualScrollViewport,
     NgOptimizedImage
   ],
-  providers: [VideoService, UploadService,LikesService,CommentsService,ShareService]
+  exports: [
+    DescriptionSectionComponent
+  ],
+  providers: [VideoService, UploadService, LikesService, CommentsService, ShareService]
 })
 export class ReelsModule {
 }

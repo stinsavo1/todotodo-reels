@@ -1,15 +1,14 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="reels-toolbar">
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 <ion-content >
-    <ion-header class="ion-no-border">
-      <ion-toolbar class="reels-toolbar">
-        <ion-buttons slot="end">
-          <ion-button (click)="close()">
-            <ion-icon slot="icon-only" name="close-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-
-    <ion-list class="reels-list" lines="none">
+   <ion-list class="reels-list" lines="none">
       <ion-item button (click)="onHideClick()" [detail]="false">
         <ion-icon name="eye-off-outline" slot="start"></ion-icon>
         <ion-label>Не показывать</ion-label>

@@ -50,10 +50,14 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+  background-color: transparent;
+  transition: opacity 0.3s ease-in-out;
   @media screen and (max-width: 480px) {
-    //width: 100vw;
-    height: 100vh;
+    width: 100vw;
+    height: 100dvh;
     object-fit: cover;
+    object-position: center;
+    //object-fit: contain;
   }
 }
 
@@ -83,10 +87,20 @@ ion-toolbar.reels-toolbar ion-button {
   align-items: end;
 }
 
-//.custom-fixed-modal.desctop ion-content.reels-content {
-//  --background: #1a1b1f;
-//}
+.center-modal {
+  /* Use flex to align, don't use 'top' or 'transform' */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
+  &::part(content) {
+    /* Set a height that leaves room for the keyboard */
+    height: auto;
+    max-height: 40vh; /* Only take up 40% of the screen height */
+    width: 90%;
+    border-radius: 12px;
+  }
+}
 
 .share-modal {
 

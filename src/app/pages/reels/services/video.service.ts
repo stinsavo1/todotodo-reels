@@ -11,10 +11,12 @@ import {
   updateDoc
 } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
+import { deleteObject, getStorage, ref } from 'firebase/storage';
 import { BehaviorSubject, finalize, from, Observable, Subject, take } from 'rxjs';
 import { Swiper } from 'swiper';
 import { UserStoreService } from '../../../services/store-service/user-store.service';
 import { Reel, SWIPER_LIMIT } from '../interfaces/reels.interface';
+import { ToastService } from './toast.service';
 import { UploadService } from './upload.service';
 
 @Injectable()
@@ -32,6 +34,7 @@ export class VideoService {
               private functions: Functions,
               private uploadService: UploadService,
               private user: UserStoreService,
+              private toastService:ToastService
   ) {
 
   }
@@ -41,14 +44,16 @@ export class VideoService {
       console.error('Видео еще не загружено в облако');
       return;
     }
+    const savedFile = this.uploadService.uploadedVideo$.value;
     try {
       this.isLoading$.next(true);
       const reelsCollection = collection(this.firestore, 'reels');
-      const savedFile = this.uploadService.uploadedVideo$.value;
+
+      console.log('saved f',savedFile);
       const newReel: Omit<Reel, 'id'> = {
         url: savedFile.videoUrl,
         posterUrl: savedFile.thumbUrl,
-        filePath: savedFile.videoPath,
+        filePath: savedFile.filePath,
         userId: this.auth.currentUser.uid,
         userName: this.user.getUserValue().fio || 'user',
         description: description,
@@ -58,12 +63,8 @@ export class VideoService {
         commentsCount: 0,
         viewsCount: 0,
       };
+      console.log('newRe',newReel);
       const docRef = await addDoc(reelsCollection, newReel);
-      if (savedFile.fileId) {
-        const tmpDocRef = doc(this.firestore, `tmpReels/${savedFile.fileId}`);
-        await deleteDoc(tmpDocRef);
-        console.log('Временная запись tmpReels успешно удалена');
-      }
       localStorage.removeItem('pending_video_url');
       const savedReel: Reel = { ...newReel, id: docRef.id };
       const currentReelIndex = this.swiper.activeIndex ?? 0;
@@ -73,15 +74,41 @@ export class VideoService {
       this.uploadedVideoReady$.next(savedReel);
       this.uploadService.uploadedVideo$.next(null);
       this.isLoading$.next(false);
+      this.toastService.showIonicToast('Ваше видео опубликовано').pipe(take(1)).subscribe();
       console.log('Данные успешно сохранены в БД! ID документа:', docRef.id);
-    } catch (error) {
+    }catch (error) {
       this.isLoading$.next(false);
-      console.error('Ошибка при сохранении в Firestore:', error);
+      console.error('Ошибка при сохранении в Firestore, удаляем файл из Storage:', error);
+
+      if (savedFile.filePath) {
+        try {
+          const storage = getStorage();
+          const videoRef = ref(storage, savedFile.filePath);
+          const thumbPath = savedFile.filePath.replace('reels/', 'thumbnails/').replace('.mp4', '.jpg');
+          const thumbRef = ref(storage, thumbPath);
+
+          await Promise.all([
+            deleteObject(videoRef),
+            deleteObject(thumbRef)
+          ]);
+
+          console.log('Файлы успешно удалены из Storage после ошибки БД');
+        } catch (storageError) {
+          console.error('Не удалось удалить файлы из Storage:', storageError);
+        }
+      }
+
+      this.toastService.showIonicToast('Ошибка при публикации. Попробуйте снова.').pipe(take(1)).subscribe();
     }
   }
 
-  async trackView(videoId: string) {
+  async trackView(videoId: string, curentUserId:string, reelsUserId:string) {
+    if (reelsUserId===curentUserId) {
+      return
+    }
+    console.log('trackView',curentUserId,reelsUserId);
     const reelRef = doc(this.firestore, 'reels', videoId);
+
     try {
       await updateDoc(reelRef, {
         viewsCount: increment(1)

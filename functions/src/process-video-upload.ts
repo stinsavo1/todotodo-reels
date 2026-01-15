@@ -1,33 +1,37 @@
+import * as admin from 'firebase-admin';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
-import { getDownloadURL, getStorage } from 'firebase-admin/storage';
-import { onObjectFinalized } from 'firebase-functions/v2/storage';
+import { https } from 'firebase-functions';
 import ffmpeg from 'fluent-ffmpeg';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-export const processVideoUpload = onObjectFinalized({
-  cpu: 2,
-  memory: '2GiB',
-  timeoutSeconds: 540,
-}, async (event) => {
-  const filePath = event.data.name;
-  const bucket = getStorage().bucket(event.data.bucket);
+admin.initializeApp();
 
-  if (!filePath || !filePath.startsWith('tmp/')) return;
+export const processVideoUpload = https.onCall({
+  memory: "2GiB",
+  timeoutSeconds: 500,
+},async (data: any, context) => {
 
+  const filePath = data.data.filePath;
+
+  if (!filePath || !filePath.startsWith('tmp/')) {
+    return { status: 'failed', reason: 'Invalid file path' };
+  }
+
+  const bucket = admin.storage().bucket();
   const fileName = path.basename(filePath);
+  const fileId = fileName.replace(/\W/g, '_');
+
   const isMov = fileName.toLowerCase().endsWith('.mov');
   const isMp4 = fileName.toLowerCase().endsWith('.mp4');
 
-  if (!isMov && !isMp4) return;
-
-  const fileId = fileName.replace(/\W/g, '_');
+  if (!isMov && !isMp4) return { status: 'failed', reason: 'Недопустимый формат файла' };
 
   const tempLocalFile = path.join(os.tmpdir(), fileName);
   const targetTempVideo = path.join(os.tmpdir(), `converted_${Date.now()}.mp4`);
   const targetTempThumb = path.join(os.tmpdir(), `thumb_${Date.now()}.jpg`);
-
+  const docRef = getFirestore().collection('tmpReels').doc(fileId);
   try {
     await bucket.file(filePath).download({ destination: tempLocalFile });
     const duration: number = await new Promise((resolve, reject) => {
@@ -46,21 +50,25 @@ export const processVideoUpload = onObjectFinalized({
       });
 
       await bucket.file(filePath).delete();
-      return;
+      return { status: 'failed', reason: 'Video too short' };
     }
 
     await new Promise((resolve, reject) => {
       ffmpeg(tempLocalFile)
         .videoFilters([
-          { filter: 'scale', options: '720:-2' },
+          { filter: 'scale', options: '720:1280:force_original_aspect_ratio=decrease' },
+          {
+            filter: 'pad',
+            options: '720:1280:(ow-iw)/2:(oh-ih)/2:black'
+          },
           { filter: 'setsar', options: '1' }
         ])
         .outputOptions([
           '-c:v libx264',
-          '-profile:v high',
+          '-profile:v baseline',
           '-pix_fmt yuv420p',
           '-crf 18',
-          '-preset fast',
+          '-preset superfast',
           '-movflags +faststart',
           '-c:a aac',
           '-b:a 128k'
@@ -91,12 +99,9 @@ export const processVideoUpload = onObjectFinalized({
       bucket.upload(targetTempThumb, { destination: thumbDest })
     ]);
 
-    const [videoUrl, thumbUrl] = await Promise.all([
-      getDownloadURL(bucket.file(videoDest)),
-      getDownloadURL(bucket.file(thumbDest))
-    ]);
-
-    await getFirestore().collection('tmpReels').doc(fileId).set({
+    const [videoUrl] = await bucket.file(videoDest).getSignedUrl({ action: 'read', expires: '01-01-2099' });
+    const [thumbUrl] = await bucket.file(thumbDest).getSignedUrl({ action: 'read', expires: '01-01-2099' });
+    await docRef.set({
       originalName: fileName,
       videoUrl: videoUrl,
       thumbUrl: thumbUrl,
@@ -107,20 +112,17 @@ export const processVideoUpload = onObjectFinalized({
 
     await bucket.file(filePath).delete();
     console.log('Cleanup complete. Original deleted.');
-
+    return { status: 'success', videoUrl: videoUrl, thumbUrl: thumbUrl, filePath:videoDest };
   } catch (error) {
     console.error('Processing Error:', error);
     try {
-      await getFirestore().collection('tmpReels').doc(fileId).set({
-        status: 'error',
-        errorMessage: 'Failed to process video or generate thumbnail.',
-        processedAt: FieldValue.serverTimestamp()
-      }, { merge: true });
-    } catch (firestoreError) {
-      console.error('Failed to write error to Firestore:', firestoreError);
+      await docRef.delete();
+      console.log(`Deleted record ${fileId} due to processing error.`);
+    } catch (dbError) {
+      console.error('Failed to delete Firestore record:', dbError);
     }
+    throw new https.HttpsError('internal', 'Произощел сбой в обработке видео');
   } finally {
-    // Clean local temp memory
     [tempLocalFile, targetTempVideo, targetTempThumb].forEach(p => {
       if (fs.existsSync(p)) fs.unlinkSync(p);
     });
