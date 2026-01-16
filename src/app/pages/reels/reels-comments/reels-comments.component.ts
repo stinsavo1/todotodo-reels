@@ -75,6 +75,7 @@ export class ReelsCommentsComponent  implements OnInit,OnChanges {
         currentReels.commentsCount = (currentReels.commentsCount || 0) + 1;
         this.videoService.currentReel$.next(currentReels);
         this.videoService.updateReels(currentReels,this.activeIndex);
+        console.log('postComment');
         this.videoService.videoListUpdated$.next(true);
       }
       this.commentsService.loadComments(this.reel.id).then();

@@ -29,4 +29,10 @@
   <ion-button class="action-button" fill="clear" (click)="toggleMute()">
     <ion-icon slot="icon-only" [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
   </ion-button>
+  @if (reel?.userId && userId === reel.userId) {
+    <ion-button  class="action-button delete-icon" fill="clear" (click)="presentAlert()">
+      <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+    </ion-button>
+  }
+
 </div>

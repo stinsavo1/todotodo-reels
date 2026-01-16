@@ -14,10 +14,12 @@
     border-radius: 12px;
     margin-bottom: 5px;
 
-    & ion-textarea {
-      --min-height: 150px;
-    }
 
+
+  }
+  & ion-textarea {
+    --min-height: 150px;
+    font-size: 22px;
   }
 }
 

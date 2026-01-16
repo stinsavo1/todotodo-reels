@@ -10,16 +10,12 @@ import {
   ViewChild
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Auth } from '@angular/fire/auth';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { IonTextarea, ModalController, PopoverController } from '@ionic/angular';
+import { IonTextarea, ModalController } from '@ionic/angular';
 import { take } from 'rxjs';
 import { PlatformService } from '../../../services/my-service/mobile.service';
-import { ResizeService } from '../../../services/resize.service';
 import { ReelsHelper } from '../helper/reels.helper';
-import { HideDetailModalComponent } from '../hide-detail-modal/hide-detail-modal.component';
-import { MAX_SIZE_COMMENT, MAX_SIZE_FILE } from '../interfaces/reels.interface';
-import { ReelsAdditionalActionsComponent } from '../reels-additional-actions/reels-additional-actions.component';
+import { MAX_SIZE_COMMENT } from '../interfaces/reels.interface';
 import { ToastService } from '../services/toast.service';
 import { UploadService } from '../services/upload.service';
 import { VideoService } from '../services/video.service';
@@ -38,45 +34,52 @@ interface UploadFormType {
 export class ReelsCreateComponent implements OnInit {
   @ViewChild('fInput') fInput: ElementRef;
   @ViewChild('textarea') textarea: IonTextarea;
-  @Input() isOpenCreateModal: boolean = false;
+  @Input() file: any = null;
   @Output() closeModal = new EventEmitter<void>();
-  public description: string | null = null;
-  public uploadForm: FormGroup<UploadFormType>;
+  description: string | null = null;
+  uploadForm: FormGroup<UploadFormType>;
   isMuted: boolean = true;
-  public wordCount: number = 0;
-  private readonly destroyRef = inject(DestroyRef);
+  wordCount: number = 0;
   showDescription = false;
-  isMobile=false;
+  isMobile = false;
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(public videoService: VideoService,
-              private modalCtrl:ModalController,
-              private toastService:ToastService,
-              private platformService:PlatformService,
-              private auth: Auth, public uploadService:UploadService) {
+              private modalCtrl: ModalController,
+              private toastService: ToastService,
+              private platformService: PlatformService,
+              public uploadService: UploadService) {
 
     this.uploadForm = new FormGroup<UploadFormType>({
       description: new FormControl('', [
         Validators.minLength(3),
         Validators.maxLength(MAX_SIZE_COMMENT)
       ]),
-      file: new FormControl('', [Validators.required])
+      file: new FormControl('', [])
     });
   }
 
   ngOnInit() {
+    if (this.file) {
+      this.uploadForm.controls.file.setValue(this.file);
+      this.uploadVideo(this.file);
+    } else {
+      this.uploadForm.controls.file.setValidators([Validators.required]);
+      this.uploadForm.controls.file.updateValueAndValidity();
+    }
     this.uploadForm.controls.description.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
       const newValue = value.trim() || '';
       this.wordCount = newValue ? newValue.length : 0;
     });
-    this.isMobile=this.platformService.isMobile() || window.innerWidth<480;
+    this.isMobile = this.platformService.isMobile() || window.innerWidth < 480;
 
   }
 
-  ionViewDidEnter() {
-    requestAnimationFrame(() => {
-      this.fInput.nativeElement.click();
-    });
-  }
+  // ionViewDidEnter() {
+  //   requestAnimationFrame(() => {
+  //     this.fInput.nativeElement.click();
+  //   });
+  // }
 
   togglePlay(event: Event, player: HTMLVideoElement) {
     event.stopPropagation();
@@ -98,7 +101,6 @@ export class ReelsCreateComponent implements OnInit {
   }
 
   public createReels(): void {
-    console.log('publish');
     if (this.uploadForm.invalid) {
       const descErr = this.uploadForm.controls.description.errors;
       if (descErr['maxlength']) {
@@ -109,40 +111,42 @@ export class ReelsCreateComponent implements OnInit {
     }
     const text = this.uploadForm.value.description;
     const cleanDescription = ReelsHelper.sanitizeText(text);
-    this.modalCtrl.dismiss(null,null,'createModal').then();
+    this.modalCtrl.dismiss(null, null, 'createModal').then();
     this.isModalOpen = false;
+    const value = this.uploadService.uploadedVideo$.value;
     this.toastService.showIonicToast('Ваше видео отправлено. Публикация займет несколько минут').pipe(take(1)).subscribe();
-    this.uploadService.processVideo(this.uploadService.uploadedVideo$.value.filePath).pipe( take(1)).subscribe({
-      next: (data) => {
+    this.uploadService.processVideo(value.filePath, value.thumbPath, value.reelId).pipe(take(1)).subscribe({
+      next: () => {
         this.videoService.onPublish(cleanDescription).then();
       },
-      error:(err)=>{
+      error: () => {
         this.toastService.showIonicToast('Не удалось опубликовать ваше видео, повторите попытку').pipe(take(1)).subscribe();
       }
-    })
-
+    });
 
   }
 
   uploadVideo(event: any) {
-    const file: File = event.target.files[0];
+    const file = event.target.files[0];
+    this.uploadService.errorMessages$.next(null);
     if (!file) return;
-
+    if (!this.file) {
+      this.uploadForm.controls.file.setValue(file);
+    }
     this.uploadService.uploadVideo(event).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
-        this.uploadService.uploadedVideo$.next({filePath:data.filePath,videoUrl:data.videoUrl});
-        this.isModalOpen = true;
+        this.uploadService.uploadedVideo$.next({ ...data });
+        if (this.isMobile) {
+
+          this.isModalOpen = true;
+        } else this.showDescription = true;
       },
       error: (err: any) => {
         console.error(err);
       }
-    })
-
-
+    });
 
   }
-
-
 
   public deleteVideo(): void {
     const uploadedVideoUrl = this.uploadService.uploadedVideo$.value;
@@ -165,17 +169,13 @@ export class ReelsCreateComponent implements OnInit {
   public isModalOpen = false;
 
   async addDescription() {
-    if (window.innerWidth>1280) {
-      this.showDescription=!this.showDescription;
+    if (window.innerWidth > 1280) {
+      this.showDescription = !this.showDescription;
     } else {
-      this.isModalOpen = true
+      this.isModalOpen = true;
     }
 
-
-
   }
-
-
 
   public setFocus(): void {
     setTimeout(() => this.textarea.setFocus(), 100);

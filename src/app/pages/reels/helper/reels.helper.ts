@@ -14,19 +14,20 @@ export class ReelsHelper {
 
   static renderSlide(slide:Reel, index: number,isMuted:boolean): string {
     console.log('REN', slide.id, index, slide.description, isMuted);
+    const mutedAttribute = isMuted ? 'muted' : '';
     return `
 <div class="swiper-slide" id="container-${index}">
   <video
     id="${slide.id}"
     src="${slide.url}"
-    [poster]="${slide.posterUrl}"
+    poster="${slide.posterUrl}"
     class="reels-video"
     loop
     type="video/mp4"
     webkit-playsinline
     playsinline
-    [muted]="${isMuted}"
-    preload="auto"
+    ${mutedAttribute}
+    preload="metadata"
     >
   </video>
   <div class="video-progress-container">

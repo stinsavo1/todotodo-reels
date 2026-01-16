@@ -1,120 +1,47 @@
 import { inject, Injectable } from '@angular/core';
-import { doc, docData, Firestore,  } from '@angular/fire/firestore';
+import { collection, doc, docData, Firestore, } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
-import { deleteObject, percentage, ref, uploadBytesResumable, Storage as FireStorage, UploadTaskSnapshot } from '@angular/fire/storage';
-import { getDownloadURL } from 'firebase/storage';
+import { deleteObject, percentage, ref, Storage as FireStorage, uploadBytesResumable } from '@angular/fire/storage';
+import { getDownloadURL, uploadBytes } from 'firebase/storage';
 import {
   BehaviorSubject,
   catchError,
   EMPTY,
   finalize,
+  forkJoin,
   from,
-  ignoreElements, last, merge,
-  Observable,
-  of, Subject,
+  ignoreElements,
+  merge,
+  Observable, of,
+  Subject,
   switchMap,
   take,
-  tap
+  tap, throwError
 } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { MAX_SIZE_FILE } from '../interfaces/reels.interface';
 
 export interface UploadedFile {
-  videoUrl:string;
-  thumbUrl?:string;
-  filePath:string;
-  fileId?:string;
+  videoUrl: string;
+  thumbUrl: string;
+  thumbPath:string;
+  filePath: string;
+  reelId:string;
 }
 
 @Injectable()
 export class UploadService {
-  constructor(private storage:FireStorage, private functions:Functions) {
+  constructor(private storage: FireStorage, private functions: Functions) {
   }
 
   private firestore = inject(Firestore);
-  public processingVideo$ = new Subject<string>()
+  public processingVideo$ = new Subject<string>();
   public isLoading$ = new BehaviorSubject<boolean>(false);
   public uploadProgress$ = new BehaviorSubject<number | null>(null);
   public errorMessages$ = new BehaviorSubject<string | null>(null);
   public uploadedVideo$ = new BehaviorSubject<UploadedFile | null>(null);
 
 
-  // uploadVideo(event: any, userId: string): Observable<any> {
-  //   const file: File = event.target.files[0];
-  //
-  //   if (!file || !userId) return EMPTY;
-  //   if (!this.isValidType(file)) return EMPTY;
-  //   if (!this.isValidSize(file)) return EMPTY;
-  //
-  //   this.isLoading$.next(true);
-  //   this.errorMessages$.next(null);
-  //
-  //   return this.checkVideoDuration(file).pipe(
-  //     switchMap((isLongEnough) => {
-  //       if (!isLongEnough) {
-  //         this.errorMessages$.next('Видео слишком короткое (минимум 2 сек)');
-  //         return EMPTY;
-  //       }
-  //
-  //       const cleanup$ = this.uploadedVideo$.value
-  //         ? from(this.deleteFileFromStorage(this.uploadedVideo$.value))
-  //         : of(null);
-  //
-  //       return cleanup$.pipe(switchMap(() => this.startUploadProcess(file)));
-  //     }),
-  //     finalize(() => {
-  //       console.log('finished');
-  //       this.isLoading$.next(false);
-  //       this.uploadProgress$.next(null);
-  //       this.processingVideo$.next(null);
-  //       event.target.value = '';
-  //     })
-  //   );
-  // }
-  //
-  // private startUploadProcess(file: File): Observable<any> {
-  //   const fileId = `${Date.now()}_${file.name}`.replace(/\W/g, '_');
-  //   const filePath = `tmp/${Date.now()}_${file.name}`;
-  //   const storageRef = ref(this.storage, filePath);
-  //   const uploadTask = uploadBytesResumable(storageRef, file);
-  //
-  //   const progress$ = percentage(uploadTask).pipe(
-  //     tap((p: { progress: number; snapshot: UploadTaskSnapshot }) => this.uploadProgress$.next(p.progress / 100)),
-  //     ignoreElements()
-  //   );
-  //
-  //   const processing$ = from(Promise.resolve(uploadTask)).pipe(
-  //     tap(() => {
-  //       this.processingVideo$.next('Обработка видео...');
-  //     }),
-  //     switchMap(() => this.waitForFirestoreProcessing(fileId))
-  //   );
-  //   return merge(progress$, processing$).pipe(
-  //     catchError((err) => {
-  //       console.error('Upload Process Error:', err);
-  //       const msg = err.message || 'Ошибка при загрузке или обработке';
-  //       this.errorMessages$.next(msg);
-  //       return EMPTY;
-  //     })
-  //   );
-  // }
-
-  private waitForFirestoreProcessing(fileId: string): Observable<any> {
-    const videoDocRef = doc(this.firestore, `tmpReels/${fileId}`);
-    return docData(videoDocRef).pipe(
-      filter((data) => !!data),
-      tap((data: any) => {
-        if (data.status === 'error') throw new Error(data.errorMessage);
-      }),
-      filter((data: any) => data.status === 'finished'),
-      take(1),
-      tap((finalData: any) => {
-        this.uploadedVideo$.next({ ...finalData, fileId:fileId});
-        localStorage.setItem('pending_video_url', finalData.videoUrl);
-        this.errorMessages$.next(null);
-      })
-    );
-  }
 
   private checkVideoDuration(file: File): Observable<boolean> {
     return new Observable<boolean>((observer) => {
@@ -160,41 +87,106 @@ export class UploadService {
     }
   }
 
-  uploadVideo(event: any): Observable<Partial<UploadedFile>> {
+  uploadVideo(event: any): Observable<UploadedFile> {
     const file: File = event.target.files[0];
-    if (!file) return EMPTY;
+    const fileExtension = file.name.split('.').pop();
+    if (!file || !this.isValidSize(file) || !this.isValidType(file)) return EMPTY;
 
-    const filePath = `tmp/${Date.now()}_${file.name}`;
-    const storageRef = ref(this.storage, filePath);
-
-    const uploadTask =  uploadBytesResumable(storageRef, file);
     this.isLoading$.next(true);
-    return percentage(uploadTask).pipe(
-      tap((p: { progress: number }) => this.uploadProgress$.next(p.progress / 100)),
-      last(),
-      switchMap(() => from(getDownloadURL(storageRef))),
-      map((url) => ({
-        filePath,
-        videoUrl:url
-      })),
-      finalize(()=>this.isLoading$.next(false))
+    const reelId = doc(collection(this.firestore, 'reels')).id;
+    return this.checkVideoDuration(file).pipe(
+      switchMap((isValid) => {
+        if (!isValid) {
+
+          return throwError(() => new Error('Видео слишком короткое (минимум 2 сек)'));
+        }
+        return this.generateThumbnail(file)
+      }),
+      switchMap((thumbBlob: Blob) => {
+        const filePath = `tmp/${reelId}_original.${fileExtension}`;
+        const thumbPath = `thumbs/${reelId}.jpg`;
+
+        const videoRef = ref(this.storage, filePath);
+        const thumbRef = ref(this.storage, thumbPath);
+
+        const videoUploadTask = uploadBytesResumable(videoRef, file);
+        const thumbUploadTask = uploadBytes(thumbRef, thumbBlob);
+
+        const progress$ = percentage(videoUploadTask).pipe(
+          tap((p: { progress: number }) => this.uploadProgress$.next(p.progress / 100)),
+          ignoreElements()
+        );
+
+        const upload$ = forkJoin({
+          videoUrl: from(videoUploadTask as any).pipe(
+            switchMap(() => getDownloadURL(videoRef))
+          ),
+          thumbUrl: from(thumbUploadTask).pipe(
+            switchMap(() => getDownloadURL(thumbRef))
+          ),
+          thumbPath: of(thumbPath),
+          filePath: of(filePath),
+          reelId:of(reelId)
+        });
+        return merge(progress$, upload$);
+      }),
+      catchError((err) => {
+        this.errorMessages$.next(err.message);
+        console.error('Ошибка при загрузке:', err.message);
+        return throwError(() => err);
+      }),
+      finalize(() => {
+        this.isLoading$.next(false);
+      })
     );
+
   }
 
+  generateThumbnail(file: File): Observable<Blob> {
+    return new Observable<Blob>((observer) => {
+      const video = document.createElement('video');
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      const url = URL.createObjectURL(file);
 
-  processVideo(filePath: string): Observable<any> {
-    if (!filePath) return EMPTY;
-    console.log(111,filePath);
+      video.src = url;
+      video.load();
+
+      video.onloadedmetadata = () => {
+        video.currentTime = 1;
+      };
+
+      video.onseeked = () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context?.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob((blob) => {
+          if (blob) {
+            observer.next(blob);
+            observer.complete();
+          } else {
+            observer.error('Could not generate thumbnail');
+          }
+          URL.revokeObjectURL(url);
+        }, 'image/jpeg', 0.8);
+      };
+
+      video.onerror = (err) => observer.error(err);
+    });
+  }
+
+  processVideo(filePath: string, thumbPath:string, reelId:string): Observable<any> {
+    if (!filePath || !thumbPath || !reelId) return EMPTY;
 
     const processVideoFn = httpsCallable(this.functions, 'processVideoUpload');
 
-    return from(processVideoFn({ filePath:filePath })).pipe(
+    return from(processVideoFn({ filePath: filePath, thumbPath:thumbPath, reelId:reelId })).pipe(
       tap((result: any) => {
-        console.log('result',result);
         if (result.data.status === 'success') {
           const data = result.data;
-          console.log('data',result);
-          this.uploadedVideo$.next({ videoUrl: data.videoUrl, thumbUrl: data.thumbUrl, filePath:data.filePath });
+          const value = this.uploadedVideo$.value;
+          this.uploadedVideo$.next({ ...value,videoUrl: data.videoUrl, filePath: data.filePath,thumbPath:data.thumbPath });
           localStorage.setItem('pending_video_url', data.videoUrl);
           this.errorMessages$.next(null);
         } else {

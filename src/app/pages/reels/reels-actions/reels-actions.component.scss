@@ -15,7 +15,7 @@
   ion-button.action-button {
     display: flex !important;
 
-    margin: 0 auto 3px auto !important;
+    margin: 0 auto 3px auto;
     width: 36px !important;
     height: 36px !important;
 
@@ -48,10 +48,18 @@
       border-radius: 50% !important;
     }
 
+
+    &.delete-icon {
+      margin-top: 30px;
+      & ion-icon {
+        color: red;
+
+      }
+
+    }
+
   }
-  @media screen and (max-width: 800px){
-    //--background-color:none;
-  }
+
 }
 
 ion-icon {
@@ -63,6 +71,8 @@ ion-icon {
   @media screen and (max-width: 800px){
     font-size: 15px;
   }
+
+
 }
 
 .button-count {

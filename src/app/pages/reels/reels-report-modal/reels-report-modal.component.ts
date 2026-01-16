@@ -1,11 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, Input, OnInit } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-import { connectFunctionsEmulator, Functions, httpsCallable } from '@angular/fire/functions';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 import { ModalController, ToastController } from '@ionic/angular';
-import { catchError, switchMap } from 'rxjs';
-import { Reel, TELEGRAM_CHAT_ID, TELEGRAM_TOKEN } from '../interfaces/reels.interface';
+import { Reel } from '../interfaces/reels.interface';
 import { ToastService } from '../services/toast.service';
 
 @Component({
@@ -29,10 +26,8 @@ export class ReelsReportModalComponent implements OnInit {
   };
   isSending = false;
   protected readonly Object = Object;
-  private readonly destroyRef = inject(DestroyRef);
 
   constructor(private modalCtrl: ModalController,
-              private http: HttpClient,
               private auth: Auth,
               private toastService: ToastService,
               private functions: Functions, private toastCtrl: ToastController,) {
@@ -56,7 +51,6 @@ export class ReelsReportModalComponent implements OnInit {
         phone: this.auth.currentUser.phoneNumber
       });
 
-
       this.toastService.showIonicToast('Жалоба отправлена. Спасибо!').subscribe();
       this.modalCtrl.dismiss({ confirmed: true }).then();
 
@@ -66,25 +60,6 @@ export class ReelsReportModalComponent implements OnInit {
     } finally {
       this.isSending = false;
     }
-    //   const token = TELEGRAM_TOKEN;
-    //   const chatId = TELEGRAM_CHAT_ID;
-    //   const message = `Жалоба от пользователя ${this.auth.currentUser.phoneNumber} на видео ${this.video.id} ${this.resonsForReporting[this.selectedReason]}`;
-    //
-    //   const url = `https://api.telegram.org/bot${token}/sendMessage`;
-    //
-    //   this.http.post(url, {
-    //     chat_id: chatId,
-    //     text: message,
-    //     parse_mode: 'HTML'
-    //   }).pipe(
-    //     switchMap(() => this.toastService.showIonicToast('Ваша жалоба отправлена')),
-    //     catchError(() =>
-    //       this.toastService.showIonicToast('При отправке произошла ошибка')
-    //     ),
-    //     takeUntilDestroyed(this.destroyRef)
-    //   ).subscribe();
-    //
-    // }
 
   }
 }

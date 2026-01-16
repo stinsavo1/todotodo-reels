@@ -16,6 +16,7 @@
   z-index: 1;
   overflow: hidden;
   border-radius: 20px;
+
   @media screen and (max-width: 480px) {
     width: 100vw;
     height: calc(100vh - 79px);
@@ -57,7 +58,6 @@
     height: 100dvh;
     object-fit: cover;
     object-position: center;
-    //object-fit: contain;
   }
 }
 
@@ -88,28 +88,24 @@ ion-toolbar.reels-toolbar ion-button {
 }
 
 .center-modal {
-  /* Use flex to align, don't use 'top' or 'transform' */
   display: flex;
   align-items: center;
   justify-content: center;
 
   &::part(content) {
-    /* Set a height that leaves room for the keyboard */
     height: auto;
-    max-height: 40vh; /* Only take up 40% of the screen height */
+    max-height: 40vh;
     width: 90%;
     border-radius: 12px;
   }
 }
 
 .share-modal {
-
   align-items: flex-end;
   --width: 100%;
   --max-width: 100%;
   --height: 160px;
   --border-radius: 20px 20px 0 0;
-
 
 }
 
@@ -156,11 +152,6 @@ ion-toolbar.reels-toolbar ion-button {
 
   }
 
-
-  //&.small {
-  //  --height: 150px;
-  //
-  //}
 
   @media screen and (min-width: 800px) {
     --width: 50%;
@@ -260,15 +251,6 @@ ion-radio {
   }
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
 
 .reels-button::part(hover) {
   display: none;
@@ -287,34 +269,17 @@ ion-popover.share-popover::part(content) {
   border: 1px solid #444;
 }
 
-//.comments-wrap.desctop {
-//  & ion-content {
-//    --background: var(--bg-grey);
-//    background-color: var(--bg-grey);
-//
-//    & #background-content {
-//      background-color: var(--bg-grey);
-//      --background: var(--bg-grey);
-//    }
-//
-//  }
-//
-//  & .footer-toolbar {
-//    --background: var(--bg-grey);
-//  }
-//}
+
 
 .custom-fixed-modal.comments {
   --vertical-align: bottom;
   &::part(content) {
-    /* This removes the 'floating' gap at the bottom */
     position: absolute;
     bottom: 0;
     width: 100%;
   }
 
   ion-content {
-
     --padding-bottom: var(--ion-safe-area-bottom);
   }
 }

@@ -6,7 +6,7 @@
   @if (windowSize > 800) {
 
     <div class="ion-text-end">
-      <ion-button class=" reels-create submit-button" (click)="openCreateReels()">Создать</ion-button>
+      <ion-button class=" reels-create submit-button" (click)="openCreateReels(null)">Создать</ion-button>
     </div>
   }
 
@@ -32,5 +32,5 @@
     }
 
   </div>
-  <app-reels-tabs (createReels)="openCreateReels()"></app-reels-tabs>
+  <app-reels-tabs [reel]="currentReel" (createReels)="openCreateReels($event)"></app-reels-tabs>
 </ion-content>

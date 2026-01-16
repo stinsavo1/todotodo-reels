@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ModalController } from '@ionic/angular';
-import { delay, filter, switchMap } from 'rxjs/operators';
+import { delay, switchMap } from 'rxjs/operators';
 import { Swiper } from 'swiper';
 import { Mousewheel, Navigation, Pagination, Virtual } from 'swiper/modules';
 import { SwiperOptions } from 'swiper/types';
@@ -46,6 +46,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
   userId: string;
   isMuted = true;
   private readonly destroyRef = inject(DestroyRef);
+  private prevIndex = 0;
   protected readonly Array = Array;
   currentReel: Reel;
   comments: CommentsWithAvatar[] = [];
@@ -73,8 +74,8 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
       switchMap((userData) => this.usersService.getUserById(userData.user.uid)),
       takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data: UserInterface) => {
-        console.log('user pre',data,);
-        this.userId=data.id;
+        console.log('user pre', data,);
+        this.userId = data.id;
         if (data.subscribersIds?.length > 0) {
 
           this.usersPreferencesService.currentSubscribtions$.next({
@@ -96,6 +97,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.videoService.currentReel$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(updatedReels => {
       this.currentReel = { ...updatedReels };
+      console.log('current reeel change');
       this.commentsService.loadComments(this.currentReel.id).then();
       this.cdr.markForCheck();
 
@@ -103,6 +105,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.videoService.videoListUpdated$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (forceUpdate) => {
         if (this.swiperInstance) {
+          console.log('update video list');
           this.videoService.updateSwiper(this.swiperInstance, forceUpdate);
           this.handleVideoPlayback();
         }
@@ -133,11 +136,104 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  async openCreateReels(event: any) {
+    console.log(event);
+    const modal = await this.modalCtrl.create({
+      component: ReelsCreateComponent,
+      componentProps: { file: event },
+      id: 'createModal',
+      cssClass: `custom-fixed-modal half ${window.innerWidth > 1280 ? 'desctop' : 'mobile'}`,
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data?.isReady) {
+    }
+  }
+
+  async openComments() {
+    if (window.innerWidth > 1280) {
+      return;
+    }
+    const content = document.querySelector('ion-router-outlet');
+    content?.classList.add('main-blur-effect');
+    const modal = await this.modalCtrl.create({
+      component: ReelsCommentsComponent,
+      componentProps: { reel: this.currentReel, activeIndex: this.currentActiveIndex },
+      cssClass: 'custom-fixed-modal half comments',
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+      const content = document.querySelector('ion-router-outlet');
+      content?.classList.remove('main-blur-effect');
+    }
+
+  }
+
+  private initVideoList() {
+    this.videoService.loadInitialData().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (data) => {
+        this.videoService.reels.push(...data.data.reels);
+        this.videoService.lastId = data.data.nextCursor;
+        this.currentReel = this.reels[0];
+        setTimeout(() => {
+          this.initSwiper();
+        }, 0);
+        this.cdr.markForCheck();
+      },
+      error: (err: any) => {
+        console.error(err);
+      }
+    });
+
+  }
+
+  private clearPreviousVideoListener(swiper: any) {
+    swiper.slides.forEach((slide: HTMLElement) => {
+      const video = slide.querySelector('video');
+      if (video) {
+        video.ontimeupdate = null;
+      }
+    });
+  }
+
+  private handleVideoPlayback(): void {
+    setTimeout(() => {
+      const allVideos = document.querySelectorAll<HTMLVideoElement>('.reels-video');
+      allVideos.forEach(v => v.pause());
+
+      const activeSlideEl = document.querySelector('.swiper-slide-active');
+
+      if (activeSlideEl) {
+        const video = activeSlideEl.querySelector('video') as HTMLVideoElement;
+
+        if (video) {
+          console.log('Target video found, attempting play:', video.src);
+          video.muted = this.isMuted;
+          video.currentTime = 0;
+          const playPromise = video.play();
+          if (playPromise !== undefined && this.userId) {
+            this.videoService.trackView(video.id, this.userId, this.currentReel.userId).then();
+            playPromise.catch(error => {
+              console.error('Playback failed for:', video.src, error);
+            });
+          }
+        } else {
+          console.warn('Slide is active but no video element found inside it.');
+        }
+      } else {
+        console.warn('No slide with .swiper-slide-active found in DOM.');
+      }
+    }, 30);
+
+  }
+
   private initSwiper(): void {
     const swiperParams: SwiperOptions = {
       modules: [Virtual, Navigation, Pagination, Mousewheel],
       virtual: {
         enabled: true,
+        cache: false,
         addSlidesBefore: 3,
         addSlidesAfter: 3,
         slides: this.reels,
@@ -148,12 +244,10 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
       },
 
       on: {
-        slideChange:(swiper)=>{
-          const activeIndex = swiper.activeIndex;
-          const videos = document.querySelectorAll('video');
-
+        slideChange: (swiper) => {
           if (this.videoService.isIOS()) {
-
+            const activeIndex = swiper.activeIndex;
+            const videos = document.querySelectorAll('video');
             [activeIndex + 1, activeIndex + 2].forEach(index => {
               const nextVid = videos[index] as HTMLVideoElement;
               if (nextVid && nextVid.paused) {
@@ -162,20 +256,23 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
               }
             });
           }
-          this.handleVideoPlayback();
+
+          const isDirectionDown = swiper.activeIndex > this.prevIndex;
+          this.prevIndex = swiper.activeIndex;
+          if (this.currentActiveIndex >= swiper.virtual.slides.length - 2 && isDirectionDown) {
+            this.videoService.loadMore();
+
+          }
+
         },
         slideChangeTransitionEnd: (swiper) => {
           this.clearPreviousVideoListener(swiper);
           this.videoService.attachVideoListener(swiper);
-
-          const totalSlides = swiper.virtual.slides.length;
+          this.handleVideoPlayback();
           this.currentActiveIndex = swiper.activeIndex;
           this.videoService.currentReel$.next(this.reels[this.currentActiveIndex]);
           this.commentsService.loadComments(this.videoService.reels[this.currentActiveIndex].id).then();
-          if (this.currentActiveIndex >= totalSlides - 2) {
-            this.videoService.loadMore();
 
-          }
           this.cdr.markForCheck();
         },
 
@@ -187,7 +284,7 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
       },
       slidesPerView: 1,
-      navigation: true,
+      edgeSwipeThreshold: 20,
       watchSlidesProgress: true,
       autoHeight: false,
       direction: 'vertical',
@@ -216,95 +313,4 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  initVideoList() {
-    this.videoService.loadInitialData().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (data) => {
-        this.videoService.reels.push(...data.data.reels);
-        this.videoService.lastId = data.data.nextCursor;
-        this.currentReel = this.reels[0];
-        setTimeout(() => {
-          this.initSwiper();
-        }, 0);
-        this.cdr.markForCheck();
-      },
-      error: (err: any) => {
-        console.error(err);
-      }
-    });
-
-  }
-
-  clearPreviousVideoListener(swiper: any) {
-
-    swiper.slides.forEach((slide: HTMLElement) => {
-      const video = slide.querySelector('video');
-      if (video) {
-        video.ontimeupdate = null;
-      }
-    });
-  }
-
-  async openComments() {
-    if (window.innerWidth > 1280) {
-      return;
-    }
-    const content = document.querySelector('ion-router-outlet');
-    content?.classList.add('main-blur-effect');
-    const modal = await this.modalCtrl.create({
-      component: ReelsCommentsComponent,
-      componentProps: { reel: this.currentReel, activeIndex: this.currentActiveIndex },
-      cssClass: 'custom-fixed-modal half comments',
-    });
-    await modal.present();
-    const { data } = await modal.onWillDismiss();
-    if (data) {
-      const content = document.querySelector('ion-router-outlet');
-      content?.classList.remove('main-blur-effect');
-    }
-
-  }
-
-  private handleVideoPlayback(): void {
-    setTimeout(() => {
-      const allVideos = document.querySelectorAll<HTMLVideoElement>('.reels-video');
-      allVideos.forEach(v => v.pause());
-
-      const activeSlideEl = document.querySelector('.swiper-slide-active');
-
-      if (activeSlideEl) {
-        const video = activeSlideEl.querySelector('video') as HTMLVideoElement;
-
-        if (video) {
-          console.log('Target video found, attempting play:', video.src);
-          video.muted = this.isMuted;
-          console.log('isMuted',this.isMuted);
-          video.currentTime = 0;
-          const playPromise = video.play();
-          if (playPromise !== undefined && this.userId) {
-            this.videoService.trackView(video.id,this.userId,this.currentReel.userId).then();
-            playPromise.catch(error => {
-              console.error('Playback failed for:', video.src, error);
-            });
-          }
-        } else {
-          console.warn('Slide is active but no video element found inside it.');
-        }
-      } else {
-        console.warn('No slide with .swiper-slide-active found in DOM.');
-      }
-    }, 0);
-
-  }
-
-  async openCreateReels() {
-    const modal = await this.modalCtrl.create({
-      component: ReelsCreateComponent,
-      id:'createModal',
-      cssClass: `custom-fixed-modal half ${window.innerWidth > 1280 ? 'desctop' : 'mobile'}`,
-    });
-    await modal.present();
-    const { data } = await modal.onWillDismiss();
-    if (data?.isReady) {
-    }
-  }
 }

@@ -14,6 +14,7 @@ export const processVideoUpload = https.onCall({
 },async (data: any, context) => {
 
   const filePath = data.data.filePath;
+  const reelId = data.data.reelId;
 
   if (!filePath || !filePath.startsWith('tmp/')) {
     return { status: 'failed', reason: 'Invalid file path' };
@@ -21,6 +22,7 @@ export const processVideoUpload = https.onCall({
 
   const bucket = admin.storage().bucket();
   const fileName = path.basename(filePath);
+  const thumbPath = data.data.thumbPath;
   const fileId = fileName.replace(/\W/g, '_');
 
   const isMov = fileName.toLowerCase().endsWith('.mov');
@@ -30,8 +32,7 @@ export const processVideoUpload = https.onCall({
 
   const tempLocalFile = path.join(os.tmpdir(), fileName);
   const targetTempVideo = path.join(os.tmpdir(), `converted_${Date.now()}.mp4`);
-  const targetTempThumb = path.join(os.tmpdir(), `thumb_${Date.now()}.jpg`);
-  const docRef = getFirestore().collection('tmpReels').doc(fileId);
+  const docRef = getFirestore().collection('tmpReels').doc(reelId);
   try {
     await bucket.file(filePath).download({ destination: tempLocalFile });
     const duration: number = await new Promise((resolve, reject) => {
@@ -80,32 +81,26 @@ export const processVideoUpload = https.onCall({
         .save(targetTempVideo);
     });
 
-    await new Promise((resolve, reject) => {
-      ffmpeg(targetTempVideo)
-        .screenshots({
-          timestamps: [1],
-          filename: path.basename(targetTempThumb),
-          folder: os.tmpdir(),
-          size: '640x1138'
-        })
-        .on('end', resolve)
-        .on('error', reject);
-    });
 
-    const videoDest = `reels/${fileId}.mp4`;
-    const thumbDest = `thumbnails/${fileId}.jpg`;
+    const videoDest = `reels/${reelId}.mp4`;
+    const thumbDest = `thumbnails/${reelId}.jpg`;
 
     await Promise.all([
       bucket.upload(targetTempVideo, { destination: videoDest }),
-      bucket.upload(targetTempThumb, { destination: thumbDest })
+      thumbPath ? bucket.file(thumbPath).move(thumbDest) : Promise.resolve()
     ]);
 
     const [videoUrl] = await bucket.file(videoDest).getSignedUrl({ action: 'read', expires: '01-01-2099' });
-    const [thumbUrl] = await bucket.file(thumbDest).getSignedUrl({ action: 'read', expires: '01-01-2099' });
+    let thumbUrl = '';
+    if (thumbPath) {
+      const [url] = await bucket.file(thumbDest).getSignedUrl({ action: 'read', expires: '01-01-2099' });
+      thumbUrl = url;
+    }
     await docRef.set({
+      id:reelId,
       originalName: fileName,
       videoUrl: videoUrl,
-      thumbUrl: thumbUrl,
+      thumbUrl:thumbUrl,
       videoPath: videoDest,
       status: 'finished',
       processedAt: FieldValue.serverTimestamp()
@@ -113,19 +108,18 @@ export const processVideoUpload = https.onCall({
 
     await bucket.file(filePath).delete();
     console.log('Cleanup complete. Original deleted.');
-    return { status: 'success', videoUrl: videoUrl, thumbUrl: thumbUrl, filePath:videoDest };
+    return { status: 'success', videoUrl: videoUrl, filePath:videoDest, reelId:reelId };
   } catch (error) {
     console.error('Processing Error:', error);
     try {
       await docRef.delete();
-      console.log(`Deleted record ${fileId} due to processing error.`);
+      console.log(`Deleted record ${reelId} due to processing error.`);
     } catch (dbError) {
       console.error('Failed to delete Firestore record:', dbError);
     }
     throw new https.HttpsError('internal', 'Произощел сбой в обработке видео');
   } finally {
-    [tempLocalFile, targetTempVideo, targetTempThumb].forEach(p => {
-      if (fs.existsSync(p)) fs.unlinkSync(p);
-    });
+    if (fs.existsSync(tempLocalFile)) fs.unlinkSync(tempLocalFile);
+    if (fs.existsSync(targetTempVideo)) fs.unlinkSync(targetTempVideo);
   }
 });

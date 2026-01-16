@@ -7,12 +7,12 @@ import {
   doc,
   Firestore,
   increment,
-  serverTimestamp,
-  updateDoc
+  serverTimestamp, setDoc,
+  updateDoc, writeBatch
 } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { deleteObject, getStorage, ref } from 'firebase/storage';
-import { BehaviorSubject, finalize, from, Observable, Subject, take } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, from, Observable, Subject, take, tap, throwError } from 'rxjs';
 import { Swiper } from 'swiper';
 import { UserStoreService } from '../../../services/store-service/user-store.service';
 import { Reel, SWIPER_LIMIT } from '../interfaces/reels.interface';
@@ -47,10 +47,11 @@ export class VideoService {
     const savedFile = this.uploadService.uploadedVideo$.value;
     try {
       this.isLoading$.next(true);
-      const reelsCollection = collection(this.firestore, 'reels');
-
-      console.log('saved f',savedFile);
-      const newReel: Omit<Reel, 'id'> = {
+      const docRef = doc(this.firestore, 'reels', savedFile.reelId);
+      const batch = writeBatch(this.firestore);
+      const tmpReelRef = doc(this.firestore, 'tmpReels', savedFile.reelId);
+      const newReel: Reel = {
+        id:savedFile.reelId,
         url: savedFile.videoUrl,
         posterUrl: savedFile.thumbUrl,
         filePath: savedFile.filePath,
@@ -63,15 +64,15 @@ export class VideoService {
         commentsCount: 0,
         viewsCount: 0,
       };
-      console.log('newRe',newReel);
-      const docRef = await addDoc(reelsCollection, newReel);
+      batch.set(docRef, newReel);
+      batch.delete(tmpReelRef);
+      await batch.commit();
       localStorage.removeItem('pending_video_url');
-      const savedReel: Reel = { ...newReel, id: docRef.id };
       const currentReelIndex = this.swiper.activeIndex ?? 0;
       let newIndex = this.reels.length === 0 ? 0 : (currentReelIndex + 1);
-      this.reels.splice(newIndex, 0, savedReel);
+      this.reels.splice(newIndex, 0, newReel);
       this.videoListUpdated$.next(true);
-      this.uploadedVideoReady$.next(savedReel);
+      this.uploadedVideoReady$.next(newReel);
       this.uploadService.uploadedVideo$.next(null);
       this.isLoading$.next(false);
       this.toastService.showIonicToast('Ваше видео опубликовано').pipe(take(1)).subscribe();
@@ -106,7 +107,6 @@ export class VideoService {
     if (reelsUserId===curentUserId) {
       return
     }
-    console.log('trackView',curentUserId,reelsUserId);
     const reelRef = doc(this.firestore, 'reels', videoId);
 
     try {
@@ -143,6 +143,7 @@ export class VideoService {
     this.getFilteredReels(this.lastId, SWIPER_LIMIT).pipe(take(1)).subscribe({
       next: (result) => {
         this.reels.push(...result.data.reels);
+        console.log('filter');
         this.videoListUpdated$.next(true);
         this.lastId = result.data.nextCursor;
       },
@@ -172,6 +173,7 @@ export class VideoService {
 
   updateSwiper(swiper: Swiper, force: boolean, newIndex?: number) {
     if (swiper && swiper.virtual) {
+
       swiper.virtual.cache = {};
       swiper.virtual.slides = this.reels;
       swiper.virtual.update(force);
@@ -203,12 +205,27 @@ export class VideoService {
     this.reels[index] = updatedReel;
   }
 
-  deleteReels(index: number) {
+  deleteLocalReels(index: number) {
     this.reels.splice(index, 1);
     this.currentReel$.next(this.reels[index]);
-    this.loadMore();
+    // this.loadMore();
 
   }
+
+  deleteStorageReel(reelId: string): Observable<any> {
+    const deleteFn = httpsCallable(this.functions, 'deleteReel');
+
+    this.isLoading$.next(true);
+
+    return from(deleteFn({ reelId })).pipe(
+      catchError(err => {
+        return throwError(() => err);
+      }),
+      finalize(() => this.isLoading$.next(false))
+    );
+  }
+
+
 
   hideAuthor(authorId: string, activeIndex: number) {
     for (let i = this.reels.length - 1; i >= 0; i--) {
@@ -236,5 +253,7 @@ export class VideoService {
       ].includes(navigator.platform)
       || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
   }
+
+
 
 }

@@ -4,7 +4,7 @@
               (click)="goTo('home')"><ion-icon slot="icon-only" name="home-outline"></ion-icon></ion-button>
   <ion-button class="nav-button"
               (click)="goTo('docs')"><ion-icon slot="icon-only" name="document-text-outline"></ion-icon></ion-button>
-  <ion-button class="center-button reels-button" (click)="openCreateModal()">
+  <ion-button class="center-button reels-button" (click)="dowloadFile()">
     <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
   </ion-button>
   <ion-button class="nav-button" (click)="goTo('cart')"><ion-icon slot="icon-only"
@@ -12,3 +12,11 @@
   <ion-button class="nav-button" (click)="goTo('profile')"><ion-icon
     slot="icon-only" name="person-circle-outline"></ion-icon></ion-button>
 </nav>
+<input
+  type="file"
+  [(ngModel)]="file"
+  #fInput
+  (change)="uploadVideo($event)"
+  accept="video/mp4,video/quicktime"
+  style="display: none"
+>

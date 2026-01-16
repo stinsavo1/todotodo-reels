@@ -10,8 +10,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Auth } from '@angular/fire/auth';
-import { ModalController, Platform, PopoverController } from '@ionic/angular';
+import { AlertController, ModalController, Platform, PopoverController } from '@ionic/angular';
 import { exhaustMap, from, Subject, switchMap, take } from 'rxjs';
 import { UserStoreService } from '../../../services/store-service/user-store.service';
 import { HideDetailModalComponent } from '../hide-detail-modal/hide-detail-modal.component';
@@ -21,6 +20,7 @@ import { ReelsReportModalComponent } from '../reels-report-modal/reels-report-mo
 import { ReelsShareModalComponent } from '../reels-share-modal/reels-share-modal.component';
 import { LikesService } from '../services/likes.service';
 import { ShareService } from '../services/share.service';
+import { ToastService } from '../services/toast.service';
 import { UsersPreferencesService } from '../services/users-preferences.service';
 import { VideoService } from '../services/video.service';
 
@@ -39,6 +39,7 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
   userId:string;
   private toggleLikeSubject = new Subject<void>();
   private readonly destroyRef = inject(DestroyRef);
+  protected readonly Array = Array;
 
   constructor(private videoService: VideoService,
               private likesService: LikesService,
@@ -47,6 +48,8 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
               private platform:Platform,
               private userService:UserStoreService,
               private popoverCtrl:PopoverController,
+              private toastService:ToastService,
+              private alertController: AlertController,
               private usersPreferencesService: UsersPreferencesService
   ) {
   }
@@ -96,7 +99,6 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
     this.toggleLikeSubject.next();
   }
 
-  protected readonly Array = Array;
 
   shareVideo(event: any) {
     const isMobile = this.platform.is('ios') || this.platform.is('android');
@@ -189,7 +191,7 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
     const { data } = await modal.onWillDismiss();
     if (data?.isReady) {
       if (data.type === 'video') {
-        this.videoService.deleteReels(this.activeIndex);
+        this.videoService.deleteLocalReels(this.activeIndex);
       }
 
         if (data.type === 'author') {
@@ -198,4 +200,38 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
       this.usersPreferencesService.addToLocalCache(data.type, data.id);
     }
   }
+
+
+  public confirmDelete(): void {
+    if (this.userId !== this.reel.userId) {
+      return
+    }
+    this.videoService.deleteStorageReel(this.reel.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.videoService.deleteLocalReels(this.activeIndex);
+        this.videoService.videoListUpdated$.next(true);
+        this.toastService.showIonicToast('Ваше видео успешно удалено').pipe(take(1)).subscribe();
+      },
+      error: (err: any) => {
+        this.toastService.showIonicToast('Не удалось удалить видео. Попробуйте позже').pipe(take(1)).subscribe();
+        console.error(err);
+      }
+    })
+  }
+
+
+
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Удалить видео?',
+      message: 'Это действие нельзя будет отменить.',
+      buttons: [
+        { text: 'Отмена', role: 'cancel' },
+        { text: 'Удалить', handler: () => this.confirmDelete() }
+      ],
+    });
+
+    await alert.present();
+  }
+
 }

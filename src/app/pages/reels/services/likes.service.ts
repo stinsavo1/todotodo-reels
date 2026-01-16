@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
 import { arrayRemove, arrayUnion, doc, Firestore, increment, updateDoc } from '@angular/fire/firestore';
 import { catchError, from, of, switchMap, take, tap, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';

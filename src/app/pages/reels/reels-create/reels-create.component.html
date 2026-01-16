@@ -12,7 +12,7 @@
       <ion-toolbar class="footer-toolbar create-modal">
         <ion-icon class="icon-exit" (click)="dismiss()" slot="start" name="chevron-back-outline"></ion-icon>
         <ion-button class="footer-button" fill="clear" slot="end" (click)="createReels()"
-                    [disabled]="uploadForm.invalid || isDowload">
+                    [disabled]="uploadForm.invalid || isDowload ">
           Опубликовать
         </ion-button>
 
@@ -28,18 +28,19 @@
 
     <div class="upload-container">
 
-      <input
-        type="file"
-        [formControl]="uploadForm.controls.file"
-        #fInput
-        (change)="uploadVideo($event)"
-        accept="video/mp4,video/quicktime"
-        style="display: none"
-      >
+       <input
+         type="file"
+         #fInput
+         (change)="uploadVideo($event)"
+         accept="video/mp4,video/quicktime"
+         style="display: none"
+       >
+
       @if (isDowload) {
         <ion-spinner color="warning"></ion-spinner>
         <div>{{ Math.round(progress * 100) }} %</div>
-        <div>Загрузка видео</div>
+        <div class="dowload-text">Мы загружаем ваш Лайф. Время загрузки зависит от длительности вашего
+          видео!</div>
       }
 
       @if (processing) {
@@ -51,6 +52,7 @@
         <div class="preview-wrapper">
           <video #videoPlayer [src]="dowloadFile?.videoUrl" (click)="togglePlay($event, videoPlayer)"
                  playsinline
+                 [poster]="dowloadFile?.thumbUrl"
                  muted class="preview"></video>
           <div class="action-buttons">
             <div class="play-btn" (click)="togglePlay($event,videoPlayer)">
@@ -75,7 +77,7 @@
             <ion-icon [name]="isMuted ? 'volume-mute' : 'volume-high'"></ion-icon>
           </div>
         </div>
-      } @else if (!isDowload && !processing) {
+      } @else if (!isDowload && !processing && !this.file) {
         <div class="upload-box" (click)="fInput.click()">
           <ion-button mode="ios" class="upload-btn">
             Загрузить контент
