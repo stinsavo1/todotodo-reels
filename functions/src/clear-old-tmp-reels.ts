@@ -9,7 +9,7 @@ export const clearOldTmpReels = onSchedule("0 3 * * *", async (event) => {
   threshold.setHours(threshold.getHours() - 24);
 
   const oldReelsQuery = await db.collection("tmpReels")
-    .where("createdAt", "<", threshold)
+    .where("processedAt", "<", threshold)
     .get();
 
   if (oldReelsQuery.empty) {

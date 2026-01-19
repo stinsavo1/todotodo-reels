@@ -1,5 +1,4 @@
 @let windowSize = resizeService.currensSizeOfScreen$ | async;
-<!--<div class="comments-wrap" [ngClass]="{'desctop':windowSize>1280}">-->
   <ion-header class="ion-no-border">
     <ion-toolbar color="dark" class="reels-toolbar">
       <ion-title slot="start" class="ion-text-start"
@@ -25,15 +24,48 @@
 
 
     <ion-list lines="none" class="reels-comments ">
-      @for (comment of comments; track comment.id) {
+      @for (comment of comments; track comment.id; let index = $index) {
         <ion-item>
           <ion-avatar slot="start">
             <img [src]="comment.avatar || '/assets/avatar.svg'"/>
           </ion-avatar>
+
           <ion-label>
             <div>{{ comment.username }}</div>
-            <p>{{ comment.text }}</p>
+            @if (!editMode) {
+              <p>{{ comment.text }}</p>
+            } @else {
+              <ion-textarea
+                [(ngModel)]="comment.text"
+                auto-grow="true"
+                class="edit-input">
+              </ion-textarea>
+            }
+
           </ion-label>
+          <ion-buttons slot="end">
+            @if (comment.userId === this.userId) {
+              @if (!editMode) {
+                <ion-button (click)="editMode = true" [disabled]="disableButton">
+                  <ion-icon slot="icon-only" name="pencil-outline"></ion-icon>
+                </ion-button>
+              } @else {
+                <ion-button color="success" (click)="saveEdit(index,comment)" [disabled]="disableButton">
+                  <ion-icon slot="icon-only" name="checkmark-outline"></ion-icon>
+                </ion-button>
+                <ion-button color="medium" (click)="editMode = false">
+                  <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+                </ion-button>
+              }
+            }
+            @if (reel.userId === this.userId) {
+
+                <ion-button (click)="deleteComment(comment, index)" [disabled]="disableButton">
+                  <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                </ion-button>
+
+            }
+          </ion-buttons>
         </ion-item>
       }
 
@@ -44,17 +76,15 @@
 <ion-footer class="ion-no-border" [ngClass]="{'desctop':windowSize>1280}">
   <ion-toolbar class="input-toolbar">
     <div class="input-container">
-      <ion-input
+      <ion-textarea
         [(ngModel)]="newCommentText"
+        auto-grow="true"
         placeholder="Добавьте свой комментарий..."
-        class="comment-input"
-      ></ion-input>
+        class="comment-input "
+      ></ion-textarea>
       <ion-button (click)="postComment()" class="send" [disabled]="!newCommentText">
         <ion-icon slot="icon-only" name="arrow-up-outline"></ion-icon>
       </ion-button>
     </div>
   </ion-toolbar>
 </ion-footer>
-
-
-<!--</div>-->

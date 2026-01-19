@@ -161,6 +161,7 @@ ion-toolbar {
     border-radius: 50%;
     font-size: 20px;
     cursor: pointer;
+    pointer-events: none;
   }
 
   .mute-btn {
@@ -179,6 +180,7 @@ ion-toolbar {
     font-size: 20px;
     cursor: pointer;
     z-index: 20000;
+    pointer-events: none;
   }
 
   .delete-icon-btn {

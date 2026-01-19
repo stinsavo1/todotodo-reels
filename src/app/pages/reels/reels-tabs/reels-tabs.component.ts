@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { Router } from '@angular/router';
 import { PlatformService } from '../../../services/my-service/mobile.service';
 import { Reel } from '../interfaces/reels.interface';
+import { AlertService } from '../services/alert.service';
 
 @Component({
   selector: 'app-reels-tabs',
@@ -12,6 +13,7 @@ import { Reel } from '../interfaces/reels.interface';
 export class ReelsTabsComponent implements OnInit {
   @ViewChild('fInput') fInput: ElementRef;
   @Input() reel:Reel;
+  @Input() userId:string;
   @Output() createReels = new EventEmitter<string | null>();
   navigation = {
     'profile': '/tabs/menu/my-profile',
@@ -21,7 +23,7 @@ export class ReelsTabsComponent implements OnInit {
   };
   public file:string;
 
-  constructor(private router: Router, private platformService:PlatformService) {
+  constructor(private router: Router, private alertService:AlertService) {
   }
 
   ngOnInit() {
@@ -40,6 +42,10 @@ export class ReelsTabsComponent implements OnInit {
   }
 
   public dowloadFile(): void {
+    if (!this.userId) {
+      this.alertService.authAlert().then()
+      return;
+    }
     this.fInput.nativeElement.click()
   }
 }

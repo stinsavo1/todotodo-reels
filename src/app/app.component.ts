@@ -209,6 +209,8 @@ export class AppComponent implements OnInit {
     }, 1000);
   }
 
+
+
   private notificationCountNotRead(): void {
     this.countNotRead$ = this.notificationsService.countNotRead();
   }
@@ -228,6 +230,7 @@ export class AppComponent implements OnInit {
       // this.primaryNav.get('overview').count = res[2]?.length ?? 0;
     });
   }
+
 
 
 }

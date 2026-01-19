@@ -6,21 +6,23 @@ initializeApp();
 const db = getFirestore();
 
 export const getFilteredReels = onCall(async (request) => {
-  if (!request.auth) {
-    throw new HttpsError('unauthenticated', 'The function must be called while authenticated.');
-  }
-
   const { lastVisibleId, pageSize = 10 } = request.data;
-  const userId = request.auth.uid;
+  const userId = request.auth?.uid;
 
   try {
-    const [videosSnap, authorsSnap] = await Promise.all([
-      db.collection(`users/${userId}/hiddenVideos`).get(),
-      db.collection(`users/${userId}/hiddenAuthors`).get()
-    ]);
+    let hiddenVideos = new Set<string>();
+    let hiddenAuthors = new Set<string>();
 
-    const hiddenVideos = new Set(videosSnap.docs.map(doc => doc.id));
-    const hiddenAuthors = new Set(authorsSnap.docs.map(doc => doc.id));
+    if (userId) {
+      const [videosSnap, authorsSnap] = await Promise.all([
+        db.collection(`users/${userId}/hiddenVideos`).get(),
+        db.collection(`users/${userId}/hiddenAuthors`).get()
+      ]);
+
+      hiddenVideos = new Set(videosSnap.docs.map(doc => doc.id));
+      hiddenAuthors = new Set(authorsSnap.docs.map(doc => doc.id));
+    }
+
 
     const results: any[] = [];
     let currentCursorId = lastVisibleId;

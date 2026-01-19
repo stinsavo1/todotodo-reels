@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Browser } from '@capacitor/browser';
 import { Clipboard } from '@capacitor/clipboard';
+import { Share } from '@capacitor/share';
 import { ModalController, PopoverController, ToastController } from '@ionic/angular';
 import { catchError, from, Observable, of, switchMap, take, tap } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
@@ -14,7 +15,9 @@ export interface ShareResult {
 }
 @Injectable()
 export class ShareService {
-  constructor (private toast: ToastService, private modalCtrl:ModalController, private popoverCtrl:PopoverController){}
+  constructor (private toast: ToastService,
+               private zone:NgZone,
+               private modalCtrl:ModalController, private popoverCtrl:PopoverController){}
 
   openSocial$(platform: string, url: string): Observable<boolean> {
     const encodedUrl = encodeURIComponent(url);
@@ -72,6 +75,15 @@ export class ShareService {
   }
 
 
+  shareLink(url: string) {
+
+    return from(Share.share({
+      title: 'Поделиться ссылкой?',
+      text: '',
+      url: url,
+      dialogTitle: 'Поделиться ссылкой',
+    }));
+  }
 
 
 }

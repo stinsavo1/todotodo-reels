@@ -3,6 +3,8 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
+import SwiperCore from 'swiper';
+import { Virtual } from 'swiper/modules';
 import { HideDetailModalComponent } from './hide-detail-modal/hide-detail-modal.component';
 import { DeclensionPipe } from './pipes/declension.pipe';
 import { ReelsActionsComponent } from './reels-actions/reels-actions.component';
@@ -15,11 +17,10 @@ import { ReelsPageComponent } from './reels-page/reels-page.component';
 import { ReelsReportModalComponent } from './reels-report-modal/reels-report-modal.component';
 import { ReelsShareModalComponent } from './reels-share-modal/reels-share-modal.component';
 import { ReelsTabsComponent } from './reels-tabs/reels-tabs.component';
-import SwiperCore from 'swiper';
-import { Virtual } from 'swiper/modules';
 import { CommentsService } from './services/comments.service';
 import { LikesService } from './services/likes.service';
 import { ShareService } from './services/share.service';
+import { SwiperService } from './services/swiper.service';
 import { UploadService } from './services/upload.service';
 import { VideoService } from './services/video.service';
 
@@ -55,7 +56,7 @@ const routes: Routes = [
   exports: [
     DescriptionSectionComponent
   ],
-  providers: [VideoService, UploadService, LikesService, CommentsService, ShareService]
+  providers: [VideoService, UploadService, LikesService, CommentsService, ShareService, SwiperService]
 })
 export class ReelsModule {
 }

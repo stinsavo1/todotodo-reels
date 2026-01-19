@@ -10,6 +10,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { AlertController, ModalController, Platform, PopoverController } from '@ionic/angular';
 import { exhaustMap, from, Subject, switchMap, take } from 'rxjs';
 import { UserStoreService } from '../../../services/store-service/user-store.service';
@@ -18,8 +19,10 @@ import { Reel } from '../interfaces/reels.interface';
 import { ReelsAdditionalActionsComponent } from '../reels-additional-actions/reels-additional-actions.component';
 import { ReelsReportModalComponent } from '../reels-report-modal/reels-report-modal.component';
 import { ReelsShareModalComponent } from '../reels-share-modal/reels-share-modal.component';
+import { AlertService } from '../services/alert.service';
 import { LikesService } from '../services/likes.service';
 import { ShareService } from '../services/share.service';
+import { SwiperService } from '../services/swiper.service';
 import { ToastService } from '../services/toast.service';
 import { UsersPreferencesService } from '../services/users-preferences.service';
 import { VideoService } from '../services/video.service';
@@ -46,10 +49,12 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
               private shareService: ShareService,
               private modalCtrl: ModalController,
               private platform:Platform,
+              private swiperService:SwiperService,
               private userService:UserStoreService,
               private popoverCtrl:PopoverController,
               private toastService:ToastService,
               private alertController: AlertController,
+              private alertService:AlertService,
               private usersPreferencesService: UsersPreferencesService
   ) {
   }
@@ -65,7 +70,7 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.userService.getUser().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((user)=>{
-     this.userId = user.id;
+     this.userId = user?.id;
     })
 
     this.toggleLikeSubject.pipe(
@@ -74,8 +79,8 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
     ).subscribe({
       next: (data) => {
        if (data) {
-          this.videoService.updateReels(data, this.activeIndex);
-          this.videoService.currentReel$.next(data);
+          this.swiperService.updateReels(data, this.activeIndex);
+          this.swiperService.currentReel$.next(data);
         }
       },
       error: (err: any) => {
@@ -86,7 +91,6 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
 
   public toggleMute(): void {
     this.isMuted = !this.isMuted;
-    console.log('toggleMute',this.isMuted);
     const videos = document.querySelectorAll('video');
     videos.forEach(video => {
       video.muted = this.isMuted;
@@ -96,12 +100,18 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
   }
 
   toggleLike() {
+    if (!this.userId) {
+      this.alertService.authAlert().then();
+      return
+    }
     this.toggleLikeSubject.next();
   }
 
 
   shareVideo(event: any) {
     const isMobile = this.platform.is('ios') || this.platform.is('android');
+    console.log(this.reel.url);
+
     if (!isMobile) {
       from(this.popoverCtrl.create({
         component: ReelsShareModalComponent,
@@ -120,19 +130,27 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
         take(1)
       ).subscribe();
     } else {
-      this.shareService.openShareSheet$(this.reel).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+      this.shareService.shareLink(this.reel.url).subscribe();
+      // this.shareService.openShareSheet$(this.reel).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     }
 
 
   }
 
   public openModalComments(): void {
+    if (!this.userId) {
+      this.alertService.authAlert().then();
+      return
+    }
     this.openComments.emit();
 
   }
 
   async openModalAdditionalActions(event) {
-
+    if (!this.userId) {
+      this.alertService.authAlert().then();
+      return
+    }
     const modal = await this.modalCtrl.create({
       component: ReelsAdditionalActionsComponent,
       cssClass: 'custom-fixed-modal small',
@@ -191,7 +209,7 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
     const { data } = await modal.onWillDismiss();
     if (data?.isReady) {
       if (data.type === 'video') {
-        this.videoService.deleteLocalReels(this.activeIndex);
+        this.swiperService.deleteLocalReels(this.activeIndex);
       }
 
         if (data.type === 'author') {
@@ -206,10 +224,10 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
     if (this.userId !== this.reel.userId) {
       return
     }
-    this.videoService.deleteStorageReel(this.reel.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    this.swiperService.deleteStorageReel(this.reel.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.videoService.deleteLocalReels(this.activeIndex);
-        this.videoService.videoListUpdated$.next(true);
+        this.swiperService.deleteLocalReels(this.activeIndex);
+        this.swiperService.videoListUpdated$.next(true);
         this.toastService.showIonicToast('Ваше видео успешно удалено').pipe(take(1)).subscribe();
       },
       error: (err: any) => {
@@ -218,7 +236,6 @@ export class ReelsActionsComponent implements OnInit, OnChanges {
       }
     })
   }
-
 
 
   async presentAlert() {

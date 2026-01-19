@@ -1,4 +1,4 @@
-import { from, Observable, tap } from 'rxjs';
+import { from, Observable, of, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 import {
   doc,
@@ -118,6 +118,9 @@ export class UserService {
   }
 
   public getUserById(userId: string): Observable<any | null> {
+    if (!userId) {
+      return of(null)
+    }
     return new Observable((observer) => {
       const userDocRef = doc(this.firestore, `users/${userId}`);
 
@@ -157,4 +160,3 @@ export class UserService {
     await updateDoc(userRef, { count: increment(1) });
   }
 }
-

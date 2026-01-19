@@ -1,40 +1,26 @@
-import { EnvironmentInjector, inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  Firestore,
-  increment,
-  serverTimestamp, setDoc,
-  updateDoc, writeBatch
-} from '@angular/fire/firestore';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { doc, Firestore, increment, serverTimestamp, updateDoc, writeBatch } from '@angular/fire/firestore';
 import { deleteObject, getStorage, ref } from 'firebase/storage';
-import { BehaviorSubject, catchError, finalize, from, Observable, Subject, take, tap, throwError } from 'rxjs';
-import { Swiper } from 'swiper';
+import { Subject, take } from 'rxjs';
 import { UserStoreService } from '../../../services/store-service/user-store.service';
-import { Reel, SWIPER_LIMIT } from '../interfaces/reels.interface';
+import { Reel } from '../interfaces/reels.interface';
+import { SwiperService } from './swiper.service';
 import { ToastService } from './toast.service';
 import { UploadService } from './upload.service';
 
 @Injectable()
 export class VideoService {
-  reels: Reel[] = [];
-  videoListUpdated$ = new Subject<boolean>();
+
   uploadedVideoReady$ = new Subject<Reel>();
-  currentReel$ = new BehaviorSubject<Reel>(null);
-  isLoading$ = new BehaviorSubject<boolean>(false);
+  private viewedInSession = new Set<string>();
   private firestore: Firestore = inject(Firestore);
-  swiper: Swiper = undefined;
-  lastId = null;
 
   constructor(private auth: Auth,
-              private functions: Functions,
               private uploadService: UploadService,
               private user: UserStoreService,
-              private toastService:ToastService
+              private swiperService: SwiperService,
+              private toastService: ToastService
   ) {
 
   }
@@ -46,12 +32,12 @@ export class VideoService {
     }
     const savedFile = this.uploadService.uploadedVideo$.value;
     try {
-      this.isLoading$.next(true);
+      this.swiperService.isLoading$.next(true);
       const docRef = doc(this.firestore, 'reels', savedFile.reelId);
       const batch = writeBatch(this.firestore);
       const tmpReelRef = doc(this.firestore, 'tmpReels', savedFile.reelId);
       const newReel: Reel = {
-        id:savedFile.reelId,
+        id: savedFile.reelId,
         url: savedFile.videoUrl,
         posterUrl: savedFile.thumbUrl,
         filePath: savedFile.filePath,
@@ -68,44 +54,56 @@ export class VideoService {
       batch.delete(tmpReelRef);
       await batch.commit();
       localStorage.removeItem('pending_video_url');
-      const currentReelIndex = this.swiper.activeIndex ?? 0;
-      let newIndex = this.reels.length === 0 ? 0 : (currentReelIndex + 1);
-      this.reels.splice(newIndex, 0, newReel);
-      this.videoListUpdated$.next(true);
+      const currentReelIndex = this.swiperService.swiper.activeIndex ?? 0;
+      let newIndex = this.swiperService.reels.length === 0 ? 0 : (currentReelIndex + 1);
+      this.swiperService.reels.splice(newIndex, 0, newReel);
+      this.swiperService.videoListUpdated$.next(true);
       this.uploadedVideoReady$.next(newReel);
       this.uploadService.uploadedVideo$.next(null);
-      this.isLoading$.next(false);
+      this.swiperService.isLoading$.next(false);
       this.toastService.showIonicToast('Ваше видео опубликовано').pipe(take(1)).subscribe();
       console.log('Данные успешно сохранены в БД! ID документа:', docRef.id);
-    }catch (error) {
-      this.isLoading$.next(false);
+    } catch (error) {
+      this.swiperService.isLoading$.next(false);
       console.error('Ошибка при сохранении в Firestore, удаляем файл из Storage:', error);
-
-      if (savedFile.filePath) {
-        try {
-          const storage = getStorage();
-          const videoRef = ref(storage, savedFile.filePath);
-          const thumbPath = savedFile.filePath.replace('reels/', 'thumbnails/').replace('.mp4', '.jpg');
-          const thumbRef = ref(storage, thumbPath);
-
-          await Promise.all([
-            deleteObject(videoRef),
-            deleteObject(thumbRef)
-          ]);
-
-          console.log('Файлы успешно удалены из Storage после ошибки БД');
-        } catch (storageError) {
-          console.error('Не удалось удалить файлы из Storage:', storageError);
-        }
-      }
-
+      await this.deleteFilesFromStorage(savedFile.filePath);
       this.toastService.showIonicToast('Ошибка при публикации. Попробуйте снова.').pipe(take(1)).subscribe();
     }
   }
 
-  async trackView(videoId: string, curentUserId:string, reelsUserId:string) {
-    if (reelsUserId===curentUserId) {
-      return
+  async deleteFilesFromStorage(filePath: string) {
+    if (filePath) {
+      try {
+        const storage = getStorage();
+        const videoRef = ref(storage, filePath);
+        const thumbPath = filePath.replace('reels/', 'thumbnails/').replace('.mp4', '.jpg');
+        const thumbRef = ref(storage, thumbPath);
+
+        await Promise.all([
+          deleteObject(videoRef),
+          deleteObject(thumbRef)
+        ]);
+
+        console.log('Файлы успешно удалены из Storage после ошибки БД');
+      } catch (storageError) {
+        console.error('Не удалось удалить файлы из Storage:', storageError);
+      }
+    }
+  }
+
+  async incrementViewCount(videoId: string, curentUserId?: string, reelsUserId?: string) {
+    if ((curentUserId && reelsUserId === curentUserId) || !videoId) {
+      return;
+    }
+
+    if (this.viewedInSession.has(videoId)) {
+      return;
+    }
+
+    const viewedReels = JSON.parse(localStorage.getItem('viewed_reels') || '[]');
+    if (viewedReels.includes(videoId)) {
+      console.log('Это видео уже было просмотрено в этом браузере.');
+      return;
     }
     const reelRef = doc(this.firestore, 'reels', videoId);
 
@@ -113,80 +111,33 @@ export class VideoService {
       await updateDoc(reelRef, {
         viewsCount: increment(1)
       });
-      const index = this.reels.findIndex(r => r.id === videoId);
+      this.viewedInSession.add(videoId);
+      viewedReels.push(videoId);
+      if (viewedReels.length > 100) viewedReels.shift();
+      localStorage.setItem('viewed_reels', JSON.stringify(viewedReels));
+      const index = this.swiperService.reels.findIndex(r => r.id === videoId);
       if (index !== -1) {
-        this.reels[index] = { ...this.reels[index], viewsCount: (this.reels[index].viewsCount || 0) + 1 };
+        this.swiperService.reels[index] = {
+          ...this.swiperService.reels[index],
+          viewsCount: (this.swiperService.reels[index].viewsCount || 0) + 1
+        };
       }
     } catch (e) {
       console.error('Ошибка при обновлении просмотров:', e, videoId);
     }
   }
 
-  getFilteredReels(lastVisibleId: string | null = null, pageSize = 10): Observable<any> {
-    const callable = httpsCallable(this.functions, 'getFilteredReels');
-    return from(callable({ lastVisibleId, pageSize }));
-  }
-
-  loadInitialData() {
-    this.isLoading$.next(true);
-    this.lastId = null;
-    return this.getFilteredReels(null, SWIPER_LIMIT)
-      .pipe(finalize(() => this.isLoading$.next(false)));
-
-  }
-
-  loadMore() {
-    if (!this.lastId) {
-      return;
-    }
-
-    this.getFilteredReels(this.lastId, SWIPER_LIMIT).pipe(take(1)).subscribe({
-      next: (result) => {
-        this.reels.push(...result.data.reels);
-        console.log('filter');
-        this.videoListUpdated$.next(true);
-        this.lastId = result.data.nextCursor;
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    });
-
-  }
-
-  //todo mn add to app.component
-  async checkAndCleanupStorage() {
-    const pendingUrl = localStorage.getItem('pending_video_url');
-
-    if (pendingUrl) {
-      console.log('Найден забытый файл после перезагрузки, удаляю...', pendingUrl);
-      try {
-        // this.deleteFileFromStorage(pendingUrl).then();
-        localStorage.removeItem('pending_video_url');
-        console.log('Хранилище очищено от мусора');
-      } catch (error) {
-        console.error('Не удалось удалить старый файл:', error);
-        localStorage.removeItem('pending_video_url');
-      }
-    }
-  }
-
-  updateSwiper(swiper: Swiper, force: boolean, newIndex?: number) {
-    if (swiper && swiper.virtual) {
-
-      swiper.virtual.cache = {};
-      swiper.virtual.slides = this.reels;
-      swiper.virtual.update(force);
-      swiper.update();
-    }
-  }
-
   attachVideoListener(swiper: any) {
     const activeSlide = swiper.slides[swiper.activeIndex];
     if (!activeSlide) return;
+
     const video = activeSlide.querySelector('video') as HTMLVideoElement;
     const bar = activeSlide.querySelector('.video-progress-bar') as HTMLElement;
+    const reelId = video?.id;
+
     if (video) {
+      let viewCounted = false;
+
       video.ontimeupdate = () => {
         if (video.duration && bar) {
           const progress = (video.currentTime / video.duration) * 100;
@@ -194,51 +145,41 @@ export class VideoService {
             bar.style.width = `${progress}%`;
           });
         }
+        if (!viewCounted && video.currentTime >= 3) {
+          viewCounted = true;
+          this.incrementViewCount(reelId).then();
+        }
       };
     }
   }
 
-  updateReels(updatedReel: Reel, index: number) {
-    if (!updatedReel && !index) {
-      return;
+  clearPreviousVideoListener(swiper: any) {
+    const prevIndex = swiper.previousIndex;
+    const prevSlide = swiper.slides[prevIndex];
+
+    if (prevSlide) {
+      const video = prevSlide.querySelector('video') as HTMLVideoElement;
+      if (video) {
+        video.pause();
+        video.ontimeupdate = null;
+        video.onplay = null;
+        video.onended = null;
+      }
     }
-    this.reels[index] = updatedReel;
   }
-
-  deleteLocalReels(index: number) {
-    this.reels.splice(index, 1);
-    this.currentReel$.next(this.reels[index]);
-    // this.loadMore();
-
-  }
-
-  deleteStorageReel(reelId: string): Observable<any> {
-    const deleteFn = httpsCallable(this.functions, 'deleteReel');
-
-    this.isLoading$.next(true);
-
-    return from(deleteFn({ reelId })).pipe(
-      catchError(err => {
-        return throwError(() => err);
-      }),
-      finalize(() => this.isLoading$.next(false))
-    );
-  }
-
-
 
   hideAuthor(authorId: string, activeIndex: number) {
-    for (let i = this.reels.length - 1; i >= 0; i--) {
-      if (this.reels[i].userId === authorId) {
-        this.reels.splice(i, 1);
+    for (let i = this.swiperService.reels.length - 1; i >= 0; i--) {
+      if (this.swiperService.reels[i].userId === authorId) {
+        this.swiperService.reels.splice(i, 1);
         if (i <= activeIndex) {
           activeIndex = Math.max(0, activeIndex - 1);
         }
       }
     }
-    this.swiper.slideTo(activeIndex);
-    this.currentReel$.next(this.reels[activeIndex]);
-    this.loadMore();
+    this.swiperService.swiper.slideTo(activeIndex);
+    this.swiperService.currentReel$.next(this.swiperService.reels[activeIndex]);
+    this.swiperService.loadMore();
 
   }
 
@@ -251,9 +192,7 @@ export class VideoService {
         'iPhone',
         'iPod'
       ].includes(navigator.platform)
-      || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+      || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
   }
-
-
 
 }

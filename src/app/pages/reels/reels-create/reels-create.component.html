@@ -15,19 +15,14 @@
                     [disabled]="uploadForm.invalid || isDowload ">
           Опубликовать
         </ion-button>
-
-
       </ion-toolbar>
-
     </ion-toolbar>
   }
 </ion-header>
 
 <ion-content class="reels-content" [scrollY]="false">
   <form [formGroup]="uploadForm" [ngClass]="{'mobile':isMobile}">
-
     <div class="upload-container">
-
        <input
          type="file"
          #fInput
@@ -91,7 +86,6 @@
 
     @if (showDescription) {
       <app-description-section [control]="uploadForm.controls.description"></app-description-section>
-
     }
   </form>
 </ion-content>

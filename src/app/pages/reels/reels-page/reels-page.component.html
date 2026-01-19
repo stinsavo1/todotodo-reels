@@ -27,10 +27,10 @@
     </div>
     @if (windowSize > 1280) {
       <div class="comments-container ">
-        <app-reels-comments [reel]="currentReel"></app-reels-comments>
+        <app-reels-comments [reel]="currentReel" [userId]="userId"></app-reels-comments>
       </div>
     }
 
   </div>
-  <app-reels-tabs [reel]="currentReel" (createReels)="openCreateReels($event)"></app-reels-tabs>
+  <app-reels-tabs [reel]="currentReel" [userId]="userId" (createReels)="openCreateReels($event)"></app-reels-tabs>
 </ion-content>
