@@ -1,13 +1,13 @@
 import { inject, Injectable } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-import { doc, Firestore, increment, serverTimestamp, updateDoc, writeBatch } from '@angular/fire/firestore';
+import { doc, Firestore, getDoc, increment, serverTimestamp, updateDoc, writeBatch } from '@angular/fire/firestore';
 import { deleteObject, getStorage, ref } from 'firebase/storage';
 import { Subject, take } from 'rxjs';
 import { UserStoreService } from '../../../services/store-service/user-store.service';
 import { Reel } from '../interfaces/reels.interface';
 import { SwiperService } from './swiper.service';
 import { ToastService } from './toast.service';
-import { UploadService } from './upload.service';
+import { UploadedFile, UploadService } from './upload.service';
 
 @Injectable()
 export class VideoService {
@@ -36,22 +36,16 @@ export class VideoService {
       const docRef = doc(this.firestore, 'reels', savedFile.reelId);
       const batch = writeBatch(this.firestore);
       const tmpReelRef = doc(this.firestore, 'tmpReels', savedFile.reelId);
-      const newReel: Reel = {
-        id: savedFile.reelId,
-        url: savedFile.videoUrl,
-        posterUrl: savedFile.thumbUrl,
-        filePath: savedFile.filePath,
-        userId: this.auth.currentUser.uid,
-        userName: this.user.getUserValue().fio || 'user',
-        description: description,
-        createdAt: serverTimestamp(),
-        likesCount: 0,
-        likes: [],
-        commentsCount: 0,
-        viewsCount: 0,
-      };
+      const newReel = this.createNewReel(description, savedFile);
       batch.set(docRef, newReel);
       batch.delete(tmpReelRef);
+      // Получение текущего юзера для проставления флага isBlogers
+      const userRef = doc(this.firestore, 'users', this.auth.currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      const userData = userSnap.data();
+      if (!userData || userData['isBloger'] !== true) {
+        batch.update(userRef, { isBlogers: true });
+      }
       await batch.commit();
       localStorage.removeItem('pending_video_url');
       const currentReelIndex = this.swiperService.swiper.activeIndex ?? 0;
@@ -127,7 +121,7 @@ export class VideoService {
     }
   }
 
-  attachVideoListener(swiper: any) {
+  attachVideoListener(swiper: any,reel:Reel) {
     const activeSlide = swiper.slides[swiper.activeIndex];
     if (!activeSlide) return;
 
@@ -147,7 +141,7 @@ export class VideoService {
         }
         if (!viewCounted && video.currentTime >= 3) {
           viewCounted = true;
-          this.incrementViewCount(reelId).then();
+          this.incrementViewCount(reelId,this.auth.currentUser.uid, reel.userId).then();
         }
       };
     }
@@ -193,6 +187,23 @@ export class VideoService {
         'iPod'
       ].includes(navigator.platform)
       || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+  }
+
+  private createNewReel(description: string, newReel: UploadedFile): Reel {
+    return {
+      id: newReel.reelId,
+      url: newReel.videoUrl,
+      posterUrl: newReel.thumbUrl,
+      filePath: newReel.filePath,
+      userId: this.auth.currentUser.uid,
+      userName: this.user.getUserValue().fio || 'user',
+      description: description,
+      createdAt: serverTimestamp(),
+      likesCount: 0,
+      likes: [],
+      commentsCount: 0,
+      viewsCount: 0,
+    };
   }
 
 }

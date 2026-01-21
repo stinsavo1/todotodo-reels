@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Блогеры</ion-title>
+  </ion-toolbar>
+</ion-header>
+<div class="content-wrap">
+<!--<mat-form-field style="width: 100%; border-top: 1px solid lightgray; border-bottom: 1px solid lightgray">-->
+<!--  <mat-label>Поиск</mat-label>-->
+<!--  <input matInput placeholder="Поиск по имени" #input (ngModelChange)="searchFilter($event)"-->
+<!--         [(ngModel)]="search">-->
+<!--  @if (search) {-->
+<!--    <button matSuffix mat-icon-button aria-label="Clear" (click)="search = '';searchFilter('')">-->
+<!--      <mat-icon>close</mat-icon>-->
+<!--    </button>-->
+<!--  }-->
+<!--</mat-form-field>-->
+@if (loading) {
+<div class="loader-container">
+  <mat-spinner class="loader-container__loader"></mat-spinner>
+</div>
+}@else {
+  <table mat-table [dataSource]="blogers" >
+
+    <ng-container matColumnDef="fio">
+      <th mat-header-cell *matHeaderCellDef> ФИО </th>
+      <td mat-cell *matCellDef="let element"> {{ element.fio ?? '-' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef> Тел </th>
+      <td mat-cell *matCellDef="let element"> {{ element.phone ?? '-' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="subscribersCount">
+      <th mat-header-cell *matHeaderCellDef> Подписчики </th>
+      <td mat-cell *matCellDef="let element" >{{ element.subscribersCount ?? '0' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="subscribtionsCount">
+      <th mat-header-cell *matHeaderCellDef> Подписки </th>
+      <td mat-cell *matCellDef="let element">{{ element.subscribtionsCount ?? '0' }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="regionName">
+      <th mat-header-cell *matHeaderCellDef> Регион </th>
+      <td mat-cell *matCellDef="let element">{{ element.nameRegion }} </td>
+
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" cursorPointer
+        (click)="navigateProfileDetails(row)"></tr>
+  </table>
+
+
+}
+
+
+</div>
+<!--@if (totalSize>0) {-->
+<!--  <mat-paginator-->
+<!--    [length]="totalSize"-->
+<!--    [pageSize]="pageSize"-->
+<!--    [pageIndex]="pageIndex"-->
+<!--    [pageSizeOptions]="[10, 20, 40]"-->
+<!--    showFirstLastButtons-->
+<!--    (page)="onPaginateChange($event)">-->
+<!--  </mat-paginator>-->
+<!--}-->

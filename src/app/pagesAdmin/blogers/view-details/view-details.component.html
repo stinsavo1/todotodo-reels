@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="modalController.dismiss()">Закрыть</ion-button>
+    </ion-buttons>
+    <ion-title>{{ title }}</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <ion-list>
+    @for (user of users; track user.id) {
+      <ion-item>
+        <ion-label>ФИО</ion-label>
+        {{ user.fio }}
+      </ion-item>
+      <ion-item>
+        <ion-label>phone</ion-label>
+        {{ user.phone }}
+      </ion-item>
+
+      <ion-item-divider></ion-item-divider>
+    }
+  </ion-list>
+</ion-content>

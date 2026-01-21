@@ -13,12 +13,13 @@ import {
 } from '@angular/fire/firestore';
 import { BehaviorSubject, combineLatest, from, Observable, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Subscription, UserInterface } from '../../../interfaces/user.interface';
 import { AuthService } from '../../../services/auth.service';
 import { UserService } from '../../../services/my-service/user.service';
 import { Reel, UserPreferences } from '../interfaces/reels.interface';
 
-export interface Subscriptions {
-  subscribers: string[],
+export interface SubscriptionsData {
+  subscriptions: string[],
   count: number
 }
 
@@ -32,85 +33,87 @@ export class UsersPreferencesService {
     blockedAuthors: new Set(),
     hiddenVideos: new Set()
   });
-  currentSubscribtions$ = new BehaviorSubject<Subscriptions | null>(null);
+  currentSubscribtions$ = new BehaviorSubject<SubscriptionsData | null>(null);
 
   constructor(private firestore: Firestore, private auth: AuthService, private usersService: UserService) {
   }
 
-  // trackSubscription(targetUserId: string, myUserId: string) {
-  //   const userRef = doc(this.firestore, "users", targetUserId);
-  //
-  //   // onSnapshot listens for real-time changes
-  //   onSnapshot(userRef, (doc) => {
-  //     const data = doc.data();
-  //     if (data && data.subscriberIds) {
-  //       // Check if MY ID is in THEIR list
-  //       this.isSubscribed = data.subscriberIds.includes(myUserId);
-  //     } else {
-  //       this.isSubscribed = false;
-  //     }
-  //   });}
-
-  getDataUser(userId) {
-
-  }
-
-  subscribeToUser(userId: string, subscriberId: string): Observable<void> {
+  subscribeToUser(userId: string, subscriber: Reel): Observable<void> {
     const userRef = doc(this.firestore, `users/${userId}`);
+    const subscriberRef = doc(this.firestore, `users/${subscriber.userId}`);
 
     return from(
       runTransaction(this.firestore, async (transaction) => {
         const userDoc = await transaction.get(userRef);
+        const subDoc = await transaction.get(subscriberRef);
 
-        if (!userDoc.exists()) throw new Error('User does not exist');
+        if (!userDoc.exists() || !subDoc.exists()) throw new Error('User does not exist');
 
-        const data = userDoc.data() as any;
+        const data = userDoc.data() as UserInterface;
 
-        if (data.subscribersIds?.includes(subscriberId)) {
+        const isAlreadySubscribed = data.subscribtionsIds?.some(
+          (sub) => sub === subscriber.userId
+        );
+
+        if (isAlreadySubscribed) {
           console.log('Already subscribed');
           return;
         }
 
         transaction.update(userRef, {
-          subscribersIds: arrayUnion(subscriberId),
-          subscribersCount: increment(1)
+          subscribtionsIds: arrayUnion(subscriber.userId),
+          subscribtionsCount: increment(1)
+        });
+        transaction.update(subscriberRef, {
+          subscribersIds: arrayUnion(data.id),
+          subscribersCount:increment(1)
         });
       })
     ).pipe(
-      tap(()=>{
-        const previos = {...this.currentSubscribtions$.value};
+      tap(() => {
+        const previous = { ...this.currentSubscribtions$.value };
         this.currentSubscribtions$.next({
-          subscribers:previos?.subscribers ?[...previos.subscribers, subscriberId] : [subscriberId],
-          count:previos?.count ? previos.count+1 : 0})
+          subscriptions: previous?.subscriptions ? [...previous.subscriptions, subscriber.userId] : [subscriber.userId],
+          count: (previous?.count ?? 0) + 1
+        });
+
       })
     );
   }
 
-  unsubscribeFromUser(userId: string, subscriberId: string): Observable<void> {
+  unsubscribeFromUser(userId: string, subscriber: Reel): Observable<void> {
     const userRef = doc(this.firestore, `users/${userId}`);
+    const subscriberRef = doc(this.firestore, `users/${subscriber.userId}`);
 
     return from(
       runTransaction(this.firestore, async (transaction) => {
         const userDoc = await transaction.get(userRef);
+        const subDoc = await transaction.get(subscriberRef);
+        if (!userDoc.exists() || !subDoc.exists()) throw new Error('User does not exist');
 
-        if (!userDoc.exists()) throw new Error('User does not exist');
+        const data = userDoc.data() as UserInterface;
+        const dataSubscriber = subDoc.data() as UserInterface;
+        const existingSub = data.subscribtionsIds.find(sub => sub === subscriber.userId);
+        const existingSubcriber = dataSubscriber.subscribersIds.find(sub => sub === userId);
 
-        const data = userDoc.data() as any;
-
-        if (!data.subscribersIds?.includes(subscriberId)) return;
+        if (!existingSub || !existingSubcriber) return;
 
         transaction.update(userRef, {
-          subscribersIds: arrayRemove(subscriberId),
+          subscribtionsIds: arrayRemove(existingSub),
+          subscribtionsCount: increment(-1)
+        });
+        transaction.update(subscriberRef, {
+          subscribersIds: arrayRemove(existingSubcriber),
           subscribersCount: increment(-1)
         });
       })
     ).pipe(
-      tap(()=>{
-        const previos = {...this.currentSubscribtions$.value};
+      tap(() => {
+        const previous = { ...this.currentSubscribtions$.value };
 
         this.currentSubscribtions$.next({
-          subscribers: previos?.subscribers ? previos.subscribers.filter(id => id !== subscriberId) : [],
-          count: previos.count ? previos.count - 1 : 0
+          subscriptions: previous?.subscriptions.length>0 ? previous.subscriptions.filter((sub)=>sub !== subscriber.userId): [],
+          count: previous?.count ? previous.count-1:0
         });
       }));
   }

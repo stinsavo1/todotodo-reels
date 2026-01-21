@@ -17,7 +17,7 @@ import { Firestore } from '@angular/fire/firestore';
 import { finalize, take } from 'rxjs';
 import { UserStoreService } from '../../../services/store-service/user-store.service';
 import { Reel } from '../interfaces/reels.interface';
-import { Subscriptions, UsersPreferencesService } from '../services/users-preferences.service';
+import { SubscriptionsData, UsersPreferencesService } from '../services/users-preferences.service';
 
 @Component({
   selector: 'app-reels-description',
@@ -39,7 +39,7 @@ export class ReelsDescriptionComponent implements OnInit, OnChanges {
   isDescriptionExpanded = false;
   descElement: ElementRef | undefined = undefined;
   isTruncated: boolean = false;
-  userSubscriptions: Subscriptions | null = null;
+  userSubscriptions: SubscriptionsData | null = null;
   isSubscribe = false;
   hideSubscr = true;
   loading = false;
@@ -85,11 +85,10 @@ export class ReelsDescriptionComponent implements OnInit, OnChanges {
     event.stopPropagation();
     event.preventDefault();
     this.loading=true;
-    const targetId = this.reel.userId;
 
     const action$ = !this.isSubscribe
-      ? this.usersPreferencesService.subscribeToUser(this.userId, targetId)
-      : this.usersPreferencesService.unsubscribeFromUser(this.userId, targetId);
+      ? this.usersPreferencesService.subscribeToUser(this.userId, this.reel)
+      : this.usersPreferencesService.unsubscribeFromUser(this.userId, this.reel);
 
     action$
       .pipe(take(1), finalize(()=>this.loading=false))
@@ -115,8 +114,8 @@ export class ReelsDescriptionComponent implements OnInit, OnChanges {
     if (!targetUserId) {
       return false;
     }
-    const existedSub = this.userSubscriptions?.subscribers;
-    if (existedSub && existedSub.length > 0) {
+    const existedSub = this.userSubscriptions?.subscriptions?.filter((sub)=>sub === targetUserId);
+    if (existedSub && existedSub?.length > 0) {
       return existedSub.includes(targetUserId);
     }
     return false;

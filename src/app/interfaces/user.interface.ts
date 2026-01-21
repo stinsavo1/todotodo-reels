@@ -32,6 +32,19 @@ export interface UserInterface {
   partnership?: boolean;
   cashback: number;
   nameFactory: string;
-  subscribersIds?:string[];
+  subscribtionsIds:string[]; //на кого подписан юзер
+  subscribtionsCount:number;
+  subscribersIds:string[];//кто на него подписан
   subscribersCount?:number;
 }
+
+export interface Subscription{
+  id:string;
+  name:string
+}
+
+export interface UserWithRegion extends UserInterface{
+  nameRegion:string;
+}
+
+export type UserById = Record<string, UserWithRegion>;
