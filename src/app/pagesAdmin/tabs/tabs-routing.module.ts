@@ -30,6 +30,11 @@ const routes: Routes = [
           import('../users/users.module').then(m => m.UsersPageModule)
       },
       {
+        path: 'blogers',
+        loadChildren: () =>
+          import('../blogers/blogers.module').then(m => m.BlogersModule)
+      },
+      {
         path: 'feedbacks/:uid',
         loadChildren: () =>
           import('../feedbacks/feedbacks.module').then(m => m.FeedbacksModule)

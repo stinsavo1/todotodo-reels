@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Блогер {{ bloger?.fio }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+  <ion-item>
+    <ion-label>Телефон:</ion-label>
+    {{ bloger.phone }}
+  </ion-item>
+  <ion-item>
+    <ion-label>E-mail:</ion-label>
+    {{ bloger.email }}
+  </ion-item>
+  <ion-item>
+    <ion-label>Роль:</ion-label>
+    {{ bloger.role }}
+  </ion-item>
+  <div class="reels">
+    <table mat-table [dataSource]="reels">
+
+      <ng-container matColumnDef="posterUrl">
+        <th mat-header-cell *matHeaderCellDef> Постер</th>
+        <td mat-cell *matCellDef="let element"><img [src]="blogersService.getImageUrl(element.posterUrl,
+        'poster') |
+         async">
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef> Описание</th>
+        <td mat-cell *matCellDef="let element"> {{ element.description ?? '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="createDateReel">
+        <th mat-header-cell *matHeaderCellDef> Дата</th>
+        <td mat-cell *matCellDef="let element">{{ element.createDateReel ?? '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="viewsCount">
+        <th mat-header-cell *matHeaderCellDef> Просмотры</th>
+        <td mat-cell *matCellDef="let element">{{ element.viewsCount ?? '0' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="likesCount">
+        <th mat-header-cell *matHeaderCellDef> Лайки</th>
+        <td mat-cell *matCellDef="let element" cursorPointer (click)="showLikeInfo(element)">{{ element.likesCount ??
+        '0' }}</td>
+
+      </ng-container>
+      <ng-container matColumnDef="commentsCount">
+        <th mat-header-cell *matHeaderCellDef> Комменты</th>
+        <td mat-cell *matCellDef="let element" cursorPointer
+            (click)="showComments(element)">{{ element.commentsCount ?? '0' }}</td>
+
+      </ng-container>
+      <ng-container matColumnDef="url">
+        <th mat-header-cell *matHeaderCellDef> Путь</th>
+        <td mat-cell *matCellDef="let element">
+          <a [href]="(blogersService.getImageUrl(element.url, 'video') | async)" target="_blank" rel="noopener noreferrer">посмотреть</a>
+          </td>
+
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+  </div>
+</ion-content>

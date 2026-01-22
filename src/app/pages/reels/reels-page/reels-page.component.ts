@@ -80,9 +80,9 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
       next: (data: UserInterface) => {
         if (data) {
           this.userId = data?.id;
-          if (data.subscribersIds?.length > 0) {
+          if (data.subscribtionsCount > 0) {
             this.usersPreferencesService.currentSubscribtions$.next({
-              subscribers: data.subscribersIds,
+              subscriptions: data.subscribtionsIds,
               count: data.subscribersCount
             });
           }
@@ -262,17 +262,18 @@ export class ReelsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
         },
         slideChangeTransitionEnd: (swiper) => {
-          this.videoService.clearPreviousVideoListener(swiper);
-          this.videoService.attachVideoListener(swiper);
-          this.handleVideoPlayback();
           this.currentActiveIndex = swiper.activeIndex;
           this.swiperService.currentReel$.next(this.reels[this.currentActiveIndex]);
+          this.videoService.clearPreviousVideoListener(swiper);
+          this.videoService.attachVideoListener(swiper,this.reels[this.currentActiveIndex]);
+          this.handleVideoPlayback();
+
           this.commentsService.loadComments(this.swiperService.reels[this.currentActiveIndex].id).then();
           this.cdr.markForCheck();
         },
 
         afterInit: (swiper) => {
-          this.videoService.attachVideoListener(swiper);
+          this.videoService.attachVideoListener(swiper,this.reels[0]);
           this.handleVideoPlayback();
           this.currentActiveIndex = 0;
         },

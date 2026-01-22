@@ -1,0 +1,23 @@
+ion-label{
+  flex: 0!important;
+  width: max-content;
+  min-width: max-content;
+}
+img {
+  object-fit: cover;
+  display: block;
+  width: 40px;
+  height: 60px;
+}
+
+thead{
+  text-align: center;
+}
+
+td{
+  padding: 5px;
+
+  &:nth-child(2){
+    max-width: 100px;
+  }
+}
