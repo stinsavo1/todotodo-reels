@@ -1,13 +1,25 @@
-import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './guards/auth.guard';
+import { NgModule } from '@angular/core'
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router'
 import { ProfileCompletionGuard } from './guards/profile-completion.guard';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
-    path: 'on-boarding',
+    path: '',
+    loadComponent: () => import('./pages/main/main.component').then(m => m.MainComponent),
+  },
+  {
+    path: 'map',
     loadChildren: () =>
-      import('./pages/onboarding/onboarding.module').then(m => m.OnboardingModule)
+      import('./pages/map/map.module').then((m) => m.MapPageModule),
+  },
+  {
+    path: 'addresses/new-chat/:id/:isManager',
+    loadComponent: () => import('./pages/new/new-chat/new-chat.component').then(m => m.NewChatComponent),
+  },
+  {
+    path: 'addresses/order-chats/:id/:segment/:isManager',
+    loadComponent: () => import('./pages/new/order-chat-list/order-chat-list.component').then(m => m.OrderChatListComponent),
   },
   {
     path: 'reels',
@@ -15,6 +27,97 @@ const routes: Routes = [
       m => m.ReelsModule
     )
   },
+  {
+    path: 'notifications',
+    loadChildren: () =>
+      import('./pages/notifications/notifications.module').then(
+        (m) => m.NotificationsPageModule,
+      ),
+    canActivate: [ProfileCompletionGuard]
+  },
+  {
+    path: 'subscription',
+    loadChildren: () =>
+      import('./pages/subscription/subscription.module').then(
+        (m) => m.SubscriptionPageModule
+      ),
+  },
+  {
+    path: 'registration',
+    loadChildren: () =>
+      import('./pages/registration/registration.module').then(
+        (m) => m.RegistrationPageModule
+      ),
+  },
+  {
+    path: 'auth',
+    loadChildren: () =>
+      import('./pages/auth/auth.module').then(
+        (m) => m.AuthPageModule
+      ),
+  },
+  {
+    path: 'orders-in-progress',
+    loadChildren: () =>
+      import('./pages/orders-in-progress/orders-in-progress.module').then(
+        m => m.OrdersInProgressPageModule
+      )
+  },
+  {
+    path: 'contacts',
+    loadChildren: () =>
+      import('./pages/contacts/contacts.module').then(
+        m => m.ContactsModule
+      )
+  },
+  {
+    path: 'my-profile',
+    loadChildren: () =>
+      import('./pages/my-profile/my-profile.module').then(
+        (m) => m.MyProfileModule
+      ),
+  },
+  {
+    path: 'registration/:referral/:email',
+    loadChildren: () =>
+      import('./pages/registration/registration.module').then(
+        m => m.RegistrationPageModule
+      )
+  },
+  {
+    path: 'verification-code',
+    loadChildren: () =>
+      import('./pages/verification-code/verification-code.module').then(
+        (m) => m.VerificationCodeModule
+      ),
+  },
+  {
+    path: 'verification-code-email',
+    loadChildren: () =>
+      import('./pages/verification-code-email/verification-code-email.module').then(
+        (m) => m.VerificationCodeEmailModule
+      ),
+  },
+  {
+    path: 'faq',
+    loadChildren: () =>
+      import('./pages/faq/faq.module').then(
+        m => m.FaqModule
+      )
+  },
+  {
+    path: 'documents',
+    loadChildren: () =>
+      import('./pages/documents/documents.module').then(
+        m => m.DocumentsModule
+      )
+  },
+  // {
+  //   path: 'map',
+  //   loadChildren: () =>
+  //     import('./pages.module').then(m => m.TabsPageModule),
+  //   canActivate: [AuthGuard]
+  // },
   {
     path: 'admin',
     loadChildren: () =>
@@ -39,7 +142,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./pages/profile/rating/rating.module').then(
         m => m.RatingModule
-      ),
+      )
   },
   {
     path: 'feedback/:id/:orderId/:userType',
@@ -147,25 +250,16 @@ const routes: Routes = [
         m => m.StoreModule
       )
   },
-  {
-    path: '',
-    loadChildren: () =>
-      import('./pages/tabs/tabs.module').then(m => m.TabsPageModule),
-    canActivate: [AuthGuard]
-  },
-
-  {
-    path: '**',
-    redirectTo: '/tabs/map',
-    pathMatch: 'full',
-  },
-];
-
+  // {
+  //   path: '**',
+  //   redirectTo: '/map',
+  //   pathMatch: 'full',
+  // },
+]
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

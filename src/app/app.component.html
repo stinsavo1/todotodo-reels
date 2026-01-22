@@ -1,51 +1,6 @@
-<ion-app [ngClass]="{'app': !isMobile}">
-  <app-cookie-banner></app-cookie-banner>
-  <app-splash-screen *ngIf="loading$ | async"></app-splash-screen>
-  <aside #sidebar *ngIf="!isMobile && !isAdmin " class="sidebar" [class.collapsed]="isCollapsed"
-         [class.menu-active]="isMenuActive">
-    <!-- Sidebar header -->
-    <header class="sidebar-header">
-      <a href="#" class="header-logo">
-        <img src="assets/menu/logo.svg" alt="CodingNepal">
-      </a>
-      <button class="toggler sidebar-toggler" (click)="toggleCollapse()">
-        <span class="material-symbols-rounded">chevron_left</span>
-      </button>
-      <button class="toggler menu-toggler" (click)="toggleMenu()">
-        <span class="material-symbols-rounded">{{ isMenuActive ? 'close' : 'menu' }}</span>
-      </button>
-    </header>
-
-    <nav class="sidebar-nav">
-      <!-- Primary top nav -->
-      <ul class="nav-list primary-nav">
-        <ng-container *ngFor="let item of primaryNavArr">
-        <li class="nav-item"  *ngIf="!item?.hidden" (click)="navigateRoute(item.route)">
-          <a class="nav-link">
-            <span class="nav-icon material-symbols-rounded">{{ item.icon }}</span>
-            <span class="nav-label">{{ item.label }}</span>
-            <span class="badgeIcon" *ngIf="item.count"></span>
-            <span class="badge" *ngIf="item.count">{{item.count}}</span>
-          </a>
-          <div class="nav-tooltip">{{ item.label }}<span class="badge" *ngIf="item.count">{{item.count}}</span></div>
-        </li>
-        </ng-container>
-
-      </ul>
-
-      <!-- Secondary bottom nav -->
-      <ul class="nav-list secondary-nav">
-        <ng-container *ngFor="let item of secondaryNavArr">
-          <li class="nav-item" *ngIf="!item?.hidden" (click)="navigateRoute(item.route)">
-            <a class="nav-link">
-              <span class="nav-icon material-symbols-rounded">{{ item.icon }}</span>
-              <span class="nav-label">{{ item.label }}</span>
-            </a>
-            <span class="nav-tooltip">{{ item.label }}</span>
-          </li>
-        </ng-container>
-      </ul>
-    </nav>
-  </aside>
-  <ion-router-outlet [ngClass]="{'router': !isMobile && !isAdmin }"></ion-router-outlet>
-</ion-app>
+@if (loading$ | async) {
+  <ion-app>
+    <app-splash-screen></app-splash-screen>
+  </ion-app>
+}
+<ion-router-outlet></ion-router-outlet>

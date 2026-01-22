@@ -1,0 +1,185 @@
+<ion-menu contentId="main-content" [swipeGesture]="false" [side]="'end'">
+  <ion-header>
+    <ion-toolbar class="header__toolbar">
+      <ion-buttons class="header__arrow-back" slot="start" (click)="closeMenu()">
+      <span class="material-symbols-outlined header__arrow-back-icon">
+        arrow_back_ios
+      </span>
+      </ion-buttons>
+      <div class="header__image-container">
+        @if (isAuth) {
+          @if (user?.photo?.length) {
+            <img class="header__image" (click)="navigateProfile()" slot="secondary" [src]="user?.photo[0]"/>
+          } @else {
+            <img class="header__image" (click)="navigateProfile()" slot="secondary" src="../../../assets/profile/empty-photo.png"/>
+          }
+          <div class="header__name-container" (click)="navigateProfile()">
+            <div class="header__name">{{ user?.fio }}</div>
+            <div class="header__container-forward-icon">
+            <span class="material-symbols-outlined header__arrow-forward-icon">
+              arrow_forward_ios
+            </span>
+            </div>
+          </div>
+          <div class="header__email" (click)="navigateProfile()">{{user?.email}}</div>
+        } @else {
+          <img class="header__image" (click)="navigateProfile()" slot="secondary" src="../../../assets/profile/empty-photo.png"/>
+        }
+      </div>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
+    @if (!isAuth) {
+      <div class="menu-container menu-container__auth-background" (click)="navigateAuth()">
+        <div class="menu-container__auth">
+          Авторизация
+        </div>
+      </div>
+    }
+    <div class="menu-container" (click)="navigateSubscribe()">
+      <div class="menu-container__item">
+        <div class="menu-container__left">
+          <span class="material-symbols-outlined menu-container__icon-size">paid</span>
+          <span>Подписка</span>
+        </div>
+        <div class="material-symbols-outlined menu-container__icon-arrow">arrow_forward_ios</div>
+      </div>
+    </div>
+    <div class="menu-container" (click)="navigateFaq()">
+      <div class="menu-container__item">
+        <div class="menu-container__left">
+          <span class="material-symbols-outlined menu-container__icon-size">help_center</span>
+          <span>Вопрос-ответ</span>
+        </div>
+        <div class="material-symbols-outlined menu-container__icon-arrow">arrow_forward_ios</div>
+      </div>
+    </div>
+    <div class="menu-container" (click)="navigateDocuments()">
+      <div class="menu-container__item">
+        <div class="menu-container__left">
+          <span class="material-symbols-outlined menu-container__icon-size">list_alt</span>
+          <span>Прочее</span>
+        </div>
+        <div class="material-symbols-outlined menu-container__icon-arrow">arrow_forward_ios</div>
+      </div>
+    </div>
+    <div class="menu-container" (click)="navigateContacts()">
+      <div class="menu-container__item">
+        <div class="menu-container__left">
+          <span class="material-symbols-outlined menu-container__icon-size">info</span>
+          <span>Контакты</span>
+        </div>
+        <div class="material-symbols-outlined menu-container__icon-arrow">arrow_forward_ios</div>
+      </div>
+    </div>
+  </ion-content>
+</ion-menu>
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar class="main-toolbar">
+      <ion-buttons>
+        <ion-menu-button class="menu-button"></ion-menu-button>
+        <div class="stories__title">TODOTODO</div>
+      </ion-buttons>
+      <div class="stories">
+        <div class="stories__container">
+          <app-story-avatar
+            [size]="64"
+            [storyCount]="4"
+            [avatarUrl]="isAuth && user?.photo?.length ? user?.photo[0] : null"
+            [gapDeg]="13"
+            [addStory]="true"
+          ></app-story-avatar>
+          <app-story-avatar
+            [avatarUrl]="'https://media.licdn.com/dms/image/v2/D4E0BAQFEAKvQAZ8Zmg/company-logo_200_200/B4EZsOHFSBJ0AQ-/0/1765468296836/img_logo?e=2147483647&v=beta&t=shYVYg3atXalYcBkQoeU4p0Ih2_wf5HwRFWiLTemLt8'"
+            [storyCount]="4"
+            [size]="64"
+            [gapDeg]="13"
+          ></app-story-avatar>
+          <app-story-avatar
+            [avatarUrl]="'https://media.licdn.com/dms/image/v2/D4E0BAQFEAKvQAZ8Zmg/company-logo_200_200/B4EZsOHFSBJ0AQ-/0/1765468296836/img_logo?e=2147483647&v=beta&t=shYVYg3atXalYcBkQoeU4p0Ih2_wf5HwRFWiLTemLt8'"
+            [storyCount]="3"
+            [size]="64"
+            [gapDeg]="13"
+          ></app-story-avatar>
+          <app-story-avatar
+            [avatarUrl]="'https://media.licdn.com/dms/image/v2/D4E0BAQFEAKvQAZ8Zmg/company-logo_200_200/B4EZsOHFSBJ0AQ-/0/1765468296836/img_logo?e=2147483647&v=beta&t=shYVYg3atXalYcBkQoeU4p0Ih2_wf5HwRFWiLTemLt8'"
+            [storyCount]="6"
+            [size]="64"
+            [gapDeg]="13"
+          ></app-story-avatar>
+          <app-story-avatar
+            [avatarUrl]="'https://media.licdn.com/dms/image/v2/D4E0BAQFEAKvQAZ8Zmg/company-logo_200_200/B4EZsOHFSBJ0AQ-/0/1765468296836/img_logo?e=2147483647&v=beta&t=shYVYg3atXalYcBkQoeU4p0Ih2_wf5HwRFWiLTemLt8'"
+            [storyCount]="15"
+            [size]="64"
+            [gapDeg]="13"
+          ></app-story-avatar>
+          <app-story-avatar
+            [avatarUrl]="'https://media.licdn.com/dms/image/v2/D4E0BAQFEAKvQAZ8Zmg/company-logo_200_200/B4EZsOHFSBJ0AQ-/0/1765468296836/img_logo?e=2147483647&v=beta&t=shYVYg3atXalYcBkQoeU4p0Ih2_wf5HwRFWiLTemLt8'"
+            [storyCount]="1"
+            [size]="64"
+            [gapDeg]="13"
+          ></app-story-avatar>
+          <app-story-avatar
+            [avatarUrl]="'https://media.licdn.com/dms/image/v2/D4E0BAQFEAKvQAZ8Zmg/company-logo_200_200/B4EZsOHFSBJ0AQ-/0/1765468296836/img_logo?e=2147483647&v=beta&t=shYVYg3atXalYcBkQoeU4p0Ih2_wf5HwRFWiLTemLt8'"
+            [storyCount]="9"
+            [size]="64"
+            [gapDeg]="13"
+          ></app-story-avatar>
+        </div>
+      </div>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <div class="button-grid">
+      <div class="button" (click)="navigateWork()">
+        <div class="icon-button">
+          <img src="assets/main/work.png" class="button-img"/>
+        </div>
+        <span>Работа</span>
+      </div>
+      <div class="button" (click)="openEducation()">
+        <div class="icon-button">
+          <img src="assets/main/books.png" class="button-img"/>
+        </div>
+        <span>Обучение</span>
+      </div>
+      <div class="button" (click)="navigateLeads()">
+        <div class="icon-button">
+          <img src="assets/main/user.png" class="button-img"/>
+        </div>
+        <span>Лиды</span>
+      </div>
+      <div class="button" (click)="openReels()">
+        <div class="icon-button">
+          <img src="assets/main/reels.png" class="button-img"/>
+        </div>
+        <span>Лента</span>
+      </div>
+    </div>
+    <div class="container-invites">
+      <div class="container-invites__button" (click)="openBonuses()">
+        <ion-button class="container-invites__icon">
+          <span class="container-invites__title">Мои бонусы</span>
+          <span class="container-invites__number">{{ this.user?.cashback || 0 }} ₽</span>
+        </ion-button>
+      </div>
+      <div class="container-invites__button" (click)="navigatePartner()">
+        <ion-button class="icon-button">
+        <span class="container-invites__invites">
+          <ion-icon name="person-add-outline" class="container-invites__invite-icon"></ion-icon>
+        </span>
+          <span class="container-invites__title">Пригласить коллегу</span>
+        </ion-button>
+      </div>
+    </div>
+    <app-address-chats-list></app-address-chats-list>
+  </ion-content>
+</div>
+<ion-alert
+  [isOpen]="isAlertOpen"
+  header="Необходима авторизация"
+  message="Для получения полной информации пройдите авторизацию."
+  [buttons]="alertButtons"
+  (didDismiss)="didDismiss()"
+></ion-alert>

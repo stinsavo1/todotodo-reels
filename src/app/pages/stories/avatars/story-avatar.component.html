@@ -1,0 +1,53 @@
+<div class="story-avatar-container" [style.width.px]="size + ringWidth" [style.height.px]="size + ringWidth">
+  <svg
+    viewBox="0 0 100 100"
+    class="progress-ring"
+    [attr.width]="size + ringWidth*2 + 6"
+    [attr.height]="size + ringWidth*2 + 6"
+  >
+
+      @if (storyCount === 1) {
+        <circle
+          cx="50"
+          cy="50"
+          [attr.r]="radius"
+          fill="none"
+          [attr.stroke]="segments[0]?.color"
+          [attr.stroke-width]="ringWidth"
+        />
+      } @else {
+        @for (seg of segments; track seg) {
+          <path
+            [attr.d]="seg.path"
+            fill="none"
+            [attr.stroke]="seg.color"
+            [attr.stroke-width]="ringWidth"
+            stroke-linecap="round"
+          />
+        }
+    }
+  </svg>
+  @if (addStory) {
+    <div class="add-story-container" (click)="openCamera()">
+      <span class="material-symbols-outlined add-story-container__add">add</span>
+    </div>
+  }
+
+  <div class="avatar-wrapper">
+    @if (avatarUrl) {
+      <ion-avatar>
+        <img [src]="avatarUrl" alt="Avatar" />
+      </ion-avatar>
+    } @else {
+      <ion-avatar>
+        <img src="./assets/profile/empty-photo.png" alt="Avatar" />
+      </ion-avatar>
+    }
+  </div>
+</div>
+@if (addStory) {
+  <div class="title-story">Моя история</div>
+} @else {
+  <div class="title-story">Савостин Владислав Сергеевич</div>
+}
+
