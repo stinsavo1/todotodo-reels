@@ -3,11 +3,7 @@ import {
   IonCard,
   IonCardContent,
   IonChip,
-  IonContent,
-  IonHeader, IonLabel,
-  IonProgressBar, IonSegment, IonSegmentButton, IonSegmentView,
-  IonTitle,
-  IonToolbar
+  IonContent,IonLabel, IonSegment, IonSegmentButton, IonSegmentView,
 } from "@ionic/angular/standalone";
 import { ChatService } from "../../../services/chat.service";
 import { AuthService } from "../../../services/auth.service";
@@ -22,10 +18,6 @@ import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
   templateUrl: './address-chats-list.component.html',
   styleUrls: ['./address-chats-list.component.scss'],
   imports: [
-    IonProgressBar,
-    IonTitle,
-    IonToolbar,
-    IonHeader,
     IonContent,
     IonCard,
     IonCardContent,
