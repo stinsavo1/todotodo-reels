@@ -1,11 +1,3 @@
-<ion-header class="header">
-  <ion-toolbar class="header__toolbar">
-    <ion-title class="header__title">Адреса заказов</ion-title>
-    @if (loader) {
-      <ion-progress-bar type="indeterminate"></ion-progress-bar>
-    }
-  </ion-toolbar>
-</ion-header>
 <ion-content>
   <ion-segment [value]="segment" (ionChange)="changeSegment($event)">
     <ion-segment-button value="active">
