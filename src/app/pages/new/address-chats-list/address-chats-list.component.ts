@@ -1,15 +1,15 @@
-import { Component } from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {
   IonCard,
   IonCardContent,
-  IonChip,
-  IonContent,IonLabel, IonSegment, IonSegmentButton, IonSegmentView,
+  IonLabel,
+  IonSegment, IonSegmentButton, IonSegmentView,
 } from "@ionic/angular/standalone";
 import { ChatService } from "../../../services/chat.service";
 import { AuthService } from "../../../services/auth.service";
-import { catchError, map, Observable, of } from "rxjs";
+import {catchError, filter, map, Observable, of} from "rxjs";
 import { AsyncPipe, CommonModule } from "@angular/common";
-import { NavController, ViewWillEnter } from "@ionic/angular";
+import { NavController } from "@ionic/angular";
 import { DeclinationPipe } from "../../../pipes/declination.pipe";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 
@@ -18,10 +18,8 @@ import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
   templateUrl: './address-chats-list.component.html',
   styleUrls: ['./address-chats-list.component.scss'],
   imports: [
-    IonContent,
     IonCard,
     IonCardContent,
-    IonChip,
     AsyncPipe,
     DeclinationPipe,
     CommonModule,
@@ -33,11 +31,11 @@ import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
   standalone: true
 })
 @UntilDestroy()
-export class AddressChatsListComponent implements ViewWillEnter {
+export class AddressChatsListComponent implements OnInit {
   public loader = false;
   public dialogAddress$: Observable<any>;
-  public activeCount: number;
-  public archiveCount: number;
+  public activeCount: number = 0;
+  public archiveCount: number = 0;
   public user: any;
   public segment = 'active';
 
@@ -48,7 +46,7 @@ export class AddressChatsListComponent implements ViewWillEnter {
     private chatService: ChatService) {
   }
 
-  ionViewWillEnter() {
+  ngOnInit() {
     this.segment = 'active';
     this.authService.get(this.authService.uid).pipe(untilDestroyed(this)).subscribe((res) => {
       this.user = res;
@@ -66,7 +64,7 @@ export class AddressChatsListComponent implements ViewWillEnter {
   }
 
   public routerNavigate(order: any) {
-    this.navCtrl.navigateForward(`/tabs/addresses/order-chats/${order.id}/${this.segment}/${(!!(this.user.isManager && order.typeLead))}`);
+    this.navCtrl.navigateForward(`/addresses/order-chats/${order.id}/${this.segment}/${(!!(this.user.isManager && order.typeLead))}`);
   }
 
   private groupByOrderId<T extends { orderId: string }>(

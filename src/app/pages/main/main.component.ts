@@ -6,7 +6,6 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
-  IonIcon,
   IonMenu, IonMenuButton,
   IonToolbar
 } from "@ionic/angular/standalone";
@@ -31,7 +30,6 @@ import {Router} from "@angular/router";
     StoryAvatarComponent,
     IonButton,
     AddressChatsListComponent,
-    IonIcon,
     IonMenu,
     IonHeader,
     IonToolbar,

@@ -12,23 +12,12 @@ import {NavController} from "@ionic/angular";
 export class StoryAvatarComponent implements OnChanges {
   @Input() avatarUrl?: string;
   @Input() storyCount = 1;
-  @Input() size = 56; // размер аватарки
-  @Input() ringWidth = 4;
-  @Input() gapDeg = 6; // угол gap между сегментами
-  @Input() defaultColor = '#22307E';
+  @Input() gapDeg = 6;
+  @Input() defaultColor = '#0077FF';
   @Input() addStory = false;
-  @Input() colors: string[] =  [
-    '#22307e',
-    '#243689',
-    '#263c94',
-    '#2a43a0',
-    '#2c49ab',
-    '#304fb6',
-    '#3356c2',
-    '#365ccc',
-    '#3963d8',
-    '#3c69e3'
-  ];
+
+  public size = 66;
+  public ringWidth = 3;
 
   segments: { path: string; color: string }[] = [];
 
@@ -59,7 +48,7 @@ export class StoryAvatarComponent implements OnChanges {
       // Одна история — полный круг
       this.segments.push({
         path: '', // для <circle> path не нужен
-        color: this.colors[0] || this.defaultColor
+        color: this.defaultColor
       });
       return;
     }
@@ -91,12 +80,10 @@ export class StoryAvatarComponent implements OnChanges {
 
       this.segments.push({
         path: pathData,
-        color: this.colors[i % this.colors.length] || this.defaultColor
+        color: this.defaultColor
       });
 
       currentAngle = endAngle + gap;
     }
   }
-
-  protected readonly open = open;
 }

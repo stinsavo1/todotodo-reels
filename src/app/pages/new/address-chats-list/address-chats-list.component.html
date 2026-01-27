@@ -1,57 +1,55 @@
-<ion-content>
+<div class="container">
   <ion-segment [value]="segment" (ionChange)="changeSegment($event)">
-    <ion-segment-button value="active">
-      <ion-label class="label-container">Активные <div class="label-container__count">{{activeCount}}</div></ion-label>
+    <ion-segment-button value="active" [ngClass]="{'segment-active': segment === 'active'}">
+      <ion-label class="label-container">Активные
+        <div class="label-container__count">{{ activeCount }}</div>
+      </ion-label>
     </ion-segment-button>
-    <ion-segment-button value="archive">
+    <ion-segment-button value="archive" [ngClass]="{'segment-active': segment === 'archive'}">
       <ion-label class="label-container">
-        <span class="material-symbols-outlined label-container__icon">archive</span>
         Архив
-        <div class="label-container__count">{{archiveCount}}</div>
+        <div class="label-container__count">{{ archiveCount }}</div>
       </ion-label>
     </ion-segment-button>
   </ion-segment>
   <ion-segment-view id="active">
     @for (address of (dialogAddress$ | async) ?? []; track $index) {
-      <ion-card class="card" [ngClass]="{'card__new-message': address?.countNewMessages > 0 }" (click)="routerNavigate(address)">
+      <ion-card class="card"
+                (click)="routerNavigate(address)">
         <ion-card-content>
-          <div class="card__content">
-            <div class="card__location">
-              <span class="material-symbols-outlined card__location-icon">location_on</span>
+          <div class="card__container">
+            <div class="card__content">
+              <div class="card__location">
+                <span class="material-symbols-outlined card__location-icon">location_on</span>
+              </div>
+              <div class="card__information">
+                <div class="card__container-button">
+                  <div class="card__street">
+                    {{ address?.street }}
+                  </div>
+                </div>
+                <div class="card__city">
+                  {{ address?.city }}
+                </div>
+                <div class="card__chat-statistics">
+                  <div class="card__container-count">
+                    <span class="card__chat-count">{{ address?.count | declination: ['чат', 'чата', 'чатов'] }}</span>
+                    <span class="card__chat-orderType">{{ address?.orderType }}</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="card__information">
-              <div class="card__container-button">
-                <div class="card__street">
-                  {{ address?.street }}
+            <div class="card__not-read-container">
+              @if (address?.countNewMessages > 0) {
+                <div class="card__not-read">
+                  <span class="card__not-read-text">{{ address?.countNewMessages }}</span>
                 </div>
-                <span class="material-symbols-outlined card__forward-icon">arrow_forward_ios</span>
-              </div>
-              <div class="card__city">
-                {{ address?.city }}
-              </div>
-              <div class="card__chat-statistics">
-                <div class="card__container-count">
-                  <span class="material-symbols-outlined card__chat-icon-count">chat_bubble</span>
-                  <span class="card__chat-count">
-               {{ address?.count | declination: ['чат', 'чата', 'чатов'] }}
-            </span>
-                </div>
-                @if (address?.countNewMessages > 0) {
-                  <ion-chip [disabled]="true" class="card__not-read">
-                    <span class="material-symbols-outlined card__not-read-icon">mark_chat_unread</span>
-                    <span class="card__not-read-text">{{ address?.countNewMessages }}</span>
-                  </ion-chip>
-                }
-                @if (address?.orderType) {
-                  <ion-chip [disabled]="true" class="card__type-order">
-                    <span class="card__not-read-text">{{address?.orderType}}</span>
-                  </ion-chip>
-                }
-              </div>
+              }
             </div>
           </div>
         </ion-card-content>
       </ion-card>
     }
   </ion-segment-view>
-</ion-content>
+</div>
+

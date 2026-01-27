@@ -38,6 +38,30 @@
   --video-height:800px;
 }
 
+@font-face {
+  font-family: 'MiedingerBold';
+  src: url('./assets/fonts/Miedinger.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'InterMedium';
+  src: url('./assets/fonts/Inter-Medium.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'InterRegular';
+  src: url('./assets/fonts/Inter-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   font-family: $font-family-roboto;
 }

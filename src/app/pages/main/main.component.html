@@ -28,7 +28,7 @@
       </div>
     </ion-toolbar>
   </ion-header>
-  <ion-content class="ion-padding">
+  <ion-content class="ion-padding menu-container">
     @if (!isAuth) {
       <div class="menu-container menu-container__auth-background" (click)="navigateAuth()">
         <div class="menu-container__auth">
@@ -77,53 +77,46 @@
 <div class="ion-page" id="main-content">
   <ion-header>
     <ion-toolbar class="main-toolbar">
-      <ion-buttons>
+      <ion-buttons class="main-toolbar__header">
         <ion-menu-button class="menu-button"></ion-menu-button>
         <div class="stories__title">TODOTODO</div>
       </ion-buttons>
       <div class="stories">
         <div class="stories__container">
           <app-story-avatar
-            [size]="64"
             [storyCount]="4"
             [avatarUrl]="isAuth && user?.photo?.length ? user?.photo[0] : null"
             [gapDeg]="13"
             [addStory]="true"
           ></app-story-avatar>
           <app-story-avatar
-            [avatarUrl]="'https://media.licdn.com/dms/image/v2/D4E0BAQFEAKvQAZ8Zmg/company-logo_200_200/B4EZsOHFSBJ0AQ-/0/1765468296836/img_logo?e=2147483647&v=beta&t=shYVYg3atXalYcBkQoeU4p0Ih2_wf5HwRFWiLTemLt8'"
+            [avatarUrl]="'https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745'"
             [storyCount]="4"
-            [size]="64"
             [gapDeg]="13"
           ></app-story-avatar>
           <app-story-avatar
-            [avatarUrl]="'https://media.licdn.com/dms/image/v2/D4E0BAQFEAKvQAZ8Zmg/company-logo_200_200/B4EZsOHFSBJ0AQ-/0/1765468296836/img_logo?e=2147483647&v=beta&t=shYVYg3atXalYcBkQoeU4p0Ih2_wf5HwRFWiLTemLt8'"
+            [avatarUrl]="'https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745'"
             [storyCount]="3"
-            [size]="64"
             [gapDeg]="13"
           ></app-story-avatar>
           <app-story-avatar
-            [avatarUrl]="'https://media.licdn.com/dms/image/v2/D4E0BAQFEAKvQAZ8Zmg/company-logo_200_200/B4EZsOHFSBJ0AQ-/0/1765468296836/img_logo?e=2147483647&v=beta&t=shYVYg3atXalYcBkQoeU4p0Ih2_wf5HwRFWiLTemLt8'"
+            [avatarUrl]="'https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745'"
             [storyCount]="6"
-            [size]="64"
             [gapDeg]="13"
           ></app-story-avatar>
           <app-story-avatar
-            [avatarUrl]="'https://media.licdn.com/dms/image/v2/D4E0BAQFEAKvQAZ8Zmg/company-logo_200_200/B4EZsOHFSBJ0AQ-/0/1765468296836/img_logo?e=2147483647&v=beta&t=shYVYg3atXalYcBkQoeU4p0Ih2_wf5HwRFWiLTemLt8'"
+            [avatarUrl]="'https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745'"
             [storyCount]="15"
-            [size]="64"
             [gapDeg]="13"
           ></app-story-avatar>
           <app-story-avatar
-            [avatarUrl]="'https://media.licdn.com/dms/image/v2/D4E0BAQFEAKvQAZ8Zmg/company-logo_200_200/B4EZsOHFSBJ0AQ-/0/1765468296836/img_logo?e=2147483647&v=beta&t=shYVYg3atXalYcBkQoeU4p0Ih2_wf5HwRFWiLTemLt8'"
+            [avatarUrl]="'https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745'"
             [storyCount]="1"
-            [size]="64"
             [gapDeg]="13"
           ></app-story-avatar>
           <app-story-avatar
-            [avatarUrl]="'https://media.licdn.com/dms/image/v2/D4E0BAQFEAKvQAZ8Zmg/company-logo_200_200/B4EZsOHFSBJ0AQ-/0/1765468296836/img_logo?e=2147483647&v=beta&t=shYVYg3atXalYcBkQoeU4p0Ih2_wf5HwRFWiLTemLt8'"
+            [avatarUrl]="'https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745'"
             [storyCount]="9"
-            [size]="64"
             [gapDeg]="13"
           ></app-story-avatar>
         </div>
@@ -132,46 +125,54 @@
   </ion-header>
   <ion-content>
     <div class="button-grid">
-      <div class="button" (click)="navigateWork()">
-        <div class="icon-button">
-          <img src="assets/main/work.png" class="button-img"/>
+      <div class="button-grid__button" (click)="navigateWork()">
+        <div class="button-grid__title">Работа</div>
+        <div class="button-grid__img">
+          <img src="assets/main/work.svg"/>
         </div>
-        <span>Работа</span>
       </div>
-      <div class="button" (click)="openEducation()">
-        <div class="icon-button">
-          <img src="assets/main/books.png" class="button-img"/>
+      <div class="button-grid__button" (click)="openEducation()">
+        <div class="button-grid__title">Обучение</div>
+        <div class="button-grid__img">
+          <img src="assets/main/books.svg"/>
         </div>
-        <span>Обучение</span>
       </div>
-      <div class="button" (click)="navigateLeads()">
-        <div class="icon-button">
-          <img src="assets/main/user.png" class="button-img"/>
+      <div class="button-grid__button" (click)="navigateLeads()">
+        <div class="button-grid__title">Лиды</div>
+        <div class="button-grid__img">
+          <img src="assets/main/reels.svg"/>
         </div>
-        <span>Лиды</span>
       </div>
-      <div class="button" (click)="openReels()">
-        <div class="icon-button">
-          <img src="assets/main/reels.png" class="button-img"/>
+      <div class="button-grid__button" (click)="openReels()">
+        <div class="button-grid__title">Лента</div>
+        <div class="button-grid__img">
+          <img src="assets/main/lenta.svg"/>
         </div>
-        <span>Лента</span>
+      </div>
+      <div class="button-grid__button">
+        <div class="button-grid__title">Поставщики</div>
+        <div class="button-grid__img">
+          <img src="assets/main/supplier.svg"/>
+        </div>
+      </div>
+      <div class="button-grid__button">
+        <div class="button-grid__title">Расчет окон</div>
+        <div class="button-grid__img">
+          <img src="assets/main/window.svg"/>
+        </div>
       </div>
     </div>
     <div class="container-invites">
-      <div class="container-invites__button" (click)="openBonuses()">
-        <ion-button class="container-invites__icon">
-          <span class="container-invites__title">Мои бонусы</span>
-          <span class="container-invites__number">{{ this.user?.cashback || 0 }} ₽</span>
-        </ion-button>
-      </div>
-      <div class="container-invites__button" (click)="navigatePartner()">
-        <ion-button class="icon-button">
+      <ion-button class="container-invites__bonuses" (click)="openBonuses()">
+        <span class="container-invites__title">Мои бонусы</span>
+        <span class="container-invites__title">{{ this.user?.cashback || 0 }} ₽</span>
+      </ion-button>
+      <ion-button class="container-invites__bonuses-invites" (click)="navigatePartner()">
         <span class="container-invites__invites">
-          <ion-icon name="person-add-outline" class="container-invites__invite-icon"></ion-icon>
         </span>
-          <span class="container-invites__title">Пригласить коллегу</span>
-        </ion-button>
-      </div>
+        <span class="container-invites__title">Пригласить</span>
+        <div class="ic icon-user_add"></div>
+      </ion-button>
     </div>
     <app-address-chats-list></app-address-chats-list>
   </ion-content>

@@ -2,29 +2,29 @@
   <svg
     viewBox="0 0 100 100"
     class="progress-ring"
-    [attr.width]="size + ringWidth*2 + 6"
-    [attr.height]="size + ringWidth*2 + 6"
+    [attr.width]="size + ringWidth*2 + 9"
+    [attr.height]="size + ringWidth*2 + 9"
   >
 
-      @if (storyCount === 1) {
-        <circle
-          cx="50"
-          cy="50"
-          [attr.r]="radius"
+    @if (storyCount === 1) {
+      <circle
+        cx="50"
+        cy="50"
+        [attr.r]="radius"
+        fill="none"
+        [attr.stroke]="segments[0]?.color"
+        [attr.stroke-width]="ringWidth"
+      />
+    } @else {
+      @for (seg of segments; track seg) {
+        <path
+          [attr.d]="seg.path"
           fill="none"
-          [attr.stroke]="segments[0]?.color"
+          [attr.stroke]="seg.color"
           [attr.stroke-width]="ringWidth"
+          stroke-linecap="round"
         />
-      } @else {
-        @for (seg of segments; track seg) {
-          <path
-            [attr.d]="seg.path"
-            fill="none"
-            [attr.stroke]="seg.color"
-            [attr.stroke-width]="ringWidth"
-            stroke-linecap="round"
-          />
-        }
+      }
     }
   </svg>
   @if (addStory) {

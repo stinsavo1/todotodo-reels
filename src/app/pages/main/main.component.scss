@@ -1,110 +1,107 @@
-:host {
-  //padding-left: 250px;
-  //padding-right: 250px;
-}
-
 .stories {
   &__container {
     display: flex;
     flex-direction: row;
     overflow: auto;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge (устаревшее, но для поддержки) */
-    padding-top: 10px;
-    padding-right: 10px;
-    padding-left: 10px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-left: 12px;
 
-    /* Скрываем скроллбар в WebKit (Chrome, Safari, новые Edge) */
     &::-webkit-scrollbar {
       display: none;
     }
   }
 
   &__title {
-    font-family: "BBH Bartle", sans-serif;
-    font-weight: 400;
-    color: #22307e;
+    font-family: 'MiedingerBold', sans-serif;
+    font-size: 1.25rem;
+    letter-spacing: 0;
+    line-height: 1.2;
     font-style: normal;
     display: flex;
     justify-content: center;
-    padding: 7px;
-    font-size: 15px;
-    width: calc(100vw - 82px);
+    width: 100%;
   }
 }
 
 .button-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px; /* расстояние между кнопками по горизонтали и вертикали */
-  padding: 30px 35px 5px 35px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 20px 16px;
   width: 100%;
+  background: #F1F2F4;
+
+  &__button {
+    cursor: pointer;
+    background: white;
+    border-radius: 12px;
+
+    &:hover {
+      background: #80808042;
+    }
+  }
+
+  &__img {
+    display: flex;
+    justify-content: end;
+    padding: 6px 6px 0 0;
+  }
+
+  &__title {
+    font-family: 'InterMedium', sans-serif;
+    font-size: 14px;
+    padding: 10px 0 0 10px;
+  }
 }
 
 .container-invites {
   display: grid;
+  background: #F1F2F4;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  padding: 10px 10px;
+  gap: 6px;
+  padding: 0px 16px 20px 16px;
   width: 100%;
 
   ion-button {
-    --background: linear-gradient(135deg, #141b4d 0%, #22307e 50%, #5168ff 100%);
-    --background-hover: unset;
     width: 100%;
     justify-content: center;
     text-align: center;
     display: flex;
+    min-height: 43px;
+    height: 43px;
   }
 
-  &__invites {
-    width: 25px;
-    height: 25px;
-    background: #fff;
-    border-radius: 50%;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-  }
-
-  &__invite-icon {
-    font-size: 15px;
-  }
-
-  &__icon {
+  &__bonuses {
     position: relative;
     width: 64px;
     height: 48px;
+    --background: black;
+    --background-hover: #333333;
+    --border-radius: 12px;
+  }
 
-    --background-activated: #cdcdcd;
-    --background-focused: #cdcdcd;
-    --background-hover: #cdcdcd;
-    --border-radius: 20px;
+  &__icon {
+    width: 20px;
+    height: 20px;
+    padding-left: 6px;
+    color: white;
+  }
 
-    &::part(native):hover {
-      box-shadow: 0 4px 12px rgba(56, 128, 255, 0.3);
-      transform: scale(1.02);
-      transition: all 0.2s ease;
-    }
-
-    &::part(native) {
-      overflow: visible;
-    }
+  &__bonuses-invites {
+    --background: #0077FF;
+    --background-hover: #8FBBFA;
+    position: relative;
+    width: 64px;
+    height: 48px;
+    --border-radius: 12px;
   }
 
   &__title {
     color: white;
-    font-family: 'Roboto Flex';
-    font-size: 14px;
+    font-family: 'InterMedium', sans-serif;
+    font-size: 15px;
     padding-left: 5px;
-  }
-
-  &__number {
-    color: white;
-    font-family: 'Roboto Flex';
-    font-size: 17px;
-    padding-left: 5px;
-    font-weight: bold;
   }
 }
 
@@ -136,30 +133,6 @@
   text-align: center;
 }
 
-.icon-button {
-  position: relative;
-  height: 48px;
-  width: 100%;
-  border-radius: 20px;
-  background: #e1e1e1;
-  cursor: pointer;
-
-  --background-activated: #cdcdcd;
-  --background-focused: #cdcdcd;
-  --background-hover: #cdcdcd;
-  --border-radius: 20px;
-
-  &:hover {
-    box-shadow: 0 4px 12px rgba(56, 128, 255, 0.3);
-    transform: scale(1.02);
-    transition: all 0.2s ease;
-  }
-
-  &::part(native) {
-    overflow: visible;
-  }
-}
-
 .button-img {
   position: absolute;
   bottom: 0;
@@ -172,7 +145,7 @@
 
 
 ion-button {
-  font-family: 'Roboto Flex';
+  font-family: 'InterMedium', sans-serif;
   --background: #e1e1e1;
   --color: black;
 }
@@ -185,8 +158,12 @@ ion-menu {
   color: #22307e;
 }
 
+.menu-container {
+  --background: white;
+}
+
 .header {
-  font-family: 'Roboto Flex';
+  font-family: 'InterMedium', sans-serif;
 
   &__arrow-back {
     -border-radius: unset;
@@ -244,7 +221,7 @@ ion-menu {
     color: black;
     font-weight: 600;
     font-size: 18px;
-    font-family: 'Roboto Flex';
+    font-family: 'InterMedium', sans-serif;
     padding-top: 10px;
   }
 
@@ -252,7 +229,7 @@ ion-menu {
     cursor: pointer;
     color: #9e9e9e;
     font-size: 13px;
-    font-family: 'Roboto Flex';
+    font-family: 'InterMedium', sans-serif;
   }
 
   &__image {
@@ -267,7 +244,7 @@ ion-menu {
 }
 
 .menu-container {
-  font-family: 'Roboto Flex';
+  font-family: 'InterRegular', sans-serif;
   background: #e1e1e1;
   height: 60px;
   border-radius: 20px;
@@ -324,14 +301,27 @@ ion-menu {
 
 ion-content {
   height: calc(100vh - 118px);
+  --background: #F1F2F4;
 }
 
 .main-toolbar {
-  --background: #fff;
+  --background: #F1F2F4;
   --padding-start: 0px;
-  --padding-end: 0px;
+
+  &__header {
+    padding: 0 12px 20px 12px;
+  }
 }
 
 .menu-button {
-  --color: #22307e;
+  height: 44px;
+  width: 44px;
+  background: white;
+  border-radius: 50%;
+  --color: black;
+}
+
+.icon-user_add {
+  color: white;
+  padding-left: 8px;
 }
